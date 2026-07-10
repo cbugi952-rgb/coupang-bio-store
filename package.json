@@ -1,0 +1,14 @@
+{
+  "name": "kkanajae-links",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "깐깐아재 링크-인-바이오 (쿠팡 파트너스 + 토스쇼핑 쉐어링크)",
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {
+    "@upstash/redis": "^1.38.0"
+  }
+}

@@ -1,0 +1,545 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>깐깐아재 · 링크 관리자</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23131313'/><circle cx='50' cy='50' r='20' fill='none' stroke='%23FFD400' stroke-width='9'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EFE7D3; --panel:#FBF6EA; --card:#FFFFFF; --card-2:#F4ECD9; --field:#FFFFFF;
+    --border:#E4D9BE; --border-strong:#D6C8A4; --ink:#1B1710; --muted:#7A7059; --faint:#A99C7E;
+    --accent:#FFD400; --accent-deep:#A67D00; --accent-ink:#171307; --toss:#3182F6; --toss-deep:#1D6AE0;
+    --ok:#3E9E63; --ok-bg:#E6F3EA; --danger:#D8443F; --danger-bg:#FBE9E8;
+    --shadow:0 18px 44px -22px rgba(60,45,0,.5); --shadow-sm:0 6px 16px -12px rgba(60,45,0,.5);
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#0E0E0D; --panel:#161512; --card:#1C1B15; --card-2:#232019; --field:#191813;
+      --border:#332F22; --border-strong:#423C2C; --ink:#F3ECD9; --muted:#A79D85; --faint:#7E7660;
+      --accent:#FFD400; --accent-deep:#FFD400; --accent-ink:#14120A; --toss:#4C90F7; --toss-deep:#7FB2FF;
+      --ok:#57C083; --ok-bg:#16271C; --danger:#F0625D; --danger-bg:#2C1615;
+      --shadow:0 22px 48px -22px rgba(0,0,0,.85); --shadow-sm:0 8px 20px -14px rgba(0,0,0,.8);
+    }
+  }
+  :root[data-theme="light"]{--bg:#EFE7D3;--panel:#FBF6EA;--card:#FFFFFF;--card-2:#F4ECD9;--field:#FFFFFF;--border:#E4D9BE;--border-strong:#D6C8A4;--ink:#1B1710;--muted:#7A7059;--faint:#A99C7E;--accent:#FFD400;--accent-deep:#A67D00;--accent-ink:#171307;--toss:#3182F6;--toss-deep:#1D6AE0;--ok:#3E9E63;--ok-bg:#E6F3EA;--danger:#D8443F;--danger-bg:#FBE9E8;--shadow:0 18px 44px -22px rgba(60,45,0,.5);--shadow-sm:0 6px 16px -12px rgba(60,45,0,.5)}
+  :root[data-theme="dark"]{--bg:#0E0E0D;--panel:#161512;--card:#1C1B15;--card-2:#232019;--field:#191813;--border:#332F22;--border-strong:#423C2C;--ink:#F3ECD9;--muted:#A79D85;--faint:#7E7660;--accent:#FFD400;--accent-deep:#FFD400;--accent-ink:#14120A;--toss:#4C90F7;--toss-deep:#7FB2FF;--ok:#57C083;--ok-bg:#16271C;--danger:#F0625D;--danger-bg:#2C1615;--shadow:0 22px 48px -22px rgba(0,0,0,.85);--shadow-sm:0 8px 20px -14px rgba(0,0,0,.8)}
+
+  *{box-sizing:border-box}
+  [hidden]{display:none!important}
+  html,body{margin:0}
+  body{background:var(--bg);color:var(--ink);font-family:var(--font-body);-webkit-font-smoothing:antialiased;line-height:1.5;overflow-x:hidden}
+  :root{--font-display:'Jua','Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',system-ui,sans-serif;--font-body:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',system-ui,-apple-system,sans-serif}
+  /* 주아체 = 브랜드/미리보기(공개페이지 미러). 관리 컨트롤은 고딕 유지 */
+  .appbar .brand,.col-h h2,.pv-brand,.pv-name,.pv-hero h3,.pv-row h4,.pv-buy,.pv-eye,.pv-tag,.pv-chip{font-family:var(--font-display)}
+  .mono{font-variant-numeric:tabular-nums;letter-spacing:.02em}
+  .clk{font-size:10.5px;color:var(--faint);font-weight:700;margin-top:4px;display:flex;align-items:center;gap:5px}
+  .clk b{color:var(--accent-deep);font-weight:800}
+  .statbar{display:flex;flex-wrap:wrap;gap:5px 12px;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px 14px;margin-top:12px;font-size:12px;font-weight:700;color:var(--muted)}
+  .statbar b{color:var(--ink);font-weight:800;font-variant-numeric:tabular-nums}
+  .statbar .v{color:var(--accent-deep);font-weight:800}
+  .statbar .sep{color:var(--faint);opacity:.6}
+  .pv-notice{display:flex;align-items:center;gap:6px;padding:7px 13px;background:color-mix(in srgb,var(--accent) 16%,var(--panel));border-bottom:1px solid var(--border);font-size:10px;font-weight:700;color:var(--ink)}
+  .pv-notice i{width:6px;height:6px;border-radius:50%;background:var(--accent-deep);flex:none}
+  .pv-contact{margin:9px 13px 0;text-align:center;font-size:10px;font-weight:800;color:var(--muted);border:1.3px dashed color-mix(in srgb,var(--accent) 45%,var(--border));border-radius:10px;padding:8px}
+  button{font-family:inherit}
+  h1,h2,h3,h4,p{margin:0}
+  .appbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px;padding:12px 20px;background:#131313;color:#F3ECD9;border-bottom:2px solid var(--accent)}
+  .appbar .brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:16px}
+  .appbar .brand .sq{width:15px;height:15px;border-radius:4px;background:var(--accent)}
+  .appbar .brand small{font-weight:600;font-size:12px;color:#B7AE96;margin-left:2px}
+  .appbar .spacer{flex:1}
+  .savestate{display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;color:#C9BE9E}
+  .savestate .dot{width:8px;height:8px;border-radius:50%;background:var(--faint)}
+  .savestate.dirty .dot{background:var(--accent);box-shadow:0 0 0 3px rgba(255,212,0,.2)}
+  .btn{display:inline-flex;align-items:center;gap:7px;border:none;cursor:pointer;font-weight:800;font-size:13.5px;padding:9px 16px;border-radius:10px;transition:transform .1s,filter .1s,opacity .1s}
+  .btn:active{transform:translateY(1px)}
+  .btn.primary{background:var(--accent);color:var(--accent-ink)}
+  .btn.primary:hover{filter:brightness(1.05)}
+  .btn.primary:disabled{opacity:.5;cursor:default}
+  .btn.soft{background:var(--card-2);color:var(--ink);border:1px solid var(--border)}
+  .btn.soft:hover{border-color:var(--border-strong)}
+  .btn.ghost{background:transparent;color:#F3ECD9;border:1px solid #3A3A34;padding:9px 11px}
+  .btn.ghost:hover{border-color:#55524A}
+  .shell{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:22px;max-width:1160px;margin:0 auto;padding:22px 20px 60px;align-items:start}
+  @media (max-width:920px){.shell{grid-template-columns:1fr}.previewcol{order:-1}}
+  .col-h{display:flex;align-items:baseline;gap:10px;margin:2px 2px 14px}
+  .col-h h2{font-size:17px;font-weight:800}
+  .col-h .sub{font-size:12.5px;color:var(--muted)}
+  .col-h .count{margin-left:auto;font-size:12px;font-weight:800;color:var(--accent-deep);background:color-mix(in srgb,var(--accent) 12%,transparent);padding:3px 9px;border-radius:999px}
+  .addbar{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;border:1.5px dashed var(--border-strong);background:transparent;color:var(--ink);padding:13px;border-radius:14px;font-weight:800;font-size:14px;cursor:pointer;transition:border-color .12s,background .12s}
+  .addbar:hover{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,transparent)}
+  .addbar svg{width:17px;height:17px}
+  .list{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+  .prow{display:grid;grid-template-columns:auto auto auto 1fr auto auto;align-items:center;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:11px 13px;box-shadow:var(--shadow-sm)}
+  .rthumb{width:38px;height:38px;border-radius:9px;object-fit:cover;flex:none;border:1px solid var(--border);background:var(--card-2)}
+  .rthumb.ph{display:grid;place-items:center;border-style:dashed;color:var(--faint)}
+  .rthumb.ph svg{width:15px;height:15px}
+  .prow.hidden{opacity:.62}
+  .prow.latest{border-color:color-mix(in srgb,var(--accent) 70%,var(--border));box-shadow:0 0 0 1px var(--accent) inset, var(--shadow-sm)}
+  .grip{display:flex;flex-direction:column;gap:3px}
+  .grip button{width:22px;height:20px;display:grid;place-items:center;border:1px solid var(--border);background:var(--card-2);color:var(--muted);border-radius:6px;cursor:pointer;padding:0}
+  .grip button:hover:not(:disabled){color:var(--ink);border-color:var(--border-strong)}
+  .grip button:disabled{opacity:.35;cursor:default}
+  .grip svg{width:12px;height:12px}
+  .epc{font-size:11.5px;font-weight:800;color:var(--accent-deep);border:1.5px solid color-mix(in srgb,var(--accent) 50%,var(--border));padding:5px 8px;border-radius:8px;background:color-mix(in srgb,var(--accent) 9%,transparent)}
+  .pmeta{min-width:0}
+  .pmeta h4{font-size:15px;font-weight:800;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .cattag{font-size:10px;font-weight:800;color:var(--accent-deep);background:color-mix(in srgb,var(--accent) 15%,transparent);padding:2px 7px;border-radius:6px}
+  .pmeta > p{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+  .links{display:flex;flex-direction:column;gap:2px;margin-top:5px}
+  .lk{font-size:11px;color:var(--faint);display:inline-flex;align-items:center;gap:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .lk svg{width:11px;height:11px;flex:none}
+  .lk .tag{font-weight:800;font-size:10px;padding:1px 5px;border-radius:5px;flex:none}
+  .lk.cp .tag{background:color-mix(in srgb,var(--accent) 20%,transparent);color:var(--accent-deep)}
+  .lk.ts{color:var(--toss)}
+  .lk.ts .tag{background:color-mix(in srgb,var(--toss) 16%,transparent);color:var(--toss-deep)}
+  .lk.missing{color:var(--danger)}
+  .lk.missing .tag{background:var(--danger-bg);color:var(--danger)}
+  .lk.none{color:var(--faint)}
+  .lk.none .tag{background:var(--card-2);color:var(--faint)}
+  .pill{font-size:11px;font-weight:800;padding:4px 9px;border-radius:999px;white-space:nowrap}
+  .pill.latest{background:var(--accent);color:var(--accent-ink)}
+  .pill.live{background:var(--ok-bg);color:var(--ok)}
+  .pill.hidden{background:var(--card-2);color:var(--muted)}
+  .acts{display:flex;gap:4px}
+  .ic{width:30px;height:30px;display:grid;place-items:center;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--muted);cursor:pointer;transition:background .1s,color .1s}
+  .ic:hover{background:var(--card-2);color:var(--ink)}
+  .ic.star.on{color:var(--accent-deep)}
+  .ic.del:hover{background:var(--danger-bg);color:var(--danger)}
+  .ic svg{width:16px;height:16px}
+  .ic:focus-visible,.grip button:focus-visible,.addbar:focus-visible,.btn:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+  .editor{background:var(--card);border:1px solid var(--border-strong);border-radius:16px;padding:16px;margin-top:12px;box-shadow:var(--shadow-sm)}
+  .editor h3{font-size:14px;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+  .editor h3 .tick{width:9px;height:9px;border-radius:2px;background:var(--accent)}
+  .grid2{display:grid;grid-template-columns:120px 1fr;gap:10px}
+  .fld{display:flex;flex-direction:column;gap:5px;margin-bottom:11px}
+  .fld label{font-size:12px;font-weight:700;color:var(--muted);display:flex;align-items:center;gap:6px}
+  .fld label .req{color:var(--danger);font-weight:800}
+  .fld label .opt{color:var(--faint);font-weight:700}
+  .fld .hint{font-size:11px;color:var(--faint);font-weight:400}
+  input[type=text],input[type=url],textarea,select{width:100%;font-family:inherit;font-size:13.5px;color:var(--ink);background:var(--field);border:1px solid var(--border-strong);border-radius:10px;padding:9px 11px;transition:border-color .12s,box-shadow .12s}
+  textarea{resize:vertical;min-height:44px;line-height:1.45}
+  input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 28%,transparent)}
+  input.tossf:focus{border-color:var(--toss);box-shadow:0 0 0 3px color-mix(in srgb,var(--toss) 26%,transparent)}
+  .cc{font-size:11px;color:var(--faint);text-align:right;margin-top:-6px}
+  .cc.over{color:var(--danger)}
+  .seg{display:flex;gap:6px}
+  .seg button{flex:1;font-family:inherit;font-size:12.5px;font-weight:800;padding:8px;border-radius:9px;cursor:pointer;border:1px solid var(--border-strong);background:var(--field);color:var(--muted);transition:.12s}
+  .seg button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+  .editor .efoot{display:flex;gap:8px;justify-content:flex-end;margin-top:6px}
+  .panel{background:var(--card);border:1px solid var(--border);border-radius:14px;margin-top:18px;overflow:hidden}
+  .panel > summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:14px 15px;font-weight:800;font-size:14px}
+  .panel > summary::-webkit-details-marker{display:none}
+  .panel > summary .chev{margin-left:auto;transition:transform .18s;color:var(--muted)}
+  .panel[open] > summary .chev{transform:rotate(90deg)}
+  .panel .body{padding:2px 15px 16px;border-top:1px solid var(--border)}
+  .profthumb{display:flex;align-items:center;gap:12px;margin:12px 0 6px}
+  .profthumb img{width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid var(--accent)}
+  .profthumb .rp{font-size:11.5px;color:var(--muted)}
+  .locked{display:flex;gap:11px;align-items:flex-start;background:var(--card-2);border:1px dashed var(--border-strong);border-radius:12px;padding:12px 14px;margin-top:18px}
+  .locked svg{width:17px;height:17px;color:var(--accent-deep);flex:none;margin-top:1px}
+  .locked .t{font-size:12.5px}
+  .locked .t b{font-weight:800}
+  .locked .t p{color:var(--muted);font-size:11.5px;margin-top:3px;line-height:1.5}
+  .previewcol{position:sticky;top:78px}
+  .pvhead{display:flex;align-items:center;gap:8px;margin:2px 2px 12px;font-size:12.5px;font-weight:800;color:var(--muted)}
+  .pvhead .live{display:inline-flex;align-items:center;gap:5px;color:var(--ok)}
+  .pvhead .live i{width:7px;height:7px;border-radius:50%;background:var(--ok);animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  .stage{background:radial-gradient(120% 55% at 50% 0%, color-mix(in srgb,var(--accent) 14%,transparent), transparent 60%),var(--card-2);border:1px solid var(--border);border-radius:22px;padding:16px 14px;max-height:80vh;overflow:auto}
+  .pv-phone{max-width:320px;margin:0 auto;background:var(--panel);border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:var(--shadow)}
+  .pv-hookbar{display:flex;align-items:center;justify-content:space-between;padding:10px 13px;background:#131313;color:#F3ECD9;border-bottom:2px solid var(--accent)}
+  .pv-brand{display:flex;align-items:center;gap:7px;font-weight:800;font-size:13px}
+  .pv-brand i{width:12px;height:12px;border-radius:3px;background:var(--accent)}
+  .pv-tag{font-size:9.5px;font-weight:800;color:#131313;background:var(--accent);padding:3px 8px;border-radius:999px}
+  .pv-profile{text-align:center;padding:18px 16px 4px}
+  .pv-ava{width:76px;height:76px;margin:0 auto 9px;border-radius:50%;overflow:hidden;border:3px solid var(--accent)}
+  .pv-ava img{width:100%;height:100%;object-fit:cover;display:block}
+  .pv-name{font-size:19px;font-weight:800}
+  .pv-handle{font-size:11px;color:var(--muted)}
+  .pv-bio{font-size:11.5px;color:var(--ink);opacity:.9;margin-top:7px;white-space:pre-line;line-height:1.45}
+  .pv-board{padding:14px 13px 4px;display:flex;flex-direction:column;gap:9px}
+  .pv-eye{font-size:10.5px;font-weight:800;color:var(--muted);display:flex;align-items:center;gap:6px}
+  .pv-eye i{width:7px;height:7px;border-radius:2px;background:var(--accent)}
+  .pv-hero{background:var(--accent);color:var(--accent-ink);border-radius:15px;padding:13px 14px}
+  .pv-hero .r{display:flex;justify-content:space-between;align-items:center;font-size:9.5px;font-weight:800}
+  .pv-hero .r .l{background:#131313;color:var(--accent);padding:3px 7px;border-radius:999px}
+  .pv-hero h3{font-size:15.5px;font-weight:800;margin:7px 0 3px;line-height:1.15}
+  .pv-hero p{font-size:10.5px;opacity:.82;font-weight:600}
+  .pv-hi{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:9px;margin-bottom:8px}
+  .pv-th{width:30px;height:30px;border-radius:7px;object-fit:cover;flex:none;border:1px solid rgba(0,0,0,.08)}
+  .pv-cta{display:flex;gap:6px;margin-top:10px}
+  .pv-buy{flex:1;text-align:center;font-size:10.5px;font-weight:800;padding:8px 6px;border-radius:8px;border:1px solid transparent}
+  .pv-hero .pv-buy.cp{background:#131313;color:var(--accent)}
+  .pv-hero .pv-buy.ts{background:#131313;color:#7FB2FF}
+  .pv-hero .pv-buy.off{background:transparent;border-color:rgba(19,19,19,.3);color:rgba(19,19,19,.5)}
+  .pv-row{display:flex;align-items:center;gap:9px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:9px 11px}
+  .pv-row .ec{font-size:9.5px;font-weight:800;color:var(--accent-deep);border:1.3px solid color-mix(in srgb,var(--accent) 45%,var(--border));padding:4px 6px;border-radius:6px}
+  .pv-row h4{font-size:12px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pv-row p{font-size:10px;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pv-buys{display:flex;flex-direction:column;gap:4px}
+  .pv-chip{font-size:9px;font-weight:800;padding:4px 8px;border-radius:6px;text-align:center;min-width:46px}
+  .pv-chip.cp{background:var(--accent);color:var(--accent-ink)}
+  .pv-chip.ts{background:var(--toss);color:#fff}
+  .pv-chip.off{background:var(--card-2);color:var(--faint)}
+  .pv-empty{text-align:center;color:var(--muted);font-size:11.5px;padding:16px 8px;border:1.5px dashed var(--border-strong);border-radius:12px}
+  .pv-foot{padding:13px 16px 16px;text-align:center;border-top:1px solid var(--border);margin-top:10px}
+  .pv-foot p{font-size:9px;color:var(--muted);line-height:1.5}
+  .pv-foot .sig{font-size:10px;font-weight:800;color:var(--muted);margin-top:8px;display:inline-flex;align-items:center;gap:5px}
+  .pv-foot .sig i{width:9px;height:9px;border-radius:2px;background:var(--accent)}
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;background:#131313;color:#F3ECD9;font-weight:700;font-size:13.5px;padding:12px 18px;border-radius:12px;box-shadow:0 12px 30px -10px rgba(0,0,0,.6);display:flex;align-items:center;gap:9px;z-index:40;transition:opacity .25s,transform .25s;max-width:90vw}
+  .toast .k{width:9px;height:9px;border-radius:50%;background:var(--accent);flex:none}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .toast.err .k{background:var(--danger)}
+  .note{max-width:1160px;margin:0 auto;padding:0 20px 40px;font-size:11.5px;color:var(--muted);opacity:.8;text-align:center}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="appbar">
+  <span class="brand"><span class="sq"></span>깐깐아재 <small>링크 관리자</small></span>
+  <span class="spacer"></span>
+  <button class="btn ghost" id="keyBtn" title="관리자 비밀번호 설정/변경">🔑</button>
+  <span class="savestate" id="savestate"><span class="dot"></span><span id="savetext">불러오는 중…</span></span>
+  <button class="btn primary" id="saveBtn" disabled>변경사항 게시</button>
+</div>
+
+<div class="shell">
+  <section>
+    <div class="col-h"><h2>아재 픽</h2><span class="sub">회차별 링크 · 맨 위 = 최신</span><span class="count" id="count">0개</span></div>
+    <div class="statbar" id="statbar" hidden></div>
+    <button class="addbar" id="addBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>새 아재 픽 추가</button>
+
+    <form class="editor" id="editor" hidden>
+      <h3><span class="tick"></span><span id="editorTitle">새 아재 픽</span></h3>
+      <div class="grid2">
+        <div class="fld"><label for="f-ep">회차 <span class="req">*</span></label><input type="text" id="f-ep" placeholder="EP09" maxlength="6" autocomplete="off"></div>
+        <div class="fld"><label for="f-topic">주제 <span class="req">*</span> <span class="hint">· 상품명</span></label><input type="text" id="f-topic" placeholder="욕실 곰팡이 제거제" maxlength="24" autocomplete="off"></div>
+      </div>
+      <div class="fld"><label for="f-category">카테고리 <span class="hint">· 필터 탭</span></label>
+        <select id="f-category">
+          <option value="">미분류</option>
+          <option value="주방">주방</option><option value="욕실">욕실</option><option value="세탁">세탁</option><option value="생활">생활</option><option value="반려">반려</option>
+        </select>
+      </div>
+      <div class="fld">
+        <label for="f-verdict">아재 한마디 <span class="hint">· 카드에 뜨는 코멘트</span></label>
+        <input type="text" id="f-verdict" placeholder="곰팡이는 문지르는 게 아니라 녹이는 거다" maxlength="34" autocomplete="off">
+        <div class="cc" id="cc-verdict">0 / 34</div>
+      </div>
+      <div class="fld">
+        <label for="f-image">카드 이미지 <span class="opt">· 보통 자동(그 화 카툰)</span></label>
+        <input type="text" id="f-image" placeholder="images/ep09.jpg" autocomplete="off">
+        <span class="hint">에피소드 만들 때 그 화 카툰으로 자동으로 채워짐. 비우면 텍스트 카드로 표시.</span>
+      </div>
+      <div class="fld"><label for="f-coupang">쿠팡 파트너스 링크 <span class="req">*</span> <span class="hint">· 필수</span></label><input type="url" id="f-coupang" placeholder="https://link.coupang.com/a/..." autocomplete="off" inputmode="url"></div>
+      <div class="fld">
+        <label for="f-toss">토스쇼핑 쉐어링크 <span class="opt">· 선택</span></label>
+        <input type="url" class="tossf" id="f-toss" placeholder="https://sharelink.toss.im/..." autocomplete="off" inputmode="url">
+        <span class="hint">있으면 넣기 — 비우면 공개페이지에서 토스 버튼이 비활성으로 표시돼.</span>
+      </div>
+      <div class="fld"><label for="f-youtube">리뷰 영상(쇼츠) <span class="opt">· 선택</span></label><input type="url" id="f-youtube" placeholder="https://youtube.com/shorts/..." autocomplete="off" inputmode="url"></div>
+      <div class="fld"><label>상태</label>
+        <div class="seg" id="f-status" role="group" aria-label="상태">
+          <button type="button" data-v="latest" aria-pressed="true">⭐ 최신</button>
+          <button type="button" data-v="live" aria-pressed="false">게시</button>
+          <button type="button" data-v="hidden" aria-pressed="false">숨김</button>
+        </div>
+      </div>
+      <div class="efoot"><button type="button" class="btn soft" id="cancelBtn">취소</button><button type="submit" class="btn primary" id="okBtn">추가</button></div>
+    </form>
+
+    <div class="list" id="list" aria-live="polite"></div>
+
+    <details class="panel">
+      <summary>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+        프로필 · 소셜 링크
+        <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+      </summary>
+      <div class="body">
+        <div class="profthumb"><img src="assets/avatar.jpg" alt="프로필 사진"><div class="rp">프로필 사진<br>(assets/avatar.jpg 교체)</div></div>
+        <div class="grid2">
+          <div class="fld"><label for="p-name">채널명</label><input type="text" id="p-name" maxlength="16"></div>
+          <div class="fld"><label for="p-handle">핸들</label><input type="text" id="p-handle" maxlength="20"></div>
+        </div>
+        <div class="grid2">
+          <div class="fld"><label for="p-tagline">상단 태그 <span class="hint">· 훅바</span></label><input type="text" id="p-tagline" maxlength="16" placeholder="아재가 골라줬어"></div>
+          <div class="fld"><label for="p-accent">브랜드 색</label><input type="color" id="p-accent" value="#FFD400" style="height:40px;padding:4px"></div>
+        </div>
+        <div class="fld"><label for="p-bio">소개 <span class="hint">· 2줄</span></label><textarea id="p-bio" maxlength="60"></textarea></div>
+        <div class="fld"><label for="p-notice">한줄 공지 <span class="opt">· 선택(비우면 숨김)</span></label><input type="text" id="p-notice" maxlength="60" placeholder="이번 주 신상 3종 업데이트"></div>
+        <div class="fld"><label for="p-contact">협업·문의 이메일 <span class="opt">· 선택(있으면 '협업 문의' 버튼 표시)</span></label><input type="email" id="p-contact" maxlength="80" placeholder="you@email.com"></div>
+        <div class="grid2">
+          <div class="fld"><label for="p-youtube">유튜브</label><input type="url" id="p-youtube" placeholder="https://youtube.com/@..." inputmode="url"></div>
+          <div class="fld"><label for="p-tiktok">틱톡</label><input type="url" id="p-tiktok" placeholder="https://tiktok.com/@..." inputmode="url"></div>
+        </div>
+        <div class="grid2">
+          <div class="fld"><label for="p-instagram">인스타</label><input type="url" id="p-instagram" placeholder="https://instagram.com/..." inputmode="url"></div>
+          <div class="fld"><label for="p-threads">스레드</label><input type="url" id="p-threads" placeholder="https://threads.net/@..." inputmode="url"></div>
+        </div>
+        <div class="grid2">
+          <div class="fld"><label for="p-naverBlog">네이버블로그</label><input type="url" id="p-naverBlog" placeholder="https://blog.naver.com/..." inputmode="url"></div>
+          <div class="fld"><label for="p-x">X(트위터)</label><input type="url" id="p-x" placeholder="https://x.com/..." inputmode="url"></div>
+        </div>
+      </div>
+    </details>
+
+    <div class="locked">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+      <div class="t"><b>제휴 고지 문구 · 항상 표시</b><p>쿠팡 파트너스·토스쇼핑 둘 다 제휴(구매 시 수수료) 링크라, “활동의 일환으로 일정액의 수수료를 제공받습니다” 고지를 끌 수 없게 잠가둠. 페이지 하단에 자동으로 붙어.</p></div>
+    </div>
+  </section>
+
+  <aside class="previewcol">
+    <div class="pvhead">미리보기<span class="live"><i></i>실시간</span></div>
+    <div class="stage"><div class="pv-phone" id="preview"></div></div>
+  </aside>
+</div>
+
+<p class="note">깐깐아재 전용 관리자 · 로그인(비밀번호)한 사람만 게시 가능. 쿠팡=필수·토스쇼핑=선택 · 폰트=주아체(BM Jua) · 버튼 클릭 통계 자동 집계.</p>
+<div class="toast" id="toast"><span class="k"></span><span id="toastText"></span></div>
+
+<script>
+"use strict";
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const short=u=>esc(String(u).replace(/^https?:\/\//,''));
+const KEYK="kkanajae_admin_key";
+const uid=()=>"p"+Date.now().toString(36)+Math.floor(Math.random()*1e4).toString(36);
+
+const SEED={
+  profile:{name:"깐깐아재",handle:"kkanajae",tagline:"아재가 골라줬어",bio:"싸다고 다 사지 마세요.\n아재가 깐깐하게 따져서 골라줍니다.",avatar:"assets/avatar.jpg",accent:"#FFD400",notice:"",contactEmail:"",disclosure:"본 페이지의 상품 링크는 쿠팡 파트너스·토스쇼핑 쉐어링크 활동의 일환으로, 구매 시 이에 따른 일정액의 수수료를 제공받습니다.",socials:{youtube:"",tiktok:"",instagram:"",threads:"",naverBlog:"",x:""}},
+  picks:[
+    {id:uid(),ep:"EP08",topic:"샤워기 필터",verdict:"수돗물 냄새, 필터가 반은 잡는다",category:"욕실",image:"images/ep08.jpg",youtube:"",coupang:"https://link.coupang.com/a/ex08",toss:"https://sharelink.toss.im/ts08",status:"latest"},
+    {id:uid(),ep:"EP07",topic:"베개 커버 (진드기)",verdict:"진드기는 안 보여서 못 잡는다",category:"세탁",image:"",youtube:"",coupang:"https://link.coupang.com/a/ex07",toss:"",status:"live"},
+    {id:uid(),ep:"EP06",topic:"세탁조 클리너",verdict:"세탁기 속은 생각보다 시커멓다",category:"세탁",image:"images/ep06.jpg",youtube:"",coupang:"https://link.coupang.com/a/ex06",toss:"https://sharelink.toss.im/ts06",status:"live"},
+    {id:uid(),ep:"EP01",topic:"배수구 거름망",verdict:"싱크대 쉰내, 네 탓이 아니다",category:"주방",image:"",youtube:"",coupang:"https://link.coupang.com/a/ex01",toss:"https://sharelink.toss.im/ts01",status:"live"}
+  ]
+};
+
+function normalize(d){
+  const p=d&&typeof d==="object"?d:{};
+  const pr=p.profile||{};
+  const sc=pr.socials||{};
+  return {
+    profile:{
+      name:pr.name??"깐깐아재", handle:(pr.handle??"kkanajae").replace(/^@/,""), tagline:pr.tagline??"아재가 골라줬어", bio:pr.bio??"",
+      avatar:pr.avatar||"assets/avatar.jpg", accent:pr.accent||"#FFD400", notice:pr.notice??"", contactEmail:pr.contactEmail??"",
+      disclosure:pr.disclosure||SEED.profile.disclosure,
+      socials:{youtube:sc.youtube??"",tiktok:sc.tiktok??"",instagram:sc.instagram??"",threads:sc.threads??"",naverBlog:sc.naverBlog??"",x:sc.x??""}
+    },
+    picks:(Array.isArray(p.picks)?p.picks:[]).map(x=>({
+      id:x.id||uid(), ep:x.ep??"", topic:x.topic??"", verdict:x.verdict??"", category:x.category??"", image:x.image??"", youtube:x.youtube??"",
+      coupang:x.coupang??"", toss:x.toss??"",
+      status:["latest","live","hidden"].includes(x.status)?x.status:"live"
+    }))
+  };
+}
+
+let state=structuredClone(SEED);
+let editingId=null, formStatus="latest", dirty=false, loading=true;
+let clickCounts={};  // "{id}:{store}" -> count (관리자 조회)
+let viewCounts={};   // total + 유입경로 (관리자 조회)
+
+const I={
+  up:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg>',
+  down:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>',
+  star:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 17.9 6.8 20.6l1-5.8-4.3-4.1 5.9-.9z"/></svg>',
+  starO:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3.8l2.5 5 5.6.8-4 4 1 5.6L12 17.6 6.9 19.2l1-5.6-4-4 5.6-.8z"/></svg>',
+  eye:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="2.6"/></svg>',
+  eyeOff:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18M10.6 6.2A9.6 9.6 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3 3.7M6.3 8.3A17 17 0 0 0 2 12s3.5 7 10 7a9.4 9.4 0 0 0 3.6-.7"/></svg>',
+  pencil:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 4.5l3 3L8 19l-4 1 1-4z"/></svg>',
+  trash:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13"/></svg>',
+  link:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7 0l2-2a5 5 0 0 0-7-7l-1 1M14 11a5 5 0 0 0-7 0l-2 2a5 5 0 0 0 7 7l1-1"/></svg>',
+  warn:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v5M12 16h.01M10.3 3.9 2.6 18a2 2 0 0 0 1.7 3h15.4a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>',
+  img:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M21 16l-5-5-8 8"/></svg>'
+};
+const STAT={latest:{cls:"latest",t:"최신"},live:{cls:"live",t:"게시 중"},hidden:{cls:"hidden",t:"숨김"}};
+
+function render(){ renderList(); renderPreview(); renderSave(); renderStats(); }
+function renderStats(){
+  const el=$("#statbar"), v=viewCounts, tv=Number(v.total||0);
+  if(!tv){ el.hidden=true; return; }
+  const src=[["인스타",v.instagram],["틱톡",v.tiktok],["유튜브",v.youtube],["직접",v.direct],["기타",v.other]]
+    .map(([t,n])=>`${t} <span class="v">${Number(n||0)}</span>`).join(`<span class="sep">·</span>`);
+  el.hidden=false;
+  el.innerHTML=`<span>방문 <b>${tv}</b></span><span class="sep">|</span><span>유입 ${src}</span>`;
+}
+
+function renderList(){
+  const L=$("#list"); L.innerHTML="";
+  if(!state.picks.length){ L.innerHTML=`<div class="pv-empty" style="max-width:none">아직 픽이 없어요. 위 <b>+ 새 아재 픽 추가</b>로 첫 픽을 넣어보세요.</div>`; $("#count").textContent="0개"; return; }
+  state.picks.forEach((p,i)=>{
+    const row=document.createElement("div");
+    row.className="prow"+(p.status==="hidden"?" hidden":"")+(p.status==="latest"?" latest":"");
+    const s=STAT[p.status];
+    const cp=p.coupang?`<span class="lk cp"><span class="tag">쿠팡</span>${short(p.coupang)}</span>`:`<span class="lk missing"><span class="tag">쿠팡</span>${I.warn}링크 없음 · 필수</span>`;
+    const ts=p.toss?`<span class="lk ts"><span class="tag">토스</span>${short(p.toss)}</span>`:`<span class="lk none"><span class="tag">토스</span>없음 · 선택</span>`;
+    const cc=Number(clickCounts[p.id+":coupang"]||0), tc=Number(clickCounts[p.id+":toss"]||0);
+    const tv=Number(viewCounts.total||0), ctr=tv?Math.round((cc+tc)/tv*100):0;
+    const clk=(cc||tc)?`<div class="clk">클릭 · 쿠팡 <b>${cc}</b> · 토스 <b>${tc}</b>${tv?` · 전환 <b>${ctr}%</b>`:""}</div>`:"";
+    row.innerHTML=`
+      <div class="grip"><button data-act="up" ${i===0?"disabled":""} aria-label="위로">${I.up}</button><button data-act="down" ${i===state.picks.length-1?"disabled":""} aria-label="아래로">${I.down}</button></div>
+      ${p.image?`<img class="rthumb" src="${esc(p.image)}" alt="">`:`<span class="rthumb ph" title="이미지 없음">${I.img}</span>`}
+      <span class="epc mono">${esc(p.ep)}</span>
+      <div class="pmeta"><h4>${esc(p.topic)}${p.category?` <span class="cattag">${esc(p.category)}</span>`:""}</h4><p>${esc(p.verdict)}</p><div class="links">${cp}${ts}</div>${clk}</div>
+      <span class="pill ${s.cls}">${s.t}</span>
+      <div class="acts">
+        <button class="ic star ${p.status==="latest"?"on":""}" data-act="star" title="최신으로">${p.status==="latest"?I.star:I.starO}</button>
+        <button class="ic" data-act="hide" title="${p.status==="hidden"?"게시":"숨기기"}">${p.status==="hidden"?I.eyeOff:I.eye}</button>
+        <button class="ic" data-act="edit" title="편집">${I.pencil}</button>
+        <button class="ic del" data-act="del" title="삭제">${I.trash}</button>
+      </div>`;
+    row.querySelectorAll("[data-act]").forEach(b=>b.addEventListener("click",()=>act(b.dataset.act,p.id)));
+    L.appendChild(row);
+  });
+  $("#count").textContent=state.picks.length+"개";
+}
+
+function chips(p){
+  const cp=p.coupang?`<span class="pv-chip cp">쿠팡</span>`:`<span class="pv-chip off">쿠팡</span>`;
+  const ts=p.toss?`<span class="pv-chip ts">토스</span>`:`<span class="pv-chip off">토스</span>`;
+  return `<div class="pv-buys">${cp}${ts}</div>`;
+}
+function heroBuys(p){
+  const cp=p.coupang?`<span class="pv-buy cp">쿠팡</span>`:`<span class="pv-buy cp off">쿠팡</span>`;
+  const ts=p.toss?`<span class="pv-buy ts">토스쇼핑</span>`:`<span class="pv-buy ts off">토스쇼핑</span>`;
+  return `<div class="pv-cta">${cp}${ts}</div>`;
+}
+function renderPreview(){
+  const pr=state.profile;
+  $("#preview").style.setProperty("--accent", /^#[0-9a-fA-F]{6}$/.test(pr.accent||"")?pr.accent:"#FFD400");
+  const latest=state.picks.find(p=>p.status==="latest");
+  const lives=state.picks.filter(p=>p.status==="live");
+  const hero=latest?`<div class="pv-eye"><i></i>이번 주 아재 픽</div>
+      <div class="pv-hero">${latest.image?`<img class="pv-hi" src="${esc(latest.image)}" alt="">`:""}<div class="r"><span class="mono">${esc(latest.ep)} · ${esc(latest.topic)}</span><span class="l">최신</span></div>
+      <h3>${esc(latest.verdict||latest.topic)}</h3>${heroBuys(latest)}</div>`
+    :`<div class="pv-empty">아직 최신 픽이 없어요.<br>⭐ 를 눌러 대표 픽을 정하세요.</div>`;
+  const rows=lives.length?`<div class="pv-eye" style="margin-top:4px"><i></i>지난 픽</div>`+lives.map(p=>`
+      <div class="pv-row">${p.image?`<img class="pv-th" src="${esc(p.image)}" alt="">`:""}<span class="ec mono">${esc(p.ep)}</span><div style="flex:1;min-width:0"><h4>${esc(p.topic)}</h4><p>${esc(p.verdict)}</p></div>${chips(p)}</div>`).join(""):"";
+  const noticePv = pr.notice ? `<div class="pv-notice"><i></i>${esc(pr.notice)}</div>` : "";
+  const contactPv = pr.contactEmail ? `<div class="pv-contact">✉ 협업·광고 문의</div>` : "";
+  $("#preview").innerHTML=`
+    <div class="pv-hookbar"><span class="pv-brand"><i></i>${esc(pr.name||"깐깐아재")}</span><span class="pv-tag">${esc(pr.tagline||"아재 픽")}</span></div>
+    ${noticePv}
+    <div class="pv-profile"><div class="pv-ava"><img src="${esc(pr.avatar||"assets/avatar.jpg")}" alt=""></div><div class="pv-name">${esc(pr.name)}</div><div class="pv-handle mono">@${esc(pr.handle)}</div><div class="pv-bio">${esc(pr.bio)}</div></div>
+    <div class="pv-board">${hero}${rows}</div>
+    ${contactPv}
+    <div class="pv-foot"><p>${esc(pr.disclosure||"")}</p><span class="sig"><i></i>${esc(pr.name||"깐깐아재")} · @${esc(pr.handle)}</span></div>`;
+}
+
+function renderSave(){
+  $("#savestate").classList.toggle("dirty",dirty);
+  $("#savetext").textContent = loading ? "불러오는 중…" : (dirty?"저장 안 된 변경사항":"모두 게시됨");
+  $("#saveBtn").disabled = loading || !dirty;
+}
+function markDirty(){ dirty=true; renderSave(); }
+function idx(id){ return state.picks.findIndex(p=>p.id===id); }
+
+function act(a,id){
+  const i=idx(id), p=state.picks[i];
+  if(a==="up"&&i>0){ [state.picks[i-1],state.picks[i]]=[state.picks[i],state.picks[i-1]]; markDirty(); render(); }
+  else if(a==="down"&&i<state.picks.length-1){ [state.picks[i+1],state.picks[i]]=[state.picks[i],state.picks[i+1]]; markDirty(); render(); }
+  else if(a==="star"){ state.picks.forEach(x=>{ if(x.status==="latest") x.status="live"; }); p.status="latest"; markDirty(); render(); }
+  else if(a==="hide"){ p.status=p.status==="hidden"?"live":"hidden"; markDirty(); render(); }
+  else if(a==="edit"){ openEditor(p); }
+  else if(a==="del"){ if(confirm(`'${p.ep} ${p.topic}' 픽을 삭제할까요?`)){ state.picks.splice(i,1); markDirty(); render(); toast("픽을 삭제했어요"); } }
+}
+
+function setFormStatus(v){ formStatus=v; document.querySelectorAll("#f-status button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===v)); }
+function openEditor(p){
+  editingId=p?p.id:null;
+  $("#editorTitle").textContent=p?`${p.ep} 픽 편집`:"새 아재 픽";
+  $("#okBtn").textContent=p?"저장":"추가";
+  $("#f-ep").value=p?p.ep:""; $("#f-topic").value=p?p.topic:""; $("#f-verdict").value=p?p.verdict:"";
+  const catSel=$("#f-category"), pc=p?(p.category||""):"";
+  if(pc && ![...catSel.options].some(o=>o.value===pc)){ const o=document.createElement("option"); o.value=o.textContent=pc; catSel.appendChild(o); }
+  catSel.value=pc;
+  $("#f-image").value=p?(p.image||""):""; $("#f-coupang").value=p?p.coupang:""; $("#f-toss").value=p?p.toss:""; $("#f-youtube").value=p?(p.youtube||""):"";
+  setFormStatus(p?p.status:"latest"); updateCC();
+  $("#editor").hidden=false; $("#addBtn").hidden=true; $("#f-ep").focus(); $("#editor").scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+function closeEditor(){ $("#editor").hidden=true; $("#addBtn").hidden=false; editingId=null; }
+function updateCC(){ const n=$("#f-verdict").value.length,e=$("#cc-verdict"); e.textContent=`${n} / 34`; e.classList.toggle("over",n>34); }
+
+$("#addBtn").addEventListener("click",()=>openEditor(null));
+$("#cancelBtn").addEventListener("click",closeEditor);
+$("#f-verdict").addEventListener("input",updateCC);
+document.querySelectorAll("#f-status button").forEach(b=>b.addEventListener("click",()=>setFormStatus(b.dataset.v)));
+
+$("#editor").addEventListener("submit",e=>{
+  e.preventDefault();
+  const ep=$("#f-ep").value.trim(), topic=$("#f-topic").value.trim();
+  if(!ep||!topic){ toast("회차와 주제는 꼭 입력해주세요"); return; }
+  const data={ep,topic,verdict:$("#f-verdict").value.trim(),category:$("#f-category").value,image:$("#f-image").value.trim(),youtube:$("#f-youtube").value.trim(),coupang:$("#f-coupang").value.trim(),toss:$("#f-toss").value.trim(),status:formStatus};
+  if(formStatus==="latest") state.picks.forEach(x=>{ if(x.status==="latest") x.status="live"; });
+  if(editingId){ Object.assign(state.picks[idx(editingId)],data); toast("픽을 저장했어요"); }
+  else{ state.picks.unshift({id:uid(),...data}); toast("새 픽을 추가했어요"); }
+  markDirty(); closeEditor(); render();
+});
+
+function bindProfile(){
+  const p=state.profile;
+  $("#p-name").value=p.name; $("#p-handle").value=p.handle; $("#p-tagline").value=p.tagline||""; $("#p-bio").value=p.bio;
+  $("#p-notice").value=p.notice||""; $("#p-contact").value=p.contactEmail||""; $("#p-accent").value=/^#[0-9a-fA-F]{6}$/.test(p.accent||"")?p.accent:"#FFD400";
+  $("#p-youtube").value=p.socials.youtube; $("#p-tiktok").value=p.socials.tiktok; $("#p-instagram").value=p.socials.instagram;
+  $("#p-threads").value=p.socials.threads||""; $("#p-naverBlog").value=p.socials.naverBlog||""; $("#p-x").value=p.socials.x||"";
+}
+$("#p-name").addEventListener("input",e=>{state.profile.name=e.target.value||"깐깐아재";markDirty();renderPreview();});
+$("#p-handle").addEventListener("input",e=>{state.profile.handle=e.target.value.replace(/^@/,"")||"kkanajae";markDirty();renderPreview();});
+$("#p-tagline").addEventListener("input",e=>{state.profile.tagline=e.target.value||"아재 픽";markDirty();renderPreview();});
+$("#p-bio").addEventListener("input",e=>{state.profile.bio=e.target.value;markDirty();renderPreview();});
+$("#p-notice").addEventListener("input",e=>{state.profile.notice=e.target.value.trim();markDirty();});
+$("#p-contact").addEventListener("input",e=>{state.profile.contactEmail=e.target.value.trim();markDirty();});
+$("#p-accent").addEventListener("input",e=>{state.profile.accent=e.target.value;markDirty();renderPreview();});
+["youtube","tiktok","instagram","threads","naverBlog","x"].forEach(k=>{
+  $("#p-"+k).addEventListener("input",e=>{state.profile.socials[k]=e.target.value.trim();markDirty();});
+});
+
+$("#keyBtn").addEventListener("click",()=>{
+  const cur=localStorage.getItem(KEYK)||"";
+  const v=prompt("관리자 비밀번호 (게시할 때 필요) — Vercel에 설정한 ADMIN_PASSWORD와 같아야 해요.", cur);
+  if(v!==null){ if(v){ localStorage.setItem(KEYK,v); toast("비밀번호를 저장했어요"); } else { localStorage.removeItem(KEYK); toast("비밀번호를 지웠어요"); } }
+});
+
+async function publish(){
+  let key=localStorage.getItem(KEYK)||"";
+  if(!key){ key=prompt("관리자 비밀번호를 입력하세요 (처음 한 번만).\nVercel에 설정한 ADMIN_PASSWORD와 같아야 합니다."); if(!key) return; localStorage.setItem(KEYK,key); }
+  $("#saveBtn").disabled=true; $("#savetext").textContent="게시 중…";
+  try{
+    const r=await fetch("/api/picks",{method:"PUT",headers:{"content-type":"application/json","x-admin-key":key},body:JSON.stringify(state)});
+    if(r.status===401){ localStorage.removeItem(KEYK); toast("비밀번호가 틀렸어요. 🔑 로 다시 설정하세요",true); renderSave(); return; }
+    if(!r.ok){ let m=r.status; try{ m=(await r.json()).error||m; }catch{} toast("게시 실패: "+m,true); renderSave(); return; }
+    dirty=false; renderSave(); toast("페이지에 게시했어요 ✓");
+  }catch(e){ toast("네트워크 오류 — 배포된 주소에서 시도하세요",true); renderSave(); }
+}
+$("#saveBtn").addEventListener("click",publish);
+window.addEventListener("beforeunload",e=>{ if(dirty){ e.preventDefault(); e.returnValue=""; } });
+
+let tTimer;
+function toast(msg,isErr){ const t=$("#toast"); t.classList.toggle("err",!!isErr); $("#toastText").textContent=msg; t.classList.add("show"); clearTimeout(tTimer); tTimer=setTimeout(()=>t.classList.remove("show"),2600); }
+
+async function loadStats(){
+  const key=localStorage.getItem(KEYK)||""; if(!key){ clickCounts={}; viewCounts={}; return; }
+  const opt={headers:{"x-admin-key":key},cache:"no-store"};
+  try{ const r=await fetch("/api/click",opt); if(r.ok) clickCounts=(await r.json()).counts||{}; }catch(e){}
+  try{ const r=await fetch("/api/view",opt); if(r.ok) viewCounts=(await r.json()).views||{}; }catch(e){}
+}
+async function load(){
+  try{
+    const r=await fetch("/api/picks",{cache:"no-store"});
+    if(r.ok){ const d=await r.json(); const n=normalize(d); if(n.picks.length||d.profile) state=n; }
+  }catch(e){ /* 오프라인/미배포 — SEED 유지 */ }
+  await loadStats();
+  loading=false; bindProfile(); render();
+}
+load();
+</script>
+</body>
+</html>
