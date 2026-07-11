@@ -87,6 +87,11 @@
   .buy.coupang{background:var(--accent);color:var(--accent-ink)}
   .buy.toss{background:var(--toss);color:var(--toss-ink)}
   .buy.toss .tw{font-weight:900;letter-spacing:-.02em}
+  /* 버튼 채우기 스타일 (지난 픽·리스트 버튼) */
+  .bf-outline .pick .buy.coupang,.bf-outline .lrow .buy.coupang{background:transparent;border-color:var(--accent);color:var(--accent-deep)}
+  .bf-outline .pick .buy.toss,.bf-outline .lrow .buy.toss{background:transparent;border-color:var(--toss);color:var(--toss)}
+  .bf-soft .pick .buy.coupang,.bf-soft .lrow .buy.coupang{background:color-mix(in srgb,var(--accent) 20%,transparent);color:var(--accent-deep)}
+  .bf-soft .pick .buy.toss,.bf-soft .lrow .buy.toss{background:color-mix(in srgb,var(--toss) 18%,transparent);color:var(--toss)}
   .buy.off{background:transparent;border-color:var(--border);color:var(--faint);cursor:not-allowed;pointer-events:none}
   .buy:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
   .shortslink{display:inline-flex;align-items:center;gap:5px;margin-top:10px;font-size:12.5px;font-weight:700;color:var(--accent-deep);text-decoration:none}
@@ -298,6 +303,16 @@ function applyStyle(pf){
   const f=FONTS[pf.font]||FONTS.jua; loadFont(f.g);
   root.style.setProperty("--font-display", f.css+",'Apple SD Gothic Neo','Malgun Gothic',sans-serif");
   root.style.setProperty("--btn-radius", pf.buttonStyle==="pill"?"999px":pf.buttonStyle==="square"?"5px":"12px");
+  const BG={
+    solid:["radial-gradient(120% 60% at 50% -8%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 60%)","auto"],
+    gradient:["linear-gradient(165deg, var(--bg), color-mix(in srgb, var(--accent) 22%, var(--bg)))","auto"],
+    dots:["radial-gradient(color-mix(in srgb, var(--accent) 30%, transparent) 1.5px, transparent 1.6px)","18px 18px"],
+    grid:["linear-gradient(color-mix(in srgb,var(--accent) 16%,transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb,var(--accent) 16%,transparent) 1px, transparent 1px)","22px 22px"],
+  };
+  const bg=BG[pf.background]||BG.solid;
+  document.body.style.backgroundImage=bg[0];
+  document.body.style.backgroundSize=bg[1];
+  document.body.style.backgroundAttachment="fixed";
 }
 
 function render(data){
@@ -307,7 +322,8 @@ function render(data){
   LAYOUT = pf.layout === "list" ? "list" : "card";
   SHOW_IMAGES = pf.showImages !== false;
   const phoneEl = document.querySelector(".phone");
-  if(phoneEl){ phoneEl.classList.toggle("lay-list", LAYOUT==="list"); phoneEl.classList.toggle("no-img", !SHOW_IMAGES); }
+  if(phoneEl){ phoneEl.classList.toggle("lay-list", LAYOUT==="list"); phoneEl.classList.toggle("no-img", !SHOW_IMAGES);
+    phoneEl.classList.remove("bf-solid","bf-outline","bf-soft"); phoneEl.classList.add("bf-"+(["solid","outline","soft"].includes(pf.buttonFill)?pf.buttonFill:"solid")); }
   document.getElementById("pf-avatar").src = pf.avatar || "assets/avatar.jpg";
   document.getElementById("pf-brand").textContent = pf.name || "깐깐아재";
   document.getElementById("pf-tag").textContent = pf.tagline || "아재 픽";

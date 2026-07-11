@@ -271,6 +271,11 @@
             <button type="button" data-v="cream">크림</button><button type="button" data-v="dark">다크</button><button type="button" data-v="mint">민트</button><button type="button" data-v="pink">핑크</button><button type="button" data-v="navy">네이비</button><button type="button" data-v="mono">모노</button>
           </div>
         </div>
+        <div class="fld"><label>배경 스타일</label>
+          <div class="seg wrap" id="d-bg" role="group" aria-label="배경 스타일">
+            <button type="button" data-v="solid">단색</button><button type="button" data-v="gradient">그라데이션</button><button type="button" data-v="dots">도트</button><button type="button" data-v="grid">그리드</button>
+          </div>
+        </div>
         <div class="fld"><label>폰트</label>
           <div class="seg wrap" id="d-font" role="group" aria-label="폰트">
             <button type="button" data-v="jua">주아체</button><button type="button" data-v="gothic">고딕</button><button type="button" data-v="nanum">나눔고딕</button><button type="button" data-v="gaegu">개구쟁이</button><button type="button" data-v="myeongjo">명조</button>
@@ -279,6 +284,11 @@
         <div class="fld"><label>버튼 모양</label>
           <div class="seg" id="d-btn" role="group" aria-label="버튼 모양">
             <button type="button" data-v="round">둥근</button><button type="button" data-v="pill">알약</button><button type="button" data-v="square">각진</button>
+          </div>
+        </div>
+        <div class="fld"><label>버튼 채우기</label>
+          <div class="seg" id="d-fill" role="group" aria-label="버튼 채우기">
+            <button type="button" data-v="solid">꽉참</button><button type="button" data-v="outline">테두리</button><button type="button" data-v="soft">연한색</button>
           </div>
         </div>
         <div class="grid2">
@@ -353,7 +363,7 @@ const KEYK="linkbio_key_"+HANDLE;   // 사이트별 키(비번) 저장
 const uid=()=>"p"+Date.now().toString(36)+Math.floor(Math.random()*1e4).toString(36);
 
 const SEED={
-  profile:{name:"깐깐아재",handle:"kkanajae",tagline:"아재가 골라줬어",bio:"싸다고 다 사지 마세요.\n아재가 깐깐하게 따져서 골라줍니다.",avatar:"assets/avatar.jpg",accent:"#FFD400",layout:"card",showImages:true,theme:"cream",font:"jua",buttonStyle:"round",notice:"",contactEmail:"",disclosure:"본 페이지의 상품 링크는 쿠팡 파트너스·토스쇼핑 쉐어링크 활동의 일환으로, 구매 시 이에 따른 일정액의 수수료를 제공받습니다.",socials:{youtube:"",tiktok:"",instagram:"",threads:"",naverBlog:"",x:""}},
+  profile:{name:"깐깐아재",handle:"kkanajae",tagline:"아재가 골라줬어",bio:"싸다고 다 사지 마세요.\n아재가 깐깐하게 따져서 골라줍니다.",avatar:"assets/avatar.jpg",accent:"#FFD400",layout:"card",showImages:true,theme:"cream",background:"solid",font:"jua",buttonStyle:"round",buttonFill:"solid",notice:"",contactEmail:"",disclosure:"본 페이지의 상품 링크는 쿠팡 파트너스·토스쇼핑 쉐어링크 활동의 일환으로, 구매 시 이에 따른 일정액의 수수료를 제공받습니다.",socials:{youtube:"",tiktok:"",instagram:"",threads:"",naverBlog:"",x:""}},
   picks:[
     {id:uid(),ep:"EP08",topic:"샤워기 필터",verdict:"수돗물 냄새, 필터가 반은 잡는다",category:"욕실",image:"images/ep08.jpg",youtube:"",coupang:"https://link.coupang.com/a/ex08",toss:"https://sharelink.toss.im/ts08",status:"latest"},
     {id:uid(),ep:"EP07",topic:"베개 커버 (진드기)",verdict:"진드기는 안 보여서 못 잡는다",category:"세탁",image:"",youtube:"",coupang:"https://link.coupang.com/a/ex07",toss:"",status:"live"},
@@ -372,8 +382,10 @@ function normalize(d){
       avatar:pr.avatar||"assets/avatar.jpg", accent:pr.accent||"#FFD400",
       layout:["card","list"].includes(pr.layout)?pr.layout:"card", showImages:pr.showImages===false?false:true,
       theme:["cream","dark","mint","pink","navy","mono"].includes(pr.theme)?pr.theme:"cream",
+      background:["solid","gradient","dots","grid"].includes(pr.background)?pr.background:"solid",
       font:["jua","gothic","nanum","gaegu","myeongjo"].includes(pr.font)?pr.font:"jua",
       buttonStyle:["round","pill","square"].includes(pr.buttonStyle)?pr.buttonStyle:"round",
+      buttonFill:["solid","outline","soft"].includes(pr.buttonFill)?pr.buttonFill:"solid",
       notice:pr.notice??"", contactEmail:pr.contactEmail??"",
       disclosure:pr.disclosure||SEED.profile.disclosure,
       socials:{youtube:sc.youtube??"",tiktok:sc.tiktok??"",instagram:sc.instagram??"",threads:sc.threads??"",naverBlog:sc.naverBlog??"",x:sc.x??""}
@@ -518,7 +530,7 @@ function bindProfile(){
   $("#p-notice").value=p.notice||""; $("#p-contact").value=p.contactEmail||""; $("#p-accent").value=/^#[0-9a-fA-F]{6}$/.test(p.accent||"")?p.accent:"#FFD400";
   $("#p-youtube").value=p.socials.youtube; $("#p-tiktok").value=p.socials.tiktok; $("#p-instagram").value=p.socials.instagram;
   $("#p-threads").value=p.socials.threads||""; $("#p-naverBlog").value=p.socials.naverBlog||""; $("#p-x").value=p.socials.x||"";
-  segActive("d-theme",p.theme); segActive("d-font",p.font); segActive("d-btn",p.buttonStyle); segActive("d-layout",p.layout); segActive("d-images",p.showImages===false?"off":"on");
+  segActive("d-theme",p.theme); segActive("d-bg",p.background); segActive("d-font",p.font); segActive("d-btn",p.buttonStyle); segActive("d-fill",p.buttonFill); segActive("d-layout",p.layout); segActive("d-images",p.showImages===false?"off":"on");
 }
 $("#p-name").addEventListener("input",e=>{state.profile.name=e.target.value||"깐깐아재";markDirty();renderPreview();});
 $("#p-handle").addEventListener("input",e=>{state.profile.handle=e.target.value.replace(/^@/,"")||"kkanajae";markDirty();renderPreview();});
@@ -540,7 +552,7 @@ function bindSeg(gid,key,toVal){
     markDirty(); renderPreview();
   }));
 }
-bindSeg("d-theme","theme"); bindSeg("d-font","font"); bindSeg("d-btn","buttonStyle"); bindSeg("d-layout","layout"); bindSeg("d-images","showImages",v=>v==="on");
+bindSeg("d-theme","theme"); bindSeg("d-bg","background"); bindSeg("d-font","font"); bindSeg("d-btn","buttonStyle"); bindSeg("d-fill","buttonFill"); bindSeg("d-layout","layout"); bindSeg("d-images","showImages",v=>v==="on");
 document.getElementById("pvframe").addEventListener("load", renderPreview);
 
 $("#keyBtn").addEventListener("click",()=>{
