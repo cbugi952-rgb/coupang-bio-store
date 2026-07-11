@@ -170,6 +170,10 @@
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
 
+// 멀티테넌트: 주소에 ?u=handle 있으면 그 사람 페이지, 없으면 기본(kkanajae).
+const HANDLE = (new URLSearchParams(location.search).get("u") || "").replace(/[^a-z0-9_-]/gi, "").slice(0, 40).toLowerCase();
+const QH = HANDLE ? "?handle=" + encodeURIComponent(HANDLE) : "";
+
 const SEED = {
   profile:{name:"깐깐아재",handle:"kkanajae",tagline:"아재가 골라줬어",bio:"싸다고 다 사지 마세요.\n아재가 깐깐하게 따져서 골라줍니다.",avatar:"assets/avatar.jpg",accent:"#FFD400",notice:"",contactEmail:"",disclosure:"본 페이지의 상품 링크는 쿠팡 파트너스·토스쇼핑 쉐어링크 활동의 일환으로, 구매 시 이에 따른 일정액의 수수료를 제공받습니다.",socials:{youtube:"",tiktok:"",instagram:"",threads:"",naverBlog:"",x:""}},
   picks:[
@@ -284,13 +288,13 @@ function isInApp(){ return /Instagram|TikTok|musical_ly|BytedanceWebview|FBAN|FB
 async function load(){
   render(SEED);
   try{
-    const r = await fetch("/api/picks", {cache:"no-store"});
+    const r = await fetch("/api/picks" + QH, {cache:"no-store"});
     if(r.ok){ render(await r.json()); }
   }catch(e){}
 }
 
 // 방문 집계 (유입 경로 포함)
-try{ navigator.sendBeacon("/api/view", new Blob([JSON.stringify({source:trafficSource()})],{type:"application/json"})); }catch(_){}
+try{ navigator.sendBeacon("/api/view" + QH, new Blob([JSON.stringify({source:trafficSource()})],{type:"application/json"})); }catch(_){}
 
 // 인앱 브라우저 안내
 if(isInApp() && !sessionStorage.getItem("inapp-x")){
@@ -302,7 +306,7 @@ if(isInApp() && !sessionStorage.getItem("inapp-x")){
 document.getElementById("board").addEventListener("click", e => {
   const a = e.target.closest("a.buy[data-id]");
   if(!a) return;
-  try{ navigator.sendBeacon("/api/click", new Blob([JSON.stringify({ id:a.dataset.id, store:a.dataset.store })], {type:"application/json"})); }catch(_){}
+  try{ navigator.sendBeacon("/api/click" + QH, new Blob([JSON.stringify({ id:a.dataset.id, store:a.dataset.store })], {type:"application/json"})); }catch(_){}
 });
 load();
 </script>

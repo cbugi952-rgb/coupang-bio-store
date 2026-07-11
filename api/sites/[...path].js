@@ -5,10 +5,8 @@
 import { store } from "../../lib/store.js";
 import {
   DEFAULT, siteKey, getSite, saveSite, cleanPick, mergeProfile,
-  enforceSingleLatest, newPickId, authorize
+  enforceSingleLatest, newPickId, authorize, sanitizeHandle
 } from "../../lib/site.js";
-
-const sanitizeHandle = (h) => String(h || "").replace(/[^a-z0-9_-]/gi, "").slice(0, 40);
 
 function readBody(req) {
   let body = req.body;
