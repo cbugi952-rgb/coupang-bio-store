@@ -216,7 +216,7 @@ async function main() {
     case "url": {
       const s = settings();
       const origin = s.base.replace(/\/api$/, "");
-      out(`공개  ${origin}/?u=${s.handle}`);
+      out(`공개  ${origin}/${s.handle}`);
       out(`관리  ${origin}/admin?u=${s.handle}`);
       return;
     }

@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="/"><!-- 예쁜 주소 /{handle} 에서도 상대경로 자산(avatar·이미지)이 루트 기준으로 풀리게 -->
 <title>깐깐아재 · 아재 픽</title>
 <meta name="description" content="싸다고 다 사지 마세요. 아재가 깐깐하게 따져서 골라줍니다.">
 <meta property="og:type" content="website">
@@ -198,8 +199,17 @@
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
 
-// 멀티테넌트: 주소에 ?u=handle 있으면 그 사람 페이지, 없으면 기본(kkanajae).
-const HANDLE = (new URLSearchParams(location.search).get("u") || "").replace(/[^a-z0-9_-]/gi, "").slice(0, 40).toLowerCase();
+// 멀티테넌트: 예쁜 주소 /{handle} 우선, 없으면 ?u=handle, 둘 다 없으면 기본(kkanajae).
+function readHandle(pathname, search){
+  let seg = String(pathname || "/").split("/").filter(Boolean)[0] || "";
+  try { seg = decodeURIComponent(seg); } catch(_) {}
+  seg = seg.toLowerCase();
+  const reserved = new Set(["index","admin","login","api","assets","images"]);   // 파일시스템 라우트와 충돌 방지(방어)
+  const fromPath = reserved.has(seg) ? "" : seg;
+  const fromQuery = new URLSearchParams(search || "").get("u") || "";
+  return (fromPath || fromQuery).replace(/[^a-z0-9_-]/gi, "").slice(0, 40).toLowerCase();
+}
+const HANDLE = readHandle(location.pathname, location.search);
 const QH = HANDLE ? "?handle=" + encodeURIComponent(HANDLE) : "";
 const PREVIEW = new URLSearchParams(location.search).get("preview") === "1";   // 관리자 미리보기(iframe) 모드
 

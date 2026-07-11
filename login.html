@@ -48,7 +48,7 @@
       <div class="fld"><label for="email">이메일</label><input type="email" id="email" autocomplete="email" placeholder="you@email.com" required></div>
       <div class="fld" id="handle-fld" hidden>
         <label for="handle">내 페이지 주소</label>
-        <div class="urlrow"><span class="pre">/?u=</span><input type="text" id="handle" placeholder="mypage" maxlength="40" autocomplete="off"></div>
+        <div class="urlrow"><span class="pre" id="urlpre">/</span><input type="text" id="handle" placeholder="mypage" maxlength="40" autocomplete="off"></div>
         <div class="hint">영문·숫자·-·_ · 나중에 못 바꿔요</div>
       </div>
       <div class="fld"><label for="password">비밀번호</label><input type="password" id="password" autocomplete="current-password" placeholder="6자 이상" required></div>
@@ -62,6 +62,7 @@
 <script>
 "use strict";
 const $=s=>document.querySelector(s);
+try{ $("#urlpre").textContent = location.host + "/"; }catch(_){}   // 예쁜 주소 미리보기: 도메인/핸들
 let mode="login";
 function setMode(m){
   mode=m;

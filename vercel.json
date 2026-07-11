@@ -1,3 +1,6 @@
 {
-  "cleanUrls": true
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/:handle([A-Za-z0-9_-]+)", "destination": "/index.html" }
+  ]
 }

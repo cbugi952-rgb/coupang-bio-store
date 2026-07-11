@@ -181,12 +181,13 @@ MVP 기능 완성 + 웨지 3종(웹·MCP·CLI) 완성. **`main`(라이브 kkanaj
 - **편집기**(admin.html) + **실시간 미리보기**(실제 공개페이지 iframe에 postMessage = WYSIWYG)
 - **커스터마이징**: 테마6·배경(무늬4+사진 업로드)·폰트5·버튼모양3·채우기3·브랜드색·레이아웃2·사진 on/off·이모지 스티커·블록(텍스트/영상/링크)·아바타 업로드
 - **인증**: 이메일+비밀번호(scrypt)·httpOnly 세션 쿠키·가입/로그인/로그아웃/me (`lib/auth.js`·`api/auth/*`·`login.html`)
-- **검증**: 로컬 목 저장소 + Playwright(실제 핸들러·실제 페이지), 누적 100+ 체크 통과
+- **예쁜 주소** `/{handle}`: `vercel.json` rewrite(`/:handle → index.html`, cleanUrls로 /admin·/login·/assets·/api는 파일시스템 우선) + index.html `<base href="/">`(서브패스 상대경로 자산 보정) + 경로/`?u=` 겸용 핸들 리더. provision·CLI·가입 안내 주소 전부 `/{handle}`로 통일
+- **검증**: 로컬 목 저장소 + 미니 노드서버(실제 핸들러·실제 페이지 바이트·실제 CLI 프로세스), 누적 160+ 체크 통과
 
 **공개 출시 전 남은 것(대부분 사업/운영 결정)**
 - 배포: `saas`→프리뷰 / 별도 프로젝트 / `main` 머지 (부기 결정)
 - 결제·요금제 → 사업자등록·이용약관·개인정보처리방침
 - 이미지 클라우드 저장소(스케일 시 Vercel Blob/R2 — 현재는 리사이즈 후 data URL로 KV에 담음)
-- 하드닝: 이메일 인증·비밀번호 재설정·레이트리밋·예쁜 주소(`/{handle}` path)
+- 하드닝: 이메일 인증·비밀번호 재설정·레이트리밋 (예쁜 주소 `/{handle}` = 완료)
 
 **재개 방법**: `git checkout saas`. 로컬 확인 = 미니 노드서버에 실제 핸들러 얹고 Playwright(패턴은 세션 스크래치패드 `demo*.mjs`). 배포 시 데이터 격리 주의(프리뷰가 Upstash 공유하면 `?u=demo` 등 별 핸들로).
