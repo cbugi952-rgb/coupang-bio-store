@@ -131,6 +131,8 @@
   .seg{display:flex;gap:6px}
   .seg button{flex:1;font-family:inherit;font-size:12.5px;font-weight:800;padding:8px;border-radius:9px;cursor:pointer;border:1px solid var(--border-strong);background:var(--field);color:var(--muted);transition:.12s}
   .seg button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+  .seg.wrap{flex-wrap:wrap}
+  .seg.wrap button{flex:0 1 auto;min-width:54px}
   .editor .efoot{display:flex;gap:8px;justify-content:flex-end;margin-top:6px}
   .panel{background:var(--card);border:1px solid var(--border);border-radius:14px;margin-top:18px;overflow:hidden}
   .panel > summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:14px 15px;font-weight:800;font-size:14px}
@@ -151,7 +153,8 @@
   .pvhead .live{display:inline-flex;align-items:center;gap:5px;color:var(--ok)}
   .pvhead .live i{width:7px;height:7px;border-radius:50%;background:var(--ok);animation:pulse 2s infinite}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
-  .stage{background:radial-gradient(120% 55% at 50% 0%, color-mix(in srgb,var(--accent) 14%,transparent), transparent 60%),var(--card-2);border:1px solid var(--border);border-radius:22px;padding:16px 14px;max-height:80vh;overflow:auto}
+  .stage{background:radial-gradient(120% 55% at 50% 0%, color-mix(in srgb,var(--accent) 14%,transparent), transparent 60%),var(--card-2);border:1px solid var(--border);border-radius:22px;padding:16px 14px;max-height:84vh;overflow:auto}
+  .pvframe{width:322px;max-width:100%;height:604px;border:1px solid var(--border);border-radius:22px;background:var(--panel);display:block;margin:0 auto}
   .pv-phone{max-width:320px;margin:0 auto;background:var(--panel);border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:var(--shadow)}
   .pv-hookbar{display:flex;align-items:center;justify-content:space-between;padding:10px 13px;background:#131313;color:#F3ECD9;border-bottom:2px solid var(--accent)}
   .pv-brand{display:flex;align-items:center;gap:7px;font-weight:800;font-size:13px}
@@ -256,6 +259,39 @@
 
     <div class="list" id="list" aria-live="polite"></div>
 
+    <details class="panel" open>
+      <summary>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
+        디자인 · 스타일
+        <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+      </summary>
+      <div class="body">
+        <div class="fld"><label>테마 <span class="hint">· 배경</span></label>
+          <div class="seg wrap" id="d-theme" role="group" aria-label="테마">
+            <button type="button" data-v="cream">크림</button><button type="button" data-v="dark">다크</button><button type="button" data-v="mint">민트</button><button type="button" data-v="pink">핑크</button><button type="button" data-v="navy">네이비</button><button type="button" data-v="mono">모노</button>
+          </div>
+        </div>
+        <div class="fld"><label>폰트</label>
+          <div class="seg wrap" id="d-font" role="group" aria-label="폰트">
+            <button type="button" data-v="jua">주아체</button><button type="button" data-v="gothic">고딕</button><button type="button" data-v="nanum">나눔고딕</button><button type="button" data-v="gaegu">개구쟁이</button><button type="button" data-v="myeongjo">명조</button>
+          </div>
+        </div>
+        <div class="fld"><label>버튼 모양</label>
+          <div class="seg" id="d-btn" role="group" aria-label="버튼 모양">
+            <button type="button" data-v="round">둥근</button><button type="button" data-v="pill">알약</button><button type="button" data-v="square">각진</button>
+          </div>
+        </div>
+        <div class="grid2">
+          <div class="fld"><label>레이아웃</label>
+            <div class="seg" id="d-layout" role="group" aria-label="레이아웃"><button type="button" data-v="card">카드형</button><button type="button" data-v="list">리스트형</button></div>
+          </div>
+          <div class="fld"><label>상품 사진</label>
+            <div class="seg" id="d-images" role="group" aria-label="상품 사진"><button type="button" data-v="on">표시</button><button type="button" data-v="off">숨김</button></div>
+          </div>
+        </div>
+      </div>
+    </details>
+
     <details class="panel">
       <summary>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
@@ -298,7 +334,7 @@
 
   <aside class="previewcol">
     <div class="pvhead">미리보기<span class="live"><i></i>실시간</span></div>
-    <div class="stage"><div class="pv-phone" id="preview"></div></div>
+    <div class="stage"><iframe class="pvframe" id="pvframe" src="/?preview=1" title="실시간 미리보기"></iframe></div>
   </aside>
 </div>
 
@@ -314,7 +350,7 @@ const KEYK="kkanajae_admin_key";
 const uid=()=>"p"+Date.now().toString(36)+Math.floor(Math.random()*1e4).toString(36);
 
 const SEED={
-  profile:{name:"깐깐아재",handle:"kkanajae",tagline:"아재가 골라줬어",bio:"싸다고 다 사지 마세요.\n아재가 깐깐하게 따져서 골라줍니다.",avatar:"assets/avatar.jpg",accent:"#FFD400",notice:"",contactEmail:"",disclosure:"본 페이지의 상품 링크는 쿠팡 파트너스·토스쇼핑 쉐어링크 활동의 일환으로, 구매 시 이에 따른 일정액의 수수료를 제공받습니다.",socials:{youtube:"",tiktok:"",instagram:"",threads:"",naverBlog:"",x:""}},
+  profile:{name:"깐깐아재",handle:"kkanajae",tagline:"아재가 골라줬어",bio:"싸다고 다 사지 마세요.\n아재가 깐깐하게 따져서 골라줍니다.",avatar:"assets/avatar.jpg",accent:"#FFD400",layout:"card",showImages:true,theme:"cream",font:"jua",buttonStyle:"round",notice:"",contactEmail:"",disclosure:"본 페이지의 상품 링크는 쿠팡 파트너스·토스쇼핑 쉐어링크 활동의 일환으로, 구매 시 이에 따른 일정액의 수수료를 제공받습니다.",socials:{youtube:"",tiktok:"",instagram:"",threads:"",naverBlog:"",x:""}},
   picks:[
     {id:uid(),ep:"EP08",topic:"샤워기 필터",verdict:"수돗물 냄새, 필터가 반은 잡는다",category:"욕실",image:"images/ep08.jpg",youtube:"",coupang:"https://link.coupang.com/a/ex08",toss:"https://sharelink.toss.im/ts08",status:"latest"},
     {id:uid(),ep:"EP07",topic:"베개 커버 (진드기)",verdict:"진드기는 안 보여서 못 잡는다",category:"세탁",image:"",youtube:"",coupang:"https://link.coupang.com/a/ex07",toss:"",status:"live"},
@@ -330,7 +366,12 @@ function normalize(d){
   return {
     profile:{
       name:pr.name??"깐깐아재", handle:(pr.handle??"kkanajae").replace(/^@/,""), tagline:pr.tagline??"아재가 골라줬어", bio:pr.bio??"",
-      avatar:pr.avatar||"assets/avatar.jpg", accent:pr.accent||"#FFD400", notice:pr.notice??"", contactEmail:pr.contactEmail??"",
+      avatar:pr.avatar||"assets/avatar.jpg", accent:pr.accent||"#FFD400",
+      layout:["card","list"].includes(pr.layout)?pr.layout:"card", showImages:pr.showImages===false?false:true,
+      theme:["cream","dark","mint","pink","navy","mono"].includes(pr.theme)?pr.theme:"cream",
+      font:["jua","gothic","nanum","gaegu","myeongjo"].includes(pr.font)?pr.font:"jua",
+      buttonStyle:["round","pill","square"].includes(pr.buttonStyle)?pr.buttonStyle:"round",
+      notice:pr.notice??"", contactEmail:pr.contactEmail??"",
       disclosure:pr.disclosure||SEED.profile.disclosure,
       socials:{youtube:sc.youtube??"",tiktok:sc.tiktok??"",instagram:sc.instagram??"",threads:sc.threads??"",naverBlog:sc.naverBlog??"",x:sc.x??""}
     },
@@ -412,26 +453,10 @@ function heroBuys(p){
   const ts=p.toss?`<span class="pv-buy ts">토스쇼핑</span>`:`<span class="pv-buy ts off">토스쇼핑</span>`;
   return `<div class="pv-cta">${cp}${ts}</div>`;
 }
+// 미리보기 = 실제 공개페이지 iframe(/?preview=1)에 현재 상태를 postMessage로 밀어넣음 (WYSIWYG)
 function renderPreview(){
-  const pr=state.profile;
-  $("#preview").style.setProperty("--accent", /^#[0-9a-fA-F]{6}$/.test(pr.accent||"")?pr.accent:"#FFD400");
-  const latest=state.picks.find(p=>p.status==="latest");
-  const lives=state.picks.filter(p=>p.status==="live");
-  const hero=latest?`<div class="pv-eye"><i></i>이번 주 아재 픽</div>
-      <div class="pv-hero">${latest.image?`<img class="pv-hi" src="${esc(latest.image)}" alt="">`:""}<div class="r"><span class="mono">${esc(latest.ep)} · ${esc(latest.topic)}</span><span class="l">최신</span></div>
-      <h3>${esc(latest.verdict||latest.topic)}</h3>${heroBuys(latest)}</div>`
-    :`<div class="pv-empty">아직 최신 픽이 없어요.<br>⭐ 를 눌러 대표 픽을 정하세요.</div>`;
-  const rows=lives.length?`<div class="pv-eye" style="margin-top:4px"><i></i>지난 픽</div>`+lives.map(p=>`
-      <div class="pv-row">${p.image?`<img class="pv-th" src="${esc(p.image)}" alt="">`:""}<span class="ec mono">${esc(p.ep)}</span><div style="flex:1;min-width:0"><h4>${esc(p.topic)}</h4><p>${esc(p.verdict)}</p></div>${chips(p)}</div>`).join(""):"";
-  const noticePv = pr.notice ? `<div class="pv-notice"><i></i>${esc(pr.notice)}</div>` : "";
-  const contactPv = pr.contactEmail ? `<div class="pv-contact">✉ 협업·광고 문의</div>` : "";
-  $("#preview").innerHTML=`
-    <div class="pv-hookbar"><span class="pv-brand"><i></i>${esc(pr.name||"깐깐아재")}</span><span class="pv-tag">${esc(pr.tagline||"아재 픽")}</span></div>
-    ${noticePv}
-    <div class="pv-profile"><div class="pv-ava"><img src="${esc(pr.avatar||"assets/avatar.jpg")}" alt=""></div><div class="pv-name">${esc(pr.name)}</div><div class="pv-handle mono">@${esc(pr.handle)}</div><div class="pv-bio">${esc(pr.bio)}</div></div>
-    <div class="pv-board">${hero}${rows}</div>
-    ${contactPv}
-    <div class="pv-foot"><p>${esc(pr.disclosure||"")}</p><span class="sig"><i></i>${esc(pr.name||"깐깐아재")} · @${esc(pr.handle)}</span></div>`;
+  const f=document.getElementById("pvframe");
+  if(f&&f.contentWindow){ try{ f.contentWindow.postMessage({type:"linkbio-preview",data:state}, location.origin); }catch(e){} }
 }
 
 function renderSave(){
@@ -490,6 +515,7 @@ function bindProfile(){
   $("#p-notice").value=p.notice||""; $("#p-contact").value=p.contactEmail||""; $("#p-accent").value=/^#[0-9a-fA-F]{6}$/.test(p.accent||"")?p.accent:"#FFD400";
   $("#p-youtube").value=p.socials.youtube; $("#p-tiktok").value=p.socials.tiktok; $("#p-instagram").value=p.socials.instagram;
   $("#p-threads").value=p.socials.threads||""; $("#p-naverBlog").value=p.socials.naverBlog||""; $("#p-x").value=p.socials.x||"";
+  segActive("d-theme",p.theme); segActive("d-font",p.font); segActive("d-btn",p.buttonStyle); segActive("d-layout",p.layout); segActive("d-images",p.showImages===false?"off":"on");
 }
 $("#p-name").addEventListener("input",e=>{state.profile.name=e.target.value||"깐깐아재";markDirty();renderPreview();});
 $("#p-handle").addEventListener("input",e=>{state.profile.handle=e.target.value.replace(/^@/,"")||"kkanajae";markDirty();renderPreview();});
@@ -501,6 +527,18 @@ $("#p-accent").addEventListener("input",e=>{state.profile.accent=e.target.value;
 ["youtube","tiktok","instagram","threads","naverBlog","x"].forEach(k=>{
   $("#p-"+k).addEventListener("input",e=>{state.profile.socials[k]=e.target.value.trim();markDirty();});
 });
+
+// ── 디자인 스타일 컨트롤 (테마·폰트·버튼·레이아웃·사진) ──
+function segActive(gid,val){ document.querySelectorAll("#"+gid+" button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.v===String(val))); }
+function bindSeg(gid,key,toVal){
+  document.querySelectorAll("#"+gid+" button").forEach(b=>b.addEventListener("click",()=>{
+    state.profile[key] = toVal ? toVal(b.dataset.v) : b.dataset.v;
+    document.querySelectorAll("#"+gid+" button").forEach(x=>x.setAttribute("aria-pressed", x===b));
+    markDirty(); renderPreview();
+  }));
+}
+bindSeg("d-theme","theme"); bindSeg("d-font","font"); bindSeg("d-btn","buttonStyle"); bindSeg("d-layout","layout"); bindSeg("d-images","showImages",v=>v==="on");
+document.getElementById("pvframe").addEventListener("load", renderPreview);
 
 $("#keyBtn").addEventListener("click",()=>{
   const cur=localStorage.getItem(KEYK)||"";
