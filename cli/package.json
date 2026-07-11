@@ -1,0 +1,9 @@
+{
+  "name": "@kkanajae/linkbio-cli",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "링크인바이오(kkanajae-links) 관리용 CLI — 터미널·스크립트·발행훅에서 픽/프로필 관리. 의존성 0.",
+  "bin": { "linkbio": "linkbio.js" },
+  "engines": { "node": ">=18" }
+}

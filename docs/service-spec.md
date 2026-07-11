@@ -122,18 +122,23 @@ Content-Type: application/json
 
 ---
 
-## 6. CLI (`linkbio`)
+## 6. CLI (`linkbio`) — 구현됨 (`cli/`, 의존성 0)
 
-API 얇은 래퍼(npm). 키는 `linkbio login`으로 저장(`~/.config/linkbio`).
+REST API 얇은 래퍼. **MCP 툴 8종과 1:1 대응.** 키는 `linkbio login`으로 저장(`~/.config/linkbio/config.json`, POSIX면 600). env `API_BASE`·`API_KEY`·`SITE_HANDLE` 로도 덮어씀(CI·일회성).
 ```bash
-linkbio picks list
+linkbio login --key <sk_live_… 또는 관리자비번> --handle kkanajae   # echo <키> | linkbio login 도 가능
+linkbio picks list [--json]
 linkbio picks add --ep EP14 --topic 텀블러 --coupang <url> --toss <url> --category 주방 --latest
-linkbio picks update <id> --toss <url>
+linkbio picks update <id> --toss <url>       # 값 없는 --toss = 그 필드 지우기
 linkbio picks rm <id>
-linkbio profile set --notice "이번 주 신상 3종"
-linkbio stats
+linkbio picks latest <id>                     # 대표(최신) 지정
+linkbio picks reorder <id1> <id2> ...
+linkbio profile get [--json]                  # 공개 읽기(키 불필요)
+linkbio profile set --notice "이번 주 신상 3종" --instagram <url>
+linkbio stats [--json]
+linkbio whoami | url | logout
 ```
-- 활용: 발행 파이프라인 훅 — "영상 올리면 픽 자동 추가".
+- 활용: 발행 파이프라인 훅 — "영상 올리면 픽 자동 추가". 설정법 = `cli/README.md`.
 
 ---
 
@@ -168,10 +173,10 @@ linkbio stats
 
 ## 10. 구현 현황 (2026-07-11 · `saas` 브랜치)
 
-한 세션에 MVP 기능 완성. **`main`(라이브 kkanajae) 무영향·미배포.** 커밋 10개(`2779632`→`1ad601a`).
+MVP 기능 완성 + 웨지 3종(웹·MCP·CLI) 완성. **`main`(라이브 kkanajae) 무영향·미배포.**
 
 **구현됨**
-- **자동화 코어**: 세밀 REST API(`/api/sites/{handle}/*` — 픽 CRUD·set-latest·reorder·profile·stats) + **MCP 서버**(`mcp/`, 툴 8개) + 사이트/키 프로비저닝(`/api/provision`)
+- **자동화 코어 (웨지 3종 완성)**: 세밀 REST API(`/api/sites/{handle}/*` — 픽 CRUD·set-latest·reorder·profile·stats) + **MCP 서버**(`mcp/`, 툴 8개) + **CLI**(`cli/linkbio`, 의존성 0, MCP 툴 1:1) + 사이트/키 프로비저닝(`/api/provision`) → 웹 GUI·MCP·CLI 세 클라이언트가 같은 API
 - **멀티테넌트**: 사이트별 데이터(`site:{handle}`)·스코프 키(`apikey:{key}`), 공개페이지 `/?u=handle`, 관리자 `/admin?u=handle`(키 또는 세션)
 - **편집기**(admin.html) + **실시간 미리보기**(실제 공개페이지 iframe에 postMessage = WYSIWYG)
 - **커스터마이징**: 테마6·배경(무늬4+사진 업로드)·폰트5·버튼모양3·채우기3·브랜드색·레이아웃2·사진 on/off·이모지 스티커·블록(텍스트/영상/링크)·아바타 업로드

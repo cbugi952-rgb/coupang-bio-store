@@ -3,3 +3,5 @@ docs/
 content/
 # MCP 서버 = 로컬 도구(별도 node_modules) — Vercel 배포 대상 아님
 mcp/
+# CLI = 로컬 도구 — Vercel 배포 대상 아님
+cli/
