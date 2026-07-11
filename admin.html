@@ -205,7 +205,7 @@
 </head>
 <body>
 <div class="appbar">
-  <span class="brand"><span class="sq"></span>깐깐아재 <small>링크 관리자</small></span>
+  <span class="brand"><span class="sq"></span><span id="siteName">깐깐아재</span> <small>링크 관리자</small></span>
   <span class="spacer"></span>
   <button class="btn ghost" id="keyBtn" title="관리자 비밀번호 설정/변경">🔑</button>
   <span class="savestate" id="savestate"><span class="dot"></span><span id="savetext">불러오는 중…</span></span>
@@ -346,7 +346,10 @@
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const short=u=>esc(String(u).replace(/^https?:\/\//,''));
-const KEYK="kkanajae_admin_key";
+// 멀티테넌트: ?u=핸들 사이트를 그 사이트 키로 편집 (기본 kkanajae)
+const HANDLE=((new URLSearchParams(location.search).get("u")||"kkanajae").replace(/[^a-z0-9_-]/gi,"").slice(0,40).toLowerCase())||"kkanajae";
+const API="/api/sites/"+encodeURIComponent(HANDLE);
+const KEYK="linkbio_key_"+HANDLE;   // 사이트별 키(비번) 저장
 const uid=()=>"p"+Date.now().toString(36)+Math.floor(Math.random()*1e4).toString(36);
 
 const SEED={
@@ -542,17 +545,17 @@ document.getElementById("pvframe").addEventListener("load", renderPreview);
 
 $("#keyBtn").addEventListener("click",()=>{
   const cur=localStorage.getItem(KEYK)||"";
-  const v=prompt("관리자 비밀번호 (게시할 때 필요) — Vercel에 설정한 ADMIN_PASSWORD와 같아야 해요.", cur);
-  if(v!==null){ if(v){ localStorage.setItem(KEYK,v); toast("비밀번호를 저장했어요"); } else { localStorage.removeItem(KEYK); toast("비밀번호를 지웠어요"); } }
+  const v=prompt("이 사이트의 키(sk_live_...) 또는 관리자 비밀번호 — 게시할 때 필요해요.", cur);
+  if(v!==null){ if(v){ localStorage.setItem(KEYK,v.trim()); toast("키를 저장했어요"); } else { localStorage.removeItem(KEYK); toast("키를 지웠어요"); } }
 });
 
 async function publish(){
   let key=localStorage.getItem(KEYK)||"";
-  if(!key){ key=prompt("관리자 비밀번호를 입력하세요 (처음 한 번만).\nVercel에 설정한 ADMIN_PASSWORD와 같아야 합니다."); if(!key) return; localStorage.setItem(KEYK,key); }
+  if(!key){ key=prompt("이 사이트의 키(sk_live_...) 또는 관리자 비밀번호를 입력하세요 (처음 한 번만)."); if(!key) return; key=key.trim(); localStorage.setItem(KEYK,key); }
   $("#saveBtn").disabled=true; $("#savetext").textContent="게시 중…";
   try{
-    const r=await fetch("/api/picks",{method:"PUT",headers:{"content-type":"application/json","x-admin-key":key},body:JSON.stringify(state)});
-    if(r.status===401){ localStorage.removeItem(KEYK); toast("비밀번호가 틀렸어요. 🔑 로 다시 설정하세요",true); renderSave(); return; }
+    const r=await fetch(API,{method:"PUT",headers:{"content-type":"application/json","authorization":"Bearer "+key},body:JSON.stringify(state)});
+    if(r.status===401||r.status===403){ localStorage.removeItem(KEYK); toast("키가 맞지 않아요. 🔑 로 다시 설정하세요",true); renderSave(); return; }
     if(!r.ok){ let m=r.status; try{ m=(await r.json()).error||m; }catch{} toast("게시 실패: "+m,true); renderSave(); return; }
     dirty=false; renderSave(); toast("페이지에 게시했어요 ✓");
   }catch(e){ toast("네트워크 오류 — 배포된 주소에서 시도하세요",true); renderSave(); }
@@ -565,17 +568,16 @@ function toast(msg,isErr){ const t=$("#toast"); t.classList.toggle("err",!!isErr
 
 async function loadStats(){
   const key=localStorage.getItem(KEYK)||""; if(!key){ clickCounts={}; viewCounts={}; return; }
-  const opt={headers:{"x-admin-key":key},cache:"no-store"};
-  try{ const r=await fetch("/api/click",opt); if(r.ok) clickCounts=(await r.json()).counts||{}; }catch(e){}
-  try{ const r=await fetch("/api/view",opt); if(r.ok) viewCounts=(await r.json()).views||{}; }catch(e){}
+  try{ const r=await fetch(API+"/stats",{headers:{"authorization":"Bearer "+key},cache:"no-store"}); if(r.ok){ const s=(await r.json()).stats||{}; clickCounts=s.clicks||{}; viewCounts=s.views||{}; } }catch(e){}
 }
 async function load(){
   try{
-    const r=await fetch("/api/picks",{cache:"no-store"});
+    const r=await fetch(API,{cache:"no-store"});
     if(r.ok){ const d=await r.json(); const n=normalize(d); if(n.picks.length||d.profile) state=n; }
   }catch(e){ /* 오프라인/미배포 — SEED 유지 */ }
   await loadStats();
   loading=false; bindProfile(); render();
+  const nm=document.getElementById("siteName"); if(nm) nm.textContent=state.profile.name||HANDLE;
 }
 load();
 </script>
