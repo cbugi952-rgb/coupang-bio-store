@@ -133,6 +133,8 @@
   .seg button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
   .seg.wrap{flex-wrap:wrap}
   .seg.wrap button{flex:0 1 auto;min-width:54px}
+  .filebtn{display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-weight:800;font-size:12.5px;padding:7px 12px;border-radius:9px;background:var(--card-2);color:var(--ink);border:1px solid var(--border-strong);margin-top:6px}
+  .filebtn:hover{border-color:var(--accent)}
   .stickerpick{display:flex;flex-wrap:wrap;gap:6px}
   .stk{font-size:18px;width:36px;height:36px;border:1px solid var(--border-strong);background:var(--field);border-radius:9px;cursor:pointer;line-height:1;padding:0}
   .stk.on{background:var(--accent);border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 30%,transparent)}
@@ -283,7 +285,7 @@
             <button type="button" data-v="solid">단색</button><button type="button" data-v="gradient">그라데이션</button><button type="button" data-v="dots">도트</button><button type="button" data-v="grid">그리드</button><button type="button" data-v="image">사진</button>
           </div>
         </div>
-        <div class="fld"><label for="d-bgimg">배경 사진 URL <span class="hint">· 배경=사진 선택 시</span></label><input type="url" id="d-bgimg" placeholder="https://... 이미지 주소" inputmode="url"></div>
+        <div class="fld"><label for="d-bgimg">배경 사진 <span class="hint">· 배경=사진 선택 시</span></label><input type="url" id="d-bgimg" placeholder="https://... 이미지 주소 붙여넣기" inputmode="url"><label class="filebtn">📷 사진 파일 올리기<input type="file" id="d-bgfile" accept="image/*" hidden></label></div>
         <div class="fld"><label>스티커 <span class="hint">· 이모지, 최대 6개</span></label><div class="stickerpick" id="d-stickers"></div></div>
         <div class="fld"><label>폰트</label>
           <div class="seg wrap" id="d-font" role="group" aria-label="폰트">
@@ -332,7 +334,7 @@
         <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
       </summary>
       <div class="body">
-        <div class="profthumb"><img src="assets/avatar.jpg" alt="프로필 사진"><div class="rp">프로필 사진<br>(assets/avatar.jpg 교체)</div></div>
+        <div class="profthumb"><img id="p-avatar-img" src="assets/avatar.jpg" alt="프로필 사진"><div class="rp">프로필 사진<br><label class="filebtn">📷 사진 변경<input type="file" id="p-avatar-file" accept="image/*" hidden></label></div></div>
         <div class="grid2">
           <div class="fld"><label for="p-name">채널명</label><input type="text" id="p-name" maxlength="16"></div>
           <div class="fld"><label for="p-handle">핸들</label><input type="text" id="p-handle" maxlength="20"></div>
@@ -558,7 +560,9 @@ function bindProfile(){
   $("#p-youtube").value=p.socials.youtube; $("#p-tiktok").value=p.socials.tiktok; $("#p-instagram").value=p.socials.instagram;
   $("#p-threads").value=p.socials.threads||""; $("#p-naverBlog").value=p.socials.naverBlog||""; $("#p-x").value=p.socials.x||"";
   segActive("d-theme",p.theme); segActive("d-bg",p.background); segActive("d-font",p.font); segActive("d-btn",p.buttonStyle); segActive("d-fill",p.buttonFill); segActive("d-layout",p.layout); segActive("d-images",p.showImages===false?"off":"on");
-  $("#d-bgimg").value=p.backgroundImage||""; renderStickerPicker(); renderBlockList();
+  $("#p-avatar-img").src=p.avatar||"assets/avatar.jpg";
+  $("#d-bgimg").value=(p.backgroundImage||"").startsWith("data:")?"(업로드된 사진)":(p.backgroundImage||"");
+  renderStickerPicker(); renderBlockList();
 }
 $("#p-name").addEventListener("input",e=>{state.profile.name=e.target.value||"깐깐아재";markDirty();renderPreview();});
 $("#p-handle").addEventListener("input",e=>{state.profile.handle=e.target.value.replace(/^@/,"")||"kkanajae";markDirty();renderPreview();});
@@ -583,8 +587,28 @@ function bindSeg(gid,key,toVal){
 bindSeg("d-theme","theme"); bindSeg("d-bg","background"); bindSeg("d-font","font"); bindSeg("d-btn","buttonStyle"); bindSeg("d-fill","buttonFill"); bindSeg("d-layout","layout"); bindSeg("d-images","showImages",v=>v==="on");
 document.getElementById("pvframe").addEventListener("load", renderPreview);
 
-// 배경 사진 URL
-$("#d-bgimg").addEventListener("input",e=>{ state.profile.backgroundImage=e.target.value.trim(); markDirty(); renderPreview(); });
+// 배경 사진 URL / 파일 업로드
+$("#d-bgimg").addEventListener("input",e=>{ const v=e.target.value.trim(); if(v==="(업로드된 사진)") return; state.profile.backgroundImage=v; markDirty(); renderPreview(); });
+// 사진을 캔버스로 리사이즈해 data URL로 (별도 저장소 없이 페이지 데이터에 담음)
+function resizeToDataUrl(file, maxW, quality){
+  return new Promise((resolve,reject)=>{
+    if(!file || !/^image\//.test(file.type)) return reject(new Error("이미지 파일이 아니에요"));
+    const img=new Image(), url=URL.createObjectURL(file);
+    img.onload=()=>{ URL.revokeObjectURL(url); let w=img.width,h=img.height; if(w>maxW){ h=Math.round(h*maxW/w); w=maxW; } const c=document.createElement("canvas"); c.width=w; c.height=h; c.getContext("2d").drawImage(img,0,0,w,h); resolve(c.toDataURL("image/jpeg", quality)); };
+    img.onerror=()=>{ URL.revokeObjectURL(url); reject(new Error("이미지를 열 수 없어요")); };
+    img.src=url;
+  });
+}
+$("#p-avatar-file").addEventListener("change", async e=>{
+  const f=e.target.files[0]; if(!f) return;
+  try{ const d=await resizeToDataUrl(f, 400, 0.85); state.profile.avatar=d; $("#p-avatar-img").src=d; markDirty(); renderPreview(); toast("프로필 사진을 올렸어요"); }catch(err){ toast(err.message,true); }
+  e.target.value="";
+});
+$("#d-bgfile").addEventListener("change", async e=>{
+  const f=e.target.files[0]; if(!f) return;
+  try{ const d=await resizeToDataUrl(f, 1100, 0.78); state.profile.backgroundImage=d; state.profile.background="image"; $("#d-bgimg").value="(업로드된 사진)"; segActive("d-bg","image"); markDirty(); renderPreview(); toast("배경 사진을 올렸어요"); }catch(err){ toast(err.message,true); }
+  e.target.value="";
+});
 
 // 스티커 팔레트 (이모지 토글, 최대 6)
 const STICKER_SET=["✨","🔥","💛","⭐","🎁","🛒","👍","😍","💯","🏷️","🎀","🌟","💥","🍀","☕","🧼","🧽","🫧"];
