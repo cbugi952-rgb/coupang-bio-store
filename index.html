@@ -113,6 +113,13 @@
   .pick .cta .buy{font-size:13px;padding:10px}
   .empty{text-align:center;color:var(--muted);font-size:14px;padding:30px 12px}
 
+  /* 심플 리스트형 스타일 */
+  .lrow{display:flex;flex-direction:column;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:14px 16px}
+  .lrow .lmeta h4{margin:0;font-size:16.5px;font-weight:800;letter-spacing:-.01em;display:flex;align-items:center;gap:8px}
+  .lrow .lmeta p{margin:3px 0 0;font-size:13px;color:var(--muted);line-height:1.4}
+  .lrow .lbadge{font-size:10.5px;font-weight:800;background:var(--accent);color:var(--accent-ink);padding:2px 9px;border-radius:999px;flex:none}
+  .lrow .lcta{display:flex;gap:8px}
+
   /* 협업·문의 */
   .contact{padding:16px 16px 0}
   .contact a{display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;font-weight:800;font-size:14px;padding:13px;border-radius:14px;border:1.5px dashed color-mix(in srgb,var(--accent) 45%,var(--border));color:var(--ink);background:var(--card-2);transition:border-color .12s,transform .12s}
@@ -193,10 +200,11 @@ const tossLabel = () => `<span class="tw">toss</span> 쇼핑`;
 const shortsLink = (u) => u ? `<a class="shortslink" href="${esc(u)}" target="_blank" rel="noopener">▶ 아재 리뷰 영상</a>` : "";
 
 let ALL = SEED, activeCat = "전체";
+let LAYOUT = "card", SHOW_IMAGES = true;   // 프로필 스타일 (card|list · 사진 on/off)
 
 function heroCard(p){
   return `<div class="latest reveal">
-        ${p.image ? `<img class="hero-img" src="${esc(p.image)}" alt="${esc(p.topic)}" loading="lazy">` : ""}
+        ${(SHOW_IMAGES && p.image) ? `<img class="hero-img" src="${esc(p.image)}" alt="${esc(p.topic)}" loading="lazy">` : ""}
         <div class="top"><span class="ep mono">${esc(p.ep)} · ${esc(p.topic)}</span><span class="liveb">최신</span></div>
         <h3>${esc(p.verdict || p.topic)}</h3>
         <div class="cta">${buyLink(p.coupang,"coupang","쿠팡에서 보기",p.id)}${buyLink(p.toss,"toss",tossLabel(),p.id)}</div>
@@ -206,8 +214,17 @@ function heroCard(p){
 }
 function pickCard(p){
   return `<div class="pick reveal">
-        <div class="phead">${p.image ? `<img class="thumb" src="${esc(p.image)}" alt="" loading="lazy">` : ""}<span class="epc mono">${esc(p.ep)}</span><div class="txt"><h4>${esc(p.topic)}</h4><p>${esc(p.verdict)}</p></div></div>
+        <div class="phead">${(SHOW_IMAGES && p.image) ? `<img class="thumb" src="${esc(p.image)}" alt="" loading="lazy">` : ""}<span class="epc mono">${esc(p.ep)}</span><div class="txt"><h4>${esc(p.topic)}</h4><p>${esc(p.verdict)}</p></div></div>
         <div class="cta">${buyLink(p.coupang,"coupang","쿠팡",p.id)}${buyLink(p.toss,"toss",tossLabel(),p.id)}</div>
+        ${shortsLink(p.youtube)}
+      </div>`;
+}
+// 심플 리스트형 한 줄 (사진 없이 이름+한마디+구매버튼)
+function listRow(p){
+  const hot = p.status==="latest" ? `<span class="lbadge">최신</span>` : "";
+  return `<div class="lrow reveal">
+        <div class="lmeta"><h4>${esc(p.topic)}${hot}</h4><p>${esc(p.verdict)}</p></div>
+        <div class="lcta">${buyLink(p.coupang,"coupang","쿠팡",p.id)}${buyLink(p.toss,"toss",tossLabel(),p.id)}</div>
         ${shortsLink(p.youtube)}
       </div>`;
 }
@@ -222,6 +239,17 @@ function renderBoard(){
   let html = "";
   if(cats.length>=2){
     html += `<div class="cats">` + ["전체"].concat(cats).map(c=>`<button class="catchip${c===activeCat?" on":""}" data-cat="${esc(c)}">${esc(c)}</button>`).join("") + `</div>`;
+  }
+  // 심플 리스트형: 큰 최신카드·사진 없이 한 줄씩
+  if(LAYOUT==="list"){
+    const src = activeCat==="전체" ? visible : visible.filter(p=>p.category===activeCat);
+    const ordered = src.slice().sort((a,b)=>(b.status==="latest"?1:0)-(a.status==="latest"?1:0));
+    html += `<div class="eyebrow reveal"><span class="tick"></span>${activeCat==="전체"?"전체 픽":esc(activeCat)}</div>` + ordered.map(listRow).join("");
+    if(!visible.length) html = `<div class="empty">아재가 지금 픽을 고르는 중이에요. 곧 올라옵니다 🔧</div>`;
+    board.innerHTML = html;
+    board.querySelectorAll(".reveal").forEach((el,i)=>el.style.animationDelay=(i*0.05)+"s");
+    board.querySelectorAll(".catchip").forEach(b=>b.addEventListener("click",()=>{ activeCat=b.dataset.cat; renderBoard(); }));
+    return;
   }
   if(activeCat==="전체"){
     const latest = picks.find(p=>p.status==="latest");
@@ -242,6 +270,10 @@ function render(data){
   ALL = data;
   const pf = data.profile || SEED.profile;
   if(/^#[0-9a-fA-F]{6}$/.test(pf.accent||"")) document.documentElement.style.setProperty("--accent", pf.accent);
+  LAYOUT = pf.layout === "list" ? "list" : "card";
+  SHOW_IMAGES = pf.showImages !== false;
+  const phoneEl = document.querySelector(".phone");
+  if(phoneEl){ phoneEl.classList.toggle("lay-list", LAYOUT==="list"); phoneEl.classList.toggle("no-img", !SHOW_IMAGES); }
   document.getElementById("pf-avatar").src = pf.avatar || "assets/avatar.jpg";
   document.getElementById("pf-brand").textContent = pf.name || "깐깐아재";
   document.getElementById("pf-tag").textContent = pf.tagline || "아재 픽";
