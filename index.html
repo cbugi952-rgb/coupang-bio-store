@@ -81,7 +81,7 @@
   .catchip.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
   .catchip:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
   .cta{display:flex;gap:8px;margin-top:12px}
-  .buy{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;font-weight:800;font-size:14px;padding:12px;border-radius:12px;border:1.5px solid transparent;transition:transform .12s,filter .12s;white-space:nowrap}
+  .buy{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;font-weight:800;font-size:14px;padding:12px;border-radius:var(--btn-radius,12px);border:1.5px solid transparent;transition:transform .12s,filter .12s;white-space:nowrap}
   .buy:hover{transform:translateY(-1px)}
   .buy svg{width:14px;height:14px;flex:none}
   .buy.coupang{background:var(--accent);color:var(--accent-ink)}
@@ -266,10 +266,43 @@ function renderBoard(){
   board.querySelectorAll(".catchip").forEach(b=>b.addEventListener("click",()=>{ activeCat=b.dataset.cat; renderBoard(); }));
 }
 
+// ── 스타일 엔진: 테마(배경)·폰트·버튼모양·브랜드색 ──
+const THEMES = {
+  cream: {"--bg":"#F1E9D6","--panel":"#FBF6EA","--card":"#FFFFFF","--card-2":"#F6EFDD","--border":"#E4D9BE","--ink":"#1B1710","--muted":"#7A7059","--faint":"#A99C7E"},
+  dark:  {"--bg":"#101010","--panel":"#161512","--card":"#1D1B15","--card-2":"#232019","--border":"#332F22","--ink":"#F3ECD9","--muted":"#A79D85","--faint":"#7E7660"},
+  mint:  {"--bg":"#E4F3EC","--panel":"#F2FAF6","--card":"#FFFFFF","--card-2":"#E2F0E8","--border":"#CDE6D9","--ink":"#12241C","--muted":"#57786A","--faint":"#8FB0A1"},
+  pink:  {"--bg":"#FBE7EF","--panel":"#FEF3F7","--card":"#FFFFFF","--card-2":"#FBE2EC","--border":"#F3CCDC","--ink":"#2A1520","--muted":"#8A5A6C","--faint":"#C598AB"},
+  navy:  {"--bg":"#0F1830","--panel":"#16213D","--card":"#1D2A49","--card-2":"#243357","--border":"#2E3E63","--ink":"#E7ECF7","--muted":"#9AA6C2","--faint":"#6B7794"},
+  mono:  {"--bg":"#F0F0EE","--panel":"#FFFFFF","--card":"#FFFFFF","--card-2":"#F0F0EC","--border":"#E0E0DA","--ink":"#161615","--muted":"#6E6E68","--faint":"#A6A69E"},
+};
+const FONTS = {
+  jua:      { css:"'Jua'", g:"Jua" },
+  gothic:   { css:"'Pretendard','Apple SD Gothic Neo','Malgun Gothic'", g:null },
+  nanum:    { css:"'Nanum Gothic'", g:"Nanum+Gothic:wght@400;700;800" },
+  gaegu:    { css:"'Gaegu'", g:"Gaegu:wght@400;700" },
+  myeongjo: { css:"'Nanum Myeongjo'", g:"Nanum+Myeongjo:wght@400;700;800" },
+};
+const _fonts = new Set(["Jua"]);   // Jua는 head에 이미 로드됨
+function loadFont(g){ if(!g) return; const name=g.split(":")[0]; if(_fonts.has(name)) return; _fonts.add(name); const l=document.createElement("link"); l.rel="stylesheet"; l.href="https://fonts.googleapis.com/css2?family="+g+"&display=swap"; document.head.appendChild(l); }
+function _rgb(h){ h=String(h||"").replace("#",""); if(h.length!==6) h="FFD400"; return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)]; }
+function inkOn(hex){ const [r,g,b]=_rgb(hex); return (0.299*r+0.587*g+0.114*b)/255 > 0.62 ? "#191307" : "#FFFFFF"; }
+function shade(hex,amt){ let c=_rgb(hex); const f=amt<0?0:255,p=Math.abs(amt); return "#"+c.map(x=>Math.round((f-x)*p+x).toString(16).padStart(2,"0")).join(""); }
+function applyStyle(pf){
+  const root=document.documentElement, t=THEMES[pf.theme]||THEMES.cream;
+  for(const k in t) root.style.setProperty(k,t[k]);
+  const accent=/^#[0-9a-fA-F]{6}$/.test(pf.accent||"")?pf.accent:"#FFD400";
+  root.style.setProperty("--accent",accent);
+  root.style.setProperty("--accent-deep",shade(accent,-0.4));
+  root.style.setProperty("--accent-ink",inkOn(accent));
+  const f=FONTS[pf.font]||FONTS.jua; loadFont(f.g);
+  root.style.setProperty("--font-display", f.css+",'Apple SD Gothic Neo','Malgun Gothic',sans-serif");
+  root.style.setProperty("--btn-radius", pf.buttonStyle==="pill"?"999px":pf.buttonStyle==="square"?"5px":"12px");
+}
+
 function render(data){
   ALL = data;
   const pf = data.profile || SEED.profile;
-  if(/^#[0-9a-fA-F]{6}$/.test(pf.accent||"")) document.documentElement.style.setProperty("--accent", pf.accent);
+  applyStyle(pf);
   LAYOUT = pf.layout === "list" ? "list" : "card";
   SHOW_IMAGES = pf.showImages !== false;
   const phoneEl = document.querySelector(".phone");
