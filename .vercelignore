@@ -1,3 +1,5 @@
 # 배포에서 제외 (공개 서빙 방지) — 설계/내부 문서
 docs/
 content/
+# MCP 서버 = 로컬 도구(별도 node_modules) — Vercel 배포 대상 아님
+mcp/
