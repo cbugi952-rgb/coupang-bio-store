@@ -217,6 +217,7 @@
   <span class="brand"><span class="sq"></span><span id="siteName">깐깐아재</span> <small>링크 관리자</small></span>
   <span class="spacer"></span>
   <button class="btn ghost" id="keyBtn" title="관리자 비밀번호 설정/변경">🔑</button>
+  <button class="btn ghost" id="logoutBtn" title="로그아웃" hidden>로그아웃</button>
   <span class="savestate" id="savestate"><span class="dot"></span><span id="savetext">불러오는 중…</span></span>
   <button class="btn primary" id="saveBtn" disabled>변경사항 게시</button>
 </div>
@@ -382,9 +383,10 @@ const $=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const short=u=>esc(String(u).replace(/^https?:\/\//,''));
 // 멀티테넌트: ?u=핸들 사이트를 그 사이트 키로 편집 (기본 kkanajae)
-const HANDLE=((new URLSearchParams(location.search).get("u")||"kkanajae").replace(/[^a-z0-9_-]/gi,"").slice(0,40).toLowerCase())||"kkanajae";
-const API="/api/sites/"+encodeURIComponent(HANDLE);
-const KEYK="linkbio_key_"+HANDLE;   // 사이트별 키(비번) 저장
+let HANDLE=((new URLSearchParams(location.search).get("u")||"kkanajae").replace(/[^a-z0-9_-]/gi,"").slice(0,40).toLowerCase())||"kkanajae";
+let API="/api/sites/"+encodeURIComponent(HANDLE);
+let KEYK="linkbio_key_"+HANDLE;   // 사이트별 키(비번) 저장 (비로그인 레거시)
+let LOGGEDIN=false;               // 세션 로그인 여부
 const uid=()=>"p"+Date.now().toString(36)+Math.floor(Math.random()*1e4).toString(36);
 
 const SEED={
@@ -639,12 +641,16 @@ $("#keyBtn").addEventListener("click",()=>{
 });
 
 async function publish(){
-  let key=localStorage.getItem(KEYK)||"";
-  if(!key){ key=prompt("이 사이트의 키(sk_live_...) 또는 관리자 비밀번호를 입력하세요 (처음 한 번만)."); if(!key) return; key=key.trim(); localStorage.setItem(KEYK,key); }
+  const headers={"content-type":"application/json"};
+  if(!LOGGEDIN){   // 비로그인: 사이트 키로 인증
+    let key=localStorage.getItem(KEYK)||"";
+    if(!key){ key=prompt("이 사이트의 키(sk_live_...) 또는 관리자 비밀번호를 입력하세요 (처음 한 번만)."); if(!key) return; key=key.trim(); localStorage.setItem(KEYK,key); }
+    headers["authorization"]="Bearer "+key;
+  }
   $("#saveBtn").disabled=true; $("#savetext").textContent="게시 중…";
   try{
-    const r=await fetch(API,{method:"PUT",headers:{"content-type":"application/json","authorization":"Bearer "+key},body:JSON.stringify(state)});
-    if(r.status===401||r.status===403){ localStorage.removeItem(KEYK); toast("키가 맞지 않아요. 🔑 로 다시 설정하세요",true); renderSave(); return; }
+    const r=await fetch(API,{method:"PUT",headers,body:JSON.stringify(state)});
+    if(r.status===401||r.status===403){ if(!LOGGEDIN) localStorage.removeItem(KEYK); toast(LOGGEDIN?"권한이 없어요.":"키가 맞지 않아요. 🔑 로 다시 설정하세요",true); renderSave(); return; }
     if(!r.ok){ let m=r.status; try{ m=(await r.json()).error||m; }catch{} toast("게시 실패: "+m,true); renderSave(); return; }
     dirty=false; renderSave(); toast("페이지에 게시했어요 ✓");
   }catch(e){ toast("네트워크 오류 — 배포된 주소에서 시도하세요",true); renderSave(); }
@@ -656,10 +662,23 @@ let tTimer;
 function toast(msg,isErr){ const t=$("#toast"); t.classList.toggle("err",!!isErr); $("#toastText").textContent=msg; t.classList.add("show"); clearTimeout(tTimer); tTimer=setTimeout(()=>t.classList.remove("show"),2600); }
 
 async function loadStats(){
-  const key=localStorage.getItem(KEYK)||""; if(!key){ clickCounts={}; viewCounts={}; return; }
-  try{ const r=await fetch(API+"/stats",{headers:{"authorization":"Bearer "+key},cache:"no-store"}); if(r.ok){ const s=(await r.json()).stats||{}; clickCounts=s.clicks||{}; viewCounts=s.views||{}; } }catch(e){}
+  const headers={};
+  if(!LOGGEDIN){ const key=localStorage.getItem(KEYK)||""; if(!key){ clickCounts={}; viewCounts={}; return; } headers["authorization"]="Bearer "+key; }
+  try{ const r=await fetch(API+"/stats",{headers,cache:"no-store"}); if(r.ok){ const s=(await r.json()).stats||{}; clickCounts=s.clicks||{}; viewCounts=s.views||{}; } }catch(e){}
+}
+function setAuthUI(email){
+  $("#logoutBtn").hidden=false; $("#keyBtn").hidden=true;
+  $("#logoutBtn").title=(email?email+" · ":"")+"로그아웃";
+}
+async function initAuth(){
+  try{
+    const r=await fetch("/api/auth/me",{cache:"no-store"});
+    if(r.ok){ const me=await r.json(); if(me.ok){ LOGGEDIN=true; if(me.handle) HANDLE=me.handle; API="/api/sites/"+encodeURIComponent(HANDLE); KEYK="linkbio_key_"+HANDLE; setAuthUI(me.email); } }
+  }catch(e){}
 }
 async function load(){
+  await initAuth();
+  if(!LOGGEDIN && !localStorage.getItem(KEYK)){ location.href="/login.html"; return; }   // 비로그인·키없음 → 로그인
   try{
     const r=await fetch(API,{cache:"no-store"});
     if(r.ok){ const d=await r.json(); const n=normalize(d); if(n.picks.length||d.profile) state=n; }
@@ -668,6 +687,7 @@ async function load(){
   loading=false; bindProfile(); render();
   const nm=document.getElementById("siteName"); if(nm) nm.textContent=state.profile.name||HANDLE;
 }
+$("#logoutBtn").addEventListener("click",async()=>{ try{ await fetch("/api/auth/logout",{method:"POST"}); }catch(e){} location.href="/login.html"; });
 load();
 </script>
 </body>
