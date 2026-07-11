@@ -49,7 +49,7 @@
   .inapp button{margin-left:auto;background:transparent;border:1px solid #3a3a34;color:#F3ECD9;border-radius:8px;padding:4px 9px;font-size:11px;cursor:pointer;flex:none}
 
   .wrap{max-width:460px;margin:0 auto;padding:0 16px 40px;min-height:100dvh}
-  .phone{background:var(--panel);border:1px solid var(--border);border-radius:26px;margin-top:22px;box-shadow:var(--shadow);overflow:hidden}
+  .phone{position:relative;background:var(--panel);border:1px solid var(--border);border-radius:26px;margin-top:22px;box-shadow:var(--shadow);overflow:hidden}
   .hookbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 16px;background:#131313;color:#F3ECD9;border-bottom:2px solid var(--accent)}
   .brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:16px}
   .brand .sq{width:16px;height:16px;border-radius:4px;background:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%,transparent)}
@@ -124,6 +124,20 @@
   .lrow .lmeta p{margin:3px 0 0;font-size:13px;color:var(--muted);line-height:1.4}
   .lrow .lbadge{font-size:10.5px;font-weight:800;background:var(--accent);color:var(--accent-ink);padding:2px 9px;border-radius:999px;flex:none}
   .lrow .lcta{display:flex;gap:8px}
+  /* 이모지 스티커 */
+  .stickers{position:absolute;inset:0;pointer-events:none;z-index:6}
+  .stickers span{position:absolute;font-size:30px;line-height:1;filter:drop-shadow(0 2px 5px rgba(0,0,0,.22))}
+  /* 콘텐츠 블록 (텍스트·영상·링크) */
+  .blocks{padding:4px 16px 0;display:flex;flex-direction:column;gap:12px}
+  .blocks:empty{display:none}
+  .blk-text{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:14px 16px}
+  .blk-text h3{margin:0 0 5px;font-size:16px;font-weight:800;color:var(--ink)}
+  .blk-text p{margin:0;font-size:13.5px;color:var(--muted);line-height:1.5;white-space:pre-line}
+  .blk-video{border-radius:16px;overflow:hidden;border:1px solid var(--border);background:#000}
+  .blk-video iframe{display:block;width:100%;aspect-ratio:16/9;border:0}
+  .blk-video .blk-cap{margin:0;padding:8px 12px;font-size:12.5px;color:var(--muted);background:var(--card)}
+  .blk-link{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--accent);color:var(--accent-ink);font-weight:800;font-size:14px;padding:13px;border-radius:var(--btn-radius,12px);text-decoration:none}
+  .blk-link svg{width:14px;height:14px}
 
   /* 협업·문의 */
   .contact{padding:16px 16px 0}
@@ -153,6 +167,7 @@
 
 <main class="wrap">
   <section class="phone">
+    <div class="stickers" id="stickers" aria-hidden="true"></div>
     <header class="hookbar">
       <span class="brand"><span class="sq"></span><span id="pf-brand">깐깐아재</span></span>
       <span class="bartag" id="pf-tag">아재가 골라줬어</span>
@@ -169,6 +184,7 @@
       <nav class="socials" id="pf-socials"></nav>
     </div>
     <div class="board" id="board"></div>
+    <div class="blocks" id="blocks"></div>
     <div class="contact" id="contact" hidden></div>
     <footer class="foot">
       <p class="disc" id="pf-disc"></p>
@@ -310,9 +326,32 @@ function applyStyle(pf){
     grid:["linear-gradient(color-mix(in srgb,var(--accent) 16%,transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb,var(--accent) 16%,transparent) 1px, transparent 1px)","22px 22px"],
   };
   const bg=BG[pf.background]||BG.solid;
-  document.body.style.backgroundImage=bg[0];
-  document.body.style.backgroundSize=bg[1];
+  if(pf.background==="image" && pf.backgroundImage){
+    const u=String(pf.backgroundImage).replace(/["\\]/g,"");
+    document.body.style.backgroundImage='linear-gradient(color-mix(in srgb,var(--bg) 50%,transparent),color-mix(in srgb,var(--bg) 50%,transparent)), url("'+u+'")';
+    document.body.style.backgroundSize="cover"; document.body.style.backgroundPosition="center";
+  }else{
+    document.body.style.backgroundImage=bg[0]; document.body.style.backgroundSize=bg[1]; document.body.style.backgroundPosition="";
+  }
   document.body.style.backgroundAttachment="fixed";
+}
+
+// 이모지 스티커 위치 프리셋 (최대 6)
+const STICKER_POS=[{top:"7%",left:"4%",r:"-12deg"},{top:"10%",right:"5%",r:"11deg"},{top:"33%",left:"2%",r:"7deg"},{top:"41%",right:"2%",r:"-9deg"},{top:"64%",left:"5%",r:"-7deg"},{top:"70%",right:"6%",r:"12deg"}];
+function renderStickers(pf){
+  const el=document.getElementById("stickers"); if(!el) return;
+  const st=Array.isArray(pf.stickers)?pf.stickers.slice(0,6):[];
+  el.innerHTML=st.map((e,i)=>{ const p=STICKER_POS[i]||STICKER_POS[0]; const side=p.left?("left:"+p.left):("right:"+p.right); return `<span style="top:${p.top};${side};transform:rotate(${p.r})">${esc(e)}</span>`; }).join("");
+}
+function ytEmbed(url){ const m=String(url||"").match(/(?:youtu\.be\/|[?&]v=|shorts\/|embed\/)([\w-]{6,})/); return m?"https://www.youtube.com/embed/"+m[1]:""; }
+function blockCard(b){
+  if(b.type==="video"){ const e=ytEmbed(b.url); return e?`<div class="blk blk-video reveal"><iframe src="${esc(e)}" title="${esc(b.title||"영상")}" allowfullscreen loading="lazy"></iframe>${b.title?`<p class="blk-cap">${esc(b.title)}</p>`:""}</div>`:""; }
+  if(b.type==="link"){ return b.url?`<a class="blk blk-link reveal" href="${esc(b.url)}" target="_blank" rel="nofollow noopener">${esc(b.label||b.title||"링크")} ${ARROW}</a>`:""; }
+  return (b.title||b.body)?`<div class="blk blk-text reveal">${b.title?`<h3>${esc(b.title)}</h3>`:""}${b.body?`<p>${esc(b.body)}</p>`:""}</div>`:"";
+}
+function renderBlocks(){
+  const el=document.getElementById("blocks"); if(!el) return;
+  el.innerHTML=(Array.isArray(ALL.blocks)?ALL.blocks:[]).map(blockCard).join("");
 }
 
 function render(data){
@@ -347,6 +386,8 @@ function render(data){
   document.getElementById("pf-socials").innerHTML = chips;
 
   renderBoard();
+  renderBlocks();
+  renderStickers(pf);
 
   // 협업·문의
   const contact = document.getElementById("contact");
