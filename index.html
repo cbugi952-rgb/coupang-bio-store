@@ -4,263 +4,229 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>부기 — 링크 인 바이오</title>
-<meta name="description" content="흩어진 링크를 한 페이지에. 화면으로도, 명령어로도, AI에게 말해서도 관리하는 링크 인 바이오.">
+<meta name="description" content="인스타·유튜브·블로그·쇼핑까지, 흩어진 링크를 한 페이지에. 코딩 없이 몇 분이면 완성되는 링크 인 바이오, 부기.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="부기 — 링크 인 바이오">
-<meta property="og:description" content="클릭하거나, 명령하거나, AI에게 맡기거나. 링크 인 바이오를 만드는 새로운 방법.">
+<meta property="og:description" content="링크 하나로, 뭐든 시작하세요. 코딩 없이 몇 분이면 완성.">
 <meta property="og:image" content="https://coupang-bio-store.vercel.app/assets/bugi-og.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://coupang-bio-store.vercel.app/assets/bugi-og.jpg">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%232E9E57'/><circle cx='38' cy='45' r='7' fill='%23fff'/><circle cx='62' cy='45' r='7' fill='%23fff'/></svg>">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%2323A455'/><circle cx='38' cy='45' r='7' fill='%23fff'/><circle cx='62' cy='45' r='7' fill='%23fff'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&display=swap">
 <style>
   :root{
-    --bg:#F4F7F1; --ink:#152219; --muted:#586B5E; --line:#E1EADF;
-    --green:#2E9E57; --green-deep:#1C7A40; --cyan:#0FB4A2; --orange:#F2994A;
-    --card:#FFFFFF; --code:#0D1712; --code-ink:#DDEBE0;
+    --bg:#FAF6EE; --ink:#17231C; --muted:#5B6B60; --line:#ECE5D7; --card:#FFFDF8;
+    --green:#23A455; --green-deep:#177E3D; --green-soft:#E7F5EC; --mint:#EAF7F0;
+    --peach:#FFF1E6; --lilac:#F1EEFB; --cyan:#0FB4A2; --code:#122019; --code-ink:#DCEBE0;
     --font:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
-    --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
-    --maxw:1140px; --pad:24px;
+    --mono:"JetBrains Mono",ui-monospace,monospace; --maxw:1120px; --pad:22px;
   }
   *{box-sizing:border-box}
   html{scroll-behavior:smooth;overflow-x:hidden}
-  body{margin:0;font-family:var(--font);color:var(--ink);background:var(--bg);line-height:1.62;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;word-break:keep-all;overflow-x:hidden}
-  a{color:inherit;text-decoration:none}
-  img{max-width:100%;display:block}
+  body{margin:0;font-family:var(--font);color:var(--ink);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-x:hidden}
+  a{color:inherit;text-decoration:none} img{max-width:100%;display:block}
   .wrap{max-width:var(--maxw);margin:0 auto;padding:0 var(--pad)}
-  .eyebrow{font-family:var(--mono);font-size:12.5px;font-weight:600;letter-spacing:.06em;color:var(--green-deep);display:inline-flex;align-items:center;gap:8px;text-transform:none}
-  .eyebrow::before{content:"";width:16px;height:1.5px;background:var(--cyan)}
-
-  /* ── nav ── */
-  header.nav{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid transparent;transition:border-color .2s}
-  header.nav.scrolled{border-color:var(--line)}
-  .nav-in{display:flex;align-items:center;justify-content:space-between;height:64px}
-  .brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:19px;letter-spacing:-.01em}
-  .brand img{width:30px;height:30px;border-radius:9px}
-  .nav-r{display:flex;align-items:center;gap:20px}
-  .nav-r .login{font-weight:600;font-size:15px;color:var(--muted)}
-  .nav-r .login:hover{color:var(--ink)}
-  .btn{display:inline-flex;align-items:center;gap:7px;font-family:inherit;font-weight:700;border-radius:11px;border:none;cursor:pointer;transition:transform .12s,box-shadow .2s,background .2s;white-space:nowrap}
-  .btn-pri{background:var(--green);color:#fff;padding:11px 18px;font-size:15px;box-shadow:0 6px 18px -8px color-mix(in srgb,var(--green) 70%,transparent)}
+  .fcard,.ex,.vitem,.hero-copy,.phones,.feat-ic{min-width:0}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:inherit;font-weight:800;border-radius:999px;border:none;cursor:pointer;transition:transform .12s,box-shadow .2s,background .2s;white-space:nowrap}
+  .btn-pri{background:var(--green);color:#fff;padding:12px 22px;font-size:15.5px;box-shadow:0 10px 22px -10px color-mix(in srgb,var(--green) 75%,transparent)}
   .btn-pri:hover{background:var(--green-deep);transform:translateY(-1px)}
-  .btn-lg{padding:15px 26px;font-size:16.5px;border-radius:13px}
-  .btn-ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line);padding:13px 22px;font-size:16px;border-radius:13px}
+  .btn-lg{padding:16px 30px;font-size:17px}
+  .btn-ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line);padding:14px 26px;font-size:16px}
   .btn-ghost:hover{border-color:var(--green);color:var(--green-deep)}
+  .eyebrow{font-family:var(--mono);font-size:12.5px;font-weight:700;letter-spacing:.04em;color:var(--green-deep)}
 
-  /* ── hero ── */
-  .hero{padding:74px 0 84px;overflow:clip}
-  .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
-  .hero h1{font-size:clamp(2.5rem,5.4vw,4rem);font-weight:800;line-height:1.06;letter-spacing:-.035em;margin:18px 0 0}
-  .hero h1 .accent{color:var(--green)}
-  .hero p.sub{font-size:clamp(1.02rem,1.5vw,1.18rem);color:var(--muted);margin:22px 0 0;max-width:33ch}
-  .hero-cta{display:flex;gap:12px;margin-top:34px;flex-wrap:wrap}
-  .hero-note{margin-top:16px;font-size:13.5px;color:var(--muted);display:flex;align-items:center;gap:7px}
-  .hero-note b{color:var(--green-deep);font-weight:700}
+  /* nav */
+  header.nav{position:sticky;top:0;z-index:60;background:color-mix(in srgb,var(--bg) 84%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid transparent;transition:border-color .2s}
+  header.nav.scrolled{border-color:var(--line)}
+  .nav-in{display:flex;align-items:center;justify-content:space-between;height:66px}
+  .brand{display:flex;align-items:center;gap:9px;font-weight:900;font-size:20px;letter-spacing:-.02em}
+  .brand img{width:32px;height:32px;border-radius:10px}
+  .nav-r{display:flex;align-items:center;gap:18px}
+  .nav-r .lg{font-weight:700;font-size:15px;color:var(--muted)} .nav-r .lg:hover{color:var(--ink)}
 
-  /* signature visual: phone + command card */
-  .visual{position:relative;justify-self:end;width:100%;max-width:390px}
-  .phone{border-radius:34px;background:#fff;border:1px solid var(--line);padding:10px;box-shadow:0 40px 80px -40px rgba(20,50,30,.45),0 8px 24px -16px rgba(20,50,30,.3);rotate:1.4deg}
-  .phone .screen{border-radius:26px;overflow:hidden;aspect-ratio:460/720;background:#FBE9F0}
-  .phone .screen img{width:100%;height:100%;object-fit:cover;object-position:top center}
-  .cmd{position:absolute;left:-26px;bottom:36px;background:var(--code);border-radius:13px;padding:13px 15px;font-family:var(--mono);font-size:12.5px;line-height:1.7;color:var(--code-ink);box-shadow:0 24px 44px -20px rgba(6,20,12,.6);border:1px solid rgba(255,255,255,.07);max-width:270px;rotate:-2deg}
-  .cmd .dots{display:flex;gap:5px;margin-bottom:9px}
-  .cmd .dots i{width:8px;height:8px;border-radius:50%;background:#2c3b32;display:block}
-  .cmd .dots i:first-child{background:#e06b5e}.cmd .dots i:nth-child(2){background:#e6b24b}.cmd .dots i:nth-child(3){background:var(--cyan)}
-  .cmd .pr{color:var(--cyan)}.cmd .str{color:#8fd6a4}.cmd .ok{color:#7fe0b0}.cmd .dim{color:#7f9186}
+  /* hero */
+  .hero{position:relative;padding:56px 0 34px;overflow:clip}
+  .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(60% 42% at 76% 30%,color-mix(in srgb,var(--green) 15%,transparent),transparent 70%);pointer-events:none}
+  .hero-grid{position:relative;display:grid;grid-template-columns:1.02fr .98fr;gap:40px;align-items:center}
+  .hero h1{font-size:clamp(2.6rem,6vw,4.35rem);font-weight:900;line-height:1.04;letter-spacing:-.04em;margin:16px 0 0}
+  .hero h1 .g{color:var(--green)}
+  .hero .sub{font-size:clamp(1.05rem,1.6vw,1.22rem);color:var(--muted);margin:20px 0 0;max-width:30ch}
+  .hero-cta{display:flex;gap:11px;margin-top:30px;flex-wrap:wrap}
+  .hero-note{margin-top:15px;font-size:13.5px;color:var(--muted)}
 
-  /* ── features ── */
-  .feat{padding:20px 0 88px}
-  .feat-head{max-width:44ch;margin-bottom:40px}
-  .feat-head h2{font-size:clamp(1.5rem,3vw,2.1rem);font-weight:800;letter-spacing:-.02em;margin:12px 0 0}
+  /* phone fan */
+  .phones{position:relative;height:498px;justify-self:center;width:100%;max-width:440px}
+  .ph{position:absolute;top:0;left:50%;width:224px;border-radius:30px;background:#fff;padding:7px;border:1px solid var(--line);box-shadow:0 34px 60px -30px rgba(20,50,30,.5),0 6px 18px -12px rgba(20,50,30,.3);overflow:hidden}
+  .ph img{width:100%;height:474px;object-fit:cover;object-position:top;border-radius:24px;display:block}
+  .ph.c{transform:translateX(-50%) translateY(4px);z-index:3}
+  .ph.l{transform:translateX(-96%) translateY(46px) rotate(-9deg) scale(.9);z-index:2}
+  .ph.r{transform:translateX(-4%) translateY(46px) rotate(9deg) scale(.9);z-index:1}
+
+  /* value strip */
+  .vstrip{margin-top:12px}
+  .vrow{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+  .vitem{display:flex;align-items:center;gap:9px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:10px 18px;font-weight:700;font-size:14.5px;box-shadow:0 8px 20px -18px rgba(20,50,30,.5)}
+  .vitem .dot{width:8px;height:8px;border-radius:50%;background:var(--green)}
+
+  /* section base */
+  .sec{padding:74px 0}
+  .sec-h{text-align:center;max-width:32ch;margin:0 auto 44px}
+  .sec-h h2{font-size:clamp(1.7rem,3.4vw,2.5rem);font-weight:900;letter-spacing:-.03em;margin:12px 0 0}
+  .sec-h p{color:var(--muted);margin:14px 0 0;font-size:1.05rem}
+
+  /* features */
   .feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-  .fcard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px 24px;transition:transform .18s,box-shadow .25s,border-color .2s}
-  .fcard:hover{transform:translateY(-3px);box-shadow:0 20px 40px -28px rgba(20,50,30,.4);border-color:color-mix(in srgb,var(--green) 30%,var(--line))}
-  .fcard .tick{width:32px;height:32px;border-radius:9px;background:color-mix(in srgb,var(--green) 12%,#fff);display:grid;place-items:center;margin-bottom:15px}
-  .fcard .tick svg{width:18px;height:18px;stroke:var(--green-deep);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
-  .fcard h3{font-size:17px;font-weight:800;margin:0 0 7px;letter-spacing:-.01em}
-  .fcard p{margin:0;font-size:14.5px;color:var(--muted);line-height:1.6}
+  .fcard{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:28px 24px;transition:transform .18s,box-shadow .25s}
+  .fcard:hover{transform:translateY(-4px);box-shadow:0 26px 50px -30px rgba(20,50,30,.4)}
+  .feat-ic{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;margin-bottom:16px}
+  .feat-ic svg{width:24px;height:24px;stroke-width:2.1;fill:none;stroke-linecap:round;stroke-linejoin:round}
+  .fcard:nth-child(1) .feat-ic{background:var(--green-soft)} .fcard:nth-child(1) .feat-ic svg{stroke:var(--green-deep)}
+  .fcard:nth-child(2) .feat-ic{background:var(--peach)} .fcard:nth-child(2) .feat-ic svg{stroke:#D9822B}
+  .fcard:nth-child(3) .feat-ic{background:var(--lilac)} .fcard:nth-child(3) .feat-ic svg{stroke:#7A5CD8}
+  .fcard h3{font-size:18.5px;font-weight:800;margin:0 0 8px;letter-spacing:-.01em}
+  .fcard p{margin:0;font-size:14.8px;color:var(--muted)}
 
-  /* ── automation (dark signature band) ── */
-  .auto{background:var(--code);color:var(--code-ink);border-radius:30px;margin:0 var(--pad) 88px;overflow:hidden}
-  .auto-in{max-width:var(--maxw);margin:0 auto;padding:66px 34px}
-  .auto .eyebrow{color:var(--cyan)}.auto .eyebrow::before{background:var(--cyan)}
-  .auto h2{font-size:clamp(1.6rem,3.2vw,2.3rem);font-weight:800;letter-spacing:-.02em;margin:12px 0 0;color:#fff}
-  .auto .lead{color:#a9bcb0;max-width:46ch;margin:16px 0 0;font-size:clamp(1rem,1.4vw,1.1rem)}
-  .modes{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:40px}
-  .mode{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.09);border-radius:16px;padding:20px}
-  .mode .k{font-family:var(--mono);font-size:12px;letter-spacing:.05em;color:#8fa79a;margin-bottom:14px;display:flex;align-items:center;gap:8px}
-  .mode .k b{color:#fff;font-weight:700}
-  .mono-line{font-family:var(--mono);font-size:13px;line-height:1.85;color:var(--code-ink);word-break:break-all}
-  .mono-line .pr{color:var(--cyan)}.mono-line .str{color:#8fd6a4}.mono-line .ok{color:#7fe0b0}.mono-line .dim{color:#7f9186}
-  .chat{display:flex;flex-direction:column;gap:8px}
-  .bub{padding:9px 13px;border-radius:13px;font-size:13.5px;max-width:85%}
+  /* automation dark band */
+  .auto{background:var(--code);color:var(--code-ink);border-radius:32px;margin:0 var(--pad);overflow:hidden}
+  .auto-in{max-width:var(--maxw);margin:0 auto;padding:62px 34px;text-align:center}
+  .auto .eyebrow{color:var(--cyan)}
+  .auto h2{font-size:clamp(1.6rem,3.2vw,2.3rem);font-weight:900;color:#fff;letter-spacing:-.02em;margin:12px 0 0}
+  .auto .lead{color:#A7BBB0;max-width:44ch;margin:14px auto 0}
+  .modes{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:38px;text-align:left}
+  .mode{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:16px;padding:18px}
+  .mode .k{font-family:var(--mono);font-size:11.5px;letter-spacing:.05em;color:#8FA79A;margin-bottom:12px}
+  .mode .k b{color:#fff}
+  .ml{font-family:var(--mono);font-size:12.5px;line-height:1.8;word-break:break-all}
+  .ml .p{color:var(--cyan)} .ml .s{color:#8FD6A4} .ml .o{color:#7FE0B0}
+  .chat{display:flex;flex-direction:column;gap:7px}
+  .bub{padding:8px 12px;border-radius:12px;font-size:13px;max-width:88%}
   .bub.me{align-self:flex-end;background:var(--green);color:#fff;border-bottom-right-radius:4px}
   .bub.ai{align-self:flex-start;background:rgba(255,255,255,.1);border-bottom-left-radius:4px}
-  .guiclick{display:flex;align-items:center;gap:10px;height:100%;min-height:64px}
-  .guiclick .pill{font-size:13px;font-weight:700;color:#0d1712;background:var(--cyan);padding:9px 15px;border-radius:999px;position:relative}
-  .guiclick .cursor{font-size:18px}
+  .gclick{display:flex;align-items:center;gap:9px;min-height:52px}
+  .gclick .pill{font-size:12.5px;font-weight:800;color:#0d1712;background:var(--cyan);padding:8px 14px;border-radius:999px}
 
-  /* ── final cta ── */
-  .cta{padding:8px 0 96px;text-align:center}
-  .cta h2{font-size:clamp(1.7rem,3.4vw,2.5rem);font-weight:800;letter-spacing:-.025em;margin:0 auto;max-width:20ch}
-  .cta p{color:var(--muted);margin:16px auto 30px;max-width:38ch;font-size:1.05rem}
+  /* examples */
+  .exs{padding:74px 0}
+  .ex-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .ex{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:16px 16px 20px;transition:transform .18s,box-shadow .25s;display:block}
+  .ex:hover{transform:translateY(-4px);box-shadow:0 28px 54px -30px rgba(20,50,30,.42)}
+  .ex .shot{border-radius:16px;overflow:hidden;aspect-ratio:440/430;border:1px solid var(--line);margin-bottom:15px}
+  .ex .shot img{width:100%;height:100%;object-fit:cover;object-position:top}
+  .ex h3{font-size:16.5px;font-weight:800;margin:0 0 3px}
+  .ex p{margin:0;font-size:13.5px;color:var(--muted)}
+  .ex .go{margin-top:12px;display:inline-flex;align-items:center;gap:6px;font-weight:800;font-size:14px;color:var(--green-deep)}
 
-  /* ── footer ── */
-  footer{border-top:1px solid var(--line);padding:34px 0}
-  .foot-in{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
-  .foot-b{display:flex;align-items:center;gap:9px;font-weight:800}
+  /* final cta */
+  .cta{text-align:center;padding:20px 0 92px}
+  .cta-box{background:linear-gradient(160deg,var(--green),var(--green-deep));border-radius:32px;padding:56px 30px;color:#fff;box-shadow:0 30px 60px -30px color-mix(in srgb,var(--green) 70%,transparent)}
+  .cta-box h2{font-size:clamp(1.7rem,3.4vw,2.4rem);font-weight:900;letter-spacing:-.03em;margin:0}
+  .cta-box p{opacity:.92;margin:14px auto 26px;max-width:32ch}
+  .cta-box .btn-pri{background:#fff;color:var(--green-deep);box-shadow:0 12px 26px -12px rgba(0,0,0,.35)}
+  .cta-box .btn-pri:hover{background:#F3FBF5}
+
+  footer{border-top:1px solid var(--line);padding:32px 0}
+  .foot-in{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+  .foot-b{display:flex;align-items:center;gap:9px;font-weight:900}
   .foot-b img{width:26px;height:26px;border-radius:8px}
-  .foot-r{display:flex;gap:20px;font-size:14px;color:var(--muted)}
-  .foot-r a:hover{color:var(--ink)}
+  .foot-r{display:flex;gap:18px;font-size:14px;color:var(--muted)} .foot-r a:hover{color:var(--ink)}
 
-  /* reveal */
-  .rv{opacity:0;transform:translateY(18px);transition:opacity .6s cubic-bezier(.2,.6,.2,1),transform .6s cubic-bezier(.2,.6,.2,1)}
+  .rv{opacity:0;transform:translateY(20px);transition:opacity .6s cubic-bezier(.2,.6,.2,1),transform .6s cubic-bezier(.2,.6,.2,1)}
   .rv.in{opacity:1;transform:none}
-  :focus-visible{outline:2.5px solid var(--green);outline-offset:3px;border-radius:6px}
-  .fcard,.mode,.hero-copy,.visual,.phone,.phone .screen{min-width:0}
-  .phone,.phone .screen{max-width:100%}
+  :focus-visible{outline:3px solid var(--green);outline-offset:3px;border-radius:8px}
 
-  @media (max-width:860px){
-    .hero{padding:48px 0 60px}
-    .hero-grid{grid-template-columns:1fr;gap:52px}
-    .visual{justify-self:center;max-width:320px;margin-top:8px}
-    .phone{rotate:0deg}
-    .cmd{position:static;left:auto;rotate:0deg;margin:14px auto 0;max-width:300px}
-    .feat-grid{grid-template-columns:1fr}
-    .modes{grid-template-columns:1fr}
-    .auto{margin:0 16px 64px}.auto-in{padding:48px 24px}
-    .nav-r .login{display:none}
+  @media (max-width:880px){
+    .hero{padding:34px 0 20px}
+    .hero-grid{grid-template-columns:1fr;gap:20px;text-align:center}
+    .hero .sub{margin-left:auto;margin-right:auto} .hero-cta{justify-content:center}
+    .phones{height:430px;max-width:360px;transform:scale(.92)}
+    .feat-grid,.modes,.ex-grid{grid-template-columns:1fr}
+    .auto{margin:0 16px}.auto-in{padding:46px 22px}
+    .nav-r .lg{display:none}
+    .sec{padding:56px 0}.exs{padding:56px 0}
   }
-  @media (prefers-reduced-motion:reduce){
-    .rv{opacity:1;transform:none;transition:none}
-    html{scroll-behavior:auto}
-    .btn,.fcard{transition:none}
-  }
+  @media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
 </style>
 </head>
 <body>
-<header class="nav" id="nav">
-  <div class="wrap nav-in">
-    <a class="brand" href="/"><img src="/assets/bugi-mascot.jpg" alt=""> 부기</a>
-    <div class="nav-r">
-      <a class="login" href="/login">로그인</a>
-      <a class="btn btn-pri" href="/login">시작하기</a>
-    </div>
-  </div>
-</header>
+<header class="nav" id="nav"><div class="wrap nav-in">
+  <a class="brand" href="/"><img src="/assets/bugi-mascot.jpg" alt=""> 부기</a>
+  <div class="nav-r"><a class="lg" href="/login">로그인</a><a class="btn btn-pri" href="/login">시작하기</a></div>
+</div></header>
 
 <main>
-  <section class="hero">
-    <div class="wrap hero-grid">
-      <div class="hero-copy">
-        <span class="eyebrow">링크 인 바이오</span>
-        <h1>클릭하거나,<br>명령하거나,<br><span class="accent">AI에게 맡기거나.</span></h1>
-        <p class="sub">링크 인 바이오를 만드는 세 가지 방법. 흩어진 링크를 한 페이지에 모으고, 화면·명령어·AI 중 편한 대로 관리하세요.</p>
-        <div class="hero-cta">
-          <a class="btn btn-pri btn-lg" href="/login">무료로 시작하기</a>
-          <a class="btn btn-ghost" href="/demo">예시 보기</a>
-        </div>
-        <div class="hero-note">설치 없이, <b>무료로</b> 시작 · 몇 분이면 완성</div>
+  <section class="hero"><div class="wrap hero-grid">
+    <div class="hero-copy">
+      <span class="eyebrow">링크 인 바이오</span>
+      <h1>링크 하나로,<br><span class="g">뭐든 시작</span>하세요.</h1>
+      <p class="sub">인스타·유튜브·블로그·쇼핑까지 흩어진 링크를 한 페이지에. 코딩 없이 몇 분이면 완성돼요.</p>
+      <div class="hero-cta">
+        <a class="btn btn-pri btn-lg" href="/login">무료로 시작하기</a>
+        <a class="btn btn-ghost" href="#examples">예시 보기</a>
       </div>
-      <div class="visual rv">
-        <div class="phone">
-          <div class="screen"><img src="/assets/demo-preview.jpg" alt="부기로 만든 링크 페이지 예시" width="460" height="720" loading="lazy"></div>
-        </div>
-        <div class="cmd">
-          <div class="dots"><i></i><i></i><i></i></div>
-          <div><span class="pr">$</span> linkbio add <span class="str">"새 영상"</span></div>
-          <div><span class="ok">✓</span> 공개 페이지 반영됨</div>
-        </div>
-      </div>
+      <div class="hero-note">카드 등록 없이 · 설치 없이 · 무료로</div>
     </div>
-  </section>
+    <div class="phones rv" aria-hidden="true">
+      <div class="ph l"><img src="/assets/ph-demo.jpg" alt="" loading="lazy"></div>
+      <div class="ph r"><img src="/assets/ph-kkanajae.jpg" alt="" loading="lazy"></div>
+      <div class="ph c"><img src="/assets/ph-bugi.jpg" alt="부기로 만든 링크 페이지 예시"></div>
+    </div>
+  </div></section>
 
-  <section class="feat">
-    <div class="wrap">
-      <div class="feat-head rv">
-        <span class="eyebrow">만들기</span>
-        <h2>링크 페이지에 필요한 건 다 있어요.</h2>
-      </div>
-      <div class="feat-grid">
-        <div class="fcard rv">
-          <div class="tick"><svg viewBox="0 0 24 24"><path d="M12 3l2.5 5 5.5.8-4 3.9.9 5.5-4.9-2.6L7.6 18l.9-5.5-4-3.9L10 8z"/></svg></div>
-          <h3>원하는 대로 꾸미기</h3>
-          <p>테마·색·폰트·배경, 프로필 사진까지. 화면에서 고르면 바로 반영돼요.</p>
-        </div>
-        <div class="fcard rv">
-          <div class="tick"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M3 9h18M8 14h8"/></svg></div>
-          <h3>무엇이든 담기</h3>
-          <p>링크 버튼, 소개 글, 유튜브 영상, 상품 카드(쿠팡·토스)를 원하는 순서로.</p>
-        </div>
-        <div class="fcard rv">
-          <div class="tick"><svg viewBox="0 0 24 24"><path d="M4 19V5M4 19h16M8 15l3.5-4 3 2.5L20 8"/></svg></div>
-          <h3>성과 확인</h3>
-          <p>방문 수와 유입 경로, 링크별 클릭·전환율을 자동으로 모아서 보여줘요.</p>
-        </div>
-      </div>
-    </div>
-  </section>
+  <div class="wrap vstrip"><div class="vrow">
+    <span class="vitem rv"><span class="dot"></span>코딩 없이</span>
+    <span class="vitem rv"><span class="dot"></span>몇 분이면 완성</span>
+    <span class="vitem rv"><span class="dot"></span>무료로 시작</span>
+  </div></div>
 
-  <section class="auto rv">
-    <div class="auto-in">
-      <span class="eyebrow">자동화-네이티브</span>
-      <h2>화면이 전부가 아니에요.</h2>
-      <p class="lead">부기는 CLI와 MCP를 지원해요. 발행 파이프라인에 연결하거나, 클로드 같은 AI에게 맡길 수 있어요. 링크 페이지를 이렇게 다루는 도구는 아직 흔치 않아요.</p>
-      <div class="modes">
-        <div class="mode">
-          <div class="k"><b>화면</b> GUI</div>
-          <div class="guiclick">
-            <span class="pill">+ 링크 추가</span>
-            <span class="cursor">🖱️</span>
-          </div>
-        </div>
-        <div class="mode">
-          <div class="k"><b>명령어</b> CLI</div>
-          <div class="mono-line"><span class="pr">$</span> linkbio picks add <span class="str">"새 영상"</span><br><span class="ok">✓</span> <span class="dim">반영됨</span></div>
-        </div>
-        <div class="mode">
-          <div class="k"><b>AI</b> MCP</div>
-          <div class="chat">
-            <span class="bub me">부기야, 새 링크 추가해줘</span>
-            <span class="bub ai">✓ 올렸어요</span>
-          </div>
-        </div>
-      </div>
+  <section class="sec"><div class="wrap">
+    <div class="sec-h rv"><span class="eyebrow">만들기</span><h2>필요한 건 다 있어요.</h2><p>프로필부터 링크, 통계까지 — 화면에서 고르면 바로 반영돼요.</p></div>
+    <div class="feat-grid">
+      <div class="fcard rv"><div class="feat-ic"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9 6.8 19.2l1-5.8-4.3-4.1 5.9-.9z"/></svg></div><h3>원하는 대로 꾸미기</h3><p>테마·색상·폰트·배경, 프로필·배경 사진, 이모지 스티커까지 자유롭게.</p></div>
+      <div class="fcard rv"><div class="feat-ic"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 9h18M8 14h8"/></svg></div><h3>무엇이든 담기</h3><p>링크 버튼, 소개 글, 유튜브 영상, 상품 카드까지 원하는 순서로.</p></div>
+      <div class="fcard rv"><div class="feat-ic"><svg viewBox="0 0 24 24"><path d="M4 19V5M4 19h16M8 15l3.5-4 3 2.5L20 8"/></svg></div><h3>성과 확인</h3><p>방문 수와 유입 경로, 링크별 클릭·전환율을 자동으로 모아서.</p></div>
     </div>
-  </section>
+  </div></section>
 
-  <section class="cta">
-    <div class="wrap">
-      <h2 class="rv">내 링크 페이지, 지금 만들어보세요.</h2>
-      <p class="rv">이름만 정하면 바로 시작해요. 카드 등록도, 설치도 필요 없어요.</p>
-      <a class="btn btn-pri btn-lg rv" href="/login">무료로 시작하기</a>
+  <section class="auto rv"><div class="auto-in">
+    <span class="eyebrow">자동화-네이티브</span>
+    <h2>사람도, AI도 관리해요.</h2>
+    <p class="lead">화면(GUI)뿐 아니라 CLI와 MCP를 지원해요. 발행 파이프라인에 연결하거나, 클로드 같은 AI에게 맡길 수 있어요.</p>
+    <div class="modes">
+      <div class="mode"><div class="k"><b>화면</b> · GUI</div><div class="gclick"><span class="pill">＋ 링크 추가</span>🖱️</div></div>
+      <div class="mode"><div class="k"><b>명령어</b> · CLI</div><div class="ml"><span class="p">$</span> linkbio add <span class="s">"새 영상"</span><br><span class="o">✓</span> 반영됨</div></div>
+      <div class="mode"><div class="k"><b>AI</b> · MCP</div><div class="chat"><span class="bub me">부기야, 링크 추가해줘</span><span class="bub ai">✓ 올렸어요</span></div></div>
     </div>
-  </section>
+  </div></section>
+
+  <section class="exs" id="examples"><div class="wrap">
+    <div class="sec-h rv"><span class="eyebrow">예시</span><h2>이렇게 만들 수 있어요.</h2><p>같은 도구로 만든, 서로 다른 페이지들. 눌러서 직접 둘러보세요.</p></div>
+    <div class="ex-grid">
+      <a class="ex rv" href="/bugi"><div class="shot"><img src="/assets/ph-bugi.jpg" alt="부기 개인 페이지"></div><h3>개인 링크</h3><p>유튜브·인스타·블로그를 한 곳에</p><span class="go">부기 페이지 보기 →</span></a>
+      <a class="ex rv" href="/demo"><div class="shot"><img src="/assets/ph-demo.jpg" alt="미나 쇼핑 큐레이션"></div><h3>쇼핑 큐레이션</h3><p>상품 카드·카테고리 필터로</p><span class="go">미나 페이지 보기 →</span></a>
+      <a class="ex rv" href="/kkanajae"><div class="shot"><img src="/assets/ph-kkanajae.jpg" alt="깐깐아재 채널"></div><h3>크리에이터 채널</h3><p>회차별 추천을 카드로</p><span class="go">깐깐아재 보기 →</span></a>
+    </div>
+  </div></section>
+
+  <section class="cta"><div class="wrap"><div class="cta-box rv">
+    <h2>내 링크 페이지, 지금 시작하세요.</h2>
+    <p>이름만 정하면 바로 만들어요. 무료, 설치 없이.</p>
+    <a class="btn btn-pri btn-lg" href="/login">무료로 시작하기</a>
+  </div></div></section>
 </main>
 
-<footer>
-  <div class="wrap foot-in">
-    <a class="foot-b" href="/"><img src="/assets/bugi-mascot.jpg" alt=""> 부기</a>
-    <div class="foot-r">
-      <a href="/demo">예시</a>
-      <a href="/login">로그인</a>
-      <a href="/login">시작하기</a>
-    </div>
-  </div>
-</footer>
+<footer><div class="wrap foot-in">
+  <a class="foot-b" href="/"><img src="/assets/bugi-mascot.jpg" alt=""> 부기</a>
+  <div class="foot-r"><a href="#examples">예시</a><a href="/login">로그인</a><a href="/login">시작하기</a></div>
+</div></footer>
 
 <script>
-  // nav border on scroll
-  const nav = document.getElementById("nav");
-  const onScroll = () => nav.classList.toggle("scrolled", window.scrollY > 8);
-  onScroll(); addEventListener("scroll", onScroll, {passive:true});
-  // scroll reveal
-  const io = new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target);}})},{threshold:.14});
-  document.querySelectorAll(".rv").forEach((el,i)=>{el.style.transitionDelay=(Math.min(i,4)*0.06)+"s";io.observe(el);});
+  const nav=document.getElementById("nav");
+  const os=()=>nav.classList.toggle("scrolled",scrollY>8); os(); addEventListener("scroll",os,{passive:true});
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target);}}),{threshold:.12});
+  document.querySelectorAll(".rv").forEach((el,i)=>{el.style.transitionDelay=(Math.min(i,3)*0.05)+"s";io.observe(el);});
 </script>
 </body>
 </html>
