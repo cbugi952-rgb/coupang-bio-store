@@ -380,7 +380,9 @@ function render(data){
   document.getElementById("pf-handle").textContent = h;
   document.getElementById("pf-sig").textContent = [pf.name, h].filter(Boolean).join(" · ");
   document.getElementById("pf-bio").textContent = pf.bio || "";
-  document.getElementById("pf-disc").textContent = pf.disclosure || "";
+  // 제휴 고지는 실제 제휴 링크(쿠팡·토스)가 있는 픽이 하나라도 있을 때만 (없으면 오고지)
+  const hasAff = (Array.isArray(data.picks) ? data.picks : []).some(p => p.coupang || p.toss);
+  document.getElementById("pf-disc").textContent = hasAff ? (pf.disclosure || "") : "";
   document.title = pf.name || "내 링크";
 
   // 한줄 공지
