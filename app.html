@@ -296,7 +296,7 @@ function renderBoard(){
     const src = activeCat==="전체" ? visible : visible.filter(p=>p.category===activeCat);
     const ordered = src.slice().sort((a,b)=>(b.status==="latest"?1:0)-(a.status==="latest"?1:0));
     html += `<div class="eyebrow reveal"><span class="tick"></span>${activeCat==="전체"?"전체 픽":esc(activeCat)}</div>` + ordered.map(listRow).join("");
-    if(!visible.length) html = (Array.isArray(ALL.blocks) && ALL.blocks.length) ? "" : `<div class="empty">아직 등록된 링크가 없어요.</div>`;
+    if(!visible.length) html = "";   // 픽 없으면 공개페이지엔 빈 보드(소셜·블록·문의가 콘텐츠를 채움)
     board.innerHTML = html;
     board.querySelectorAll(".reveal").forEach((el,i)=>el.style.animationDelay=(i*0.05)+"s");
     board.querySelectorAll(".catchip").forEach(b=>b.addEventListener("click",()=>{ activeCat=b.dataset.cat; renderBoard(); }));
@@ -311,7 +311,7 @@ function renderBoard(){
     const matched = visible.filter(p=>p.category===activeCat);
     html += `<div class="eyebrow reveal"><span class="tick"></span>${esc(activeCat)} · ${matched.length}개</div>` + matched.map(pickCard).join("");
   }
-  if(!visible.length) html = (Array.isArray(ALL.blocks) && ALL.blocks.length) ? "" : `<div class="empty">아직 등록된 링크가 없어요.</div>`;
+  if(!visible.length) html = "";   // 픽 없으면 공개페이지엔 빈 보드(소셜·블록·문의가 콘텐츠를 채움)
   board.innerHTML = html;
   board.querySelectorAll(".reveal").forEach((el,i)=>el.style.animationDelay=(i*0.05)+"s");
   board.querySelectorAll(".catchip").forEach(b=>b.addEventListener("click",()=>{ activeCat=b.dataset.cat; renderBoard(); }));
