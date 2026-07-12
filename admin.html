@@ -140,6 +140,16 @@
   .stk.on{background:var(--accent);border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 30%,transparent)}
   .blkrow{background:var(--card-2);border:1px solid var(--border);border-radius:12px;padding:10px 12px;margin-bottom:8px;display:flex;flex-direction:column;gap:7px}
   .blkhd{display:flex;align-items:center;justify-content:space-between;font-size:12.5px;font-weight:800;color:var(--muted)}
+  .btnrow{display:flex;gap:6px;align-items:center;margin-bottom:6px}
+  .btnrow input{flex:1 1 auto;min-width:0;font-family:inherit;font-size:13.5px;color:var(--ink);background:var(--field);border:1px solid var(--border-strong);border-radius:9px;padding:9px 10px}
+  .btnrow input:first-child{flex:0 0 33%}
+  .btnrow input:focus{outline:none;border-color:var(--accent)}
+  .brdel{flex:none;width:30px;height:32px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--muted);cursor:pointer;font-size:12px}
+  .brdel:hover{border-color:var(--danger);color:var(--danger)}
+  .btnadd{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
+  .btnadd button{font-family:inherit;font-size:12.5px;font-weight:700;padding:7px 11px;border:1.5px dashed var(--border-strong);border-radius:9px;background:transparent;color:var(--muted);cursor:pointer;transition:.12s}
+  .btnadd button:hover{border-color:var(--accent);color:var(--ink)}
+  .btnempty{font-size:12px;color:var(--faint);padding:2px 2px 8px;margin:0}
   .blkdel{width:24px;height:24px;border:none;background:transparent;color:var(--danger);cursor:pointer;font-size:13px;border-radius:6px}
   .blkdel:hover{background:var(--danger-bg)}
   .editor .efoot{display:flex;gap:8px;justify-content:flex-end;margin-top:6px}
@@ -231,8 +241,8 @@
     <form class="editor" id="editor" hidden>
       <h3><span class="tick"></span><span id="editorTitle">새 픽</span></h3>
       <div class="grid2">
-        <div class="fld"><label for="f-ep">회차 <span class="req">*</span></label><input type="text" id="f-ep" placeholder="EP09" maxlength="6" autocomplete="off"></div>
-        <div class="fld"><label for="f-topic">주제 <span class="req">*</span> <span class="hint">· 상품명</span></label><input type="text" id="f-topic" placeholder="욕실 곰팡이 제거제" maxlength="24" autocomplete="off"></div>
+        <div class="fld"><label for="f-ep">뱃지 <span class="opt">· 선택</span></label><input type="text" id="f-ep" placeholder="EP09 · NEW · 공지" maxlength="8" autocomplete="off"></div>
+        <div class="fld"><label for="f-topic">제목 <span class="req">*</span></label><input type="text" id="f-topic" placeholder="카드 제목" maxlength="24" autocomplete="off"></div>
       </div>
       <div class="fld"><label for="f-category">카테고리 <span class="hint">· 필터 탭</span></label>
         <select id="f-category">
@@ -250,11 +260,15 @@
         <input type="text" id="f-image" placeholder="images/ep09.jpg" autocomplete="off">
         <span class="hint">에피소드 만들 때 그 화 카툰으로 자동으로 채워짐. 비우면 텍스트 카드로 표시.</span>
       </div>
-      <div class="fld"><label for="f-coupang">쿠팡 파트너스 링크 <span class="req">*</span> <span class="hint">· 필수</span></label><input type="url" id="f-coupang" placeholder="https://link.coupang.com/a/..." autocomplete="off" inputmode="url"></div>
       <div class="fld">
-        <label for="f-toss">토스쇼핑 쉐어링크 <span class="opt">· 선택</span></label>
-        <input type="url" class="tossf" id="f-toss" placeholder="https://sharelink.toss.im/..." autocomplete="off" inputmode="url">
-        <span class="hint">있으면 넣기 — 비우면 공개페이지에서 토스 버튼이 비활성으로 표시돼.</span>
+        <label>버튼 <span class="hint">· 카드에 뜨는 링크 (라벨 + 주소, 최대 4개)</span></label>
+        <div id="btnlist"></div>
+        <div class="btnadd">
+          <button type="button" data-preset="쿠팡">＋ 쿠팡</button>
+          <button type="button" data-preset="toss 쇼핑">＋ 토스</button>
+          <button type="button" data-preset="">＋ 직접</button>
+        </div>
+        <span class="hint">첫 버튼은 강조색, 나머지는 아웃라인으로 표시돼요. 쇼핑·블로그·유튜브 등 뭐든.</span>
       </div>
       <div class="fld"><label for="f-youtube">리뷰 영상(쇼츠) <span class="opt">· 선택</span></label><input type="url" id="f-youtube" placeholder="https://youtube.com/shorts/..." autocomplete="off" inputmode="url"></div>
       <div class="fld"><label>상태</label>
@@ -417,6 +431,7 @@ function normalize(d){
     },
     picks:(Array.isArray(p.picks)?p.picks:[]).map(x=>({
       id:x.id||uid(), ep:x.ep??"", topic:x.topic??"", verdict:x.verdict??"", category:x.category??"", image:x.image??"", youtube:x.youtube??"",
+      buttons:(Array.isArray(x.buttons)?x.buttons:[]).map(b=>({label:b.label??"",url:b.url??""})),
       coupang:x.coupang??"", toss:x.toss??"",
       status:["latest","live","hidden"].includes(x.status)?x.status:"live"
     })),
@@ -425,7 +440,7 @@ function normalize(d){
 }
 
 let state=structuredClone(SEED);
-let editingId=null, formStatus="latest", dirty=false, loading=true;
+let editingId=null, formStatus="latest", dirty=false, loading=true, editorButtons=[];
 let clickCounts={};  // "{id}:{store}" -> count (관리자 조회)
 let viewCounts={};   // total + 유입경로 (관리자 조회)
 
@@ -461,8 +476,8 @@ function renderList(){
     const row=document.createElement("div");
     row.className="prow"+(p.status==="hidden"?" hidden":"")+(p.status==="latest"?" latest":"");
     const s=STAT[p.status];
-    const cp=p.coupang?`<span class="lk cp"><span class="tag">쿠팡</span>${short(p.coupang)}</span>`:`<span class="lk missing"><span class="tag">쿠팡</span>${I.warn}링크 없음 · 필수</span>`;
-    const ts=p.toss?`<span class="lk ts"><span class="tag">토스</span>${short(p.toss)}</span>`:`<span class="lk none"><span class="tag">토스</span>없음 · 선택</span>`;
+    const _btns=(Array.isArray(p.buttons)&&p.buttons.length)?p.buttons:legacyToButtons(p);
+    const linksHtml=_btns.length?_btns.map(b=>`<span class="lk"><span class="tag">${esc(b.label||"버튼")}</span>${b.url?short(b.url):"주소 없음"}</span>`).join(""):`<span class="lk none"><span class="tag">버튼</span>없음</span>`;
     const cc=Number(clickCounts[p.id+":coupang"]||0), tc=Number(clickCounts[p.id+":toss"]||0);
     const tv=Number(viewCounts.total||0), ctr=tv?Math.round((cc+tc)/tv*100):0;
     const clk=(cc||tc)?`<div class="clk">클릭 · 쿠팡 <b>${cc}</b> · 토스 <b>${tc}</b>${tv?` · 전환 <b>${ctr}%</b>`:""}</div>`:"";
@@ -470,7 +485,7 @@ function renderList(){
       <div class="grip"><button data-act="up" ${i===0?"disabled":""} aria-label="위로">${I.up}</button><button data-act="down" ${i===state.picks.length-1?"disabled":""} aria-label="아래로">${I.down}</button></div>
       ${p.image?`<img class="rthumb" src="${esc(p.image)}" alt="">`:`<span class="rthumb ph" title="이미지 없음">${I.img}</span>`}
       <span class="epc mono">${esc(p.ep)}</span>
-      <div class="pmeta"><h4>${esc(p.topic)}${p.category?` <span class="cattag">${esc(p.category)}</span>`:""}</h4><p>${esc(p.verdict)}</p><div class="links">${cp}${ts}</div>${clk}</div>
+      <div class="pmeta"><h4>${esc(p.topic)}${p.category?` <span class="cattag">${esc(p.category)}</span>`:""}</h4><p>${esc(p.verdict)}</p><div class="links">${linksHtml}</div>${clk}</div>
       <span class="pill ${s.cls}">${s.t}</span>
       <div class="acts">
         <button class="ic star ${p.status==="latest"?"on":""}" data-act="star" title="최신으로">${p.status==="latest"?I.star:I.starO}</button>
@@ -527,7 +542,9 @@ function openEditor(p){
   const catSel=$("#f-category"), pc=p?(p.category||""):"";
   if(pc && ![...catSel.options].some(o=>o.value===pc)){ const o=document.createElement("option"); o.value=o.textContent=pc; catSel.appendChild(o); }
   catSel.value=pc;
-  $("#f-image").value=p?(p.image||""):""; $("#f-coupang").value=p?p.coupang:""; $("#f-toss").value=p?p.toss:""; $("#f-youtube").value=p?(p.youtube||""):"";
+  $("#f-image").value=p?(p.image||""):""; $("#f-youtube").value=p?(p.youtube||""):"";
+  editorButtons = p ? ((Array.isArray(p.buttons)&&p.buttons.length) ? p.buttons.map(b=>({label:b.label||"",url:b.url||""})) : legacyToButtons(p)) : [];
+  renderBtnList();
   setFormStatus(p?p.status:"latest"); updateCC();
   $("#editor").hidden=false; $("#addBtn").hidden=true; $("#f-ep").focus(); $("#editor").scrollIntoView({behavior:"smooth",block:"nearest"});
 }
@@ -542,13 +559,25 @@ document.querySelectorAll("#f-status button").forEach(b=>b.addEventListener("cli
 $("#editor").addEventListener("submit",e=>{
   e.preventDefault();
   const ep=$("#f-ep").value.trim(), topic=$("#f-topic").value.trim();
-  if(!ep||!topic){ toast("회차와 주제는 꼭 입력해주세요"); return; }
-  const data={ep,topic,verdict:$("#f-verdict").value.trim(),category:$("#f-category").value,image:$("#f-image").value.trim(),youtube:$("#f-youtube").value.trim(),coupang:$("#f-coupang").value.trim(),toss:$("#f-toss").value.trim(),status:formStatus};
+  if(!topic){ toast("제목은 꼭 입력해주세요"); return; }
+  const buttons=editorButtons.map(b=>({label:(b.label||"").trim(),url:(b.url||"").trim()})).filter(b=>b.label||b.url);
+  const data={ep,topic,verdict:$("#f-verdict").value.trim(),category:$("#f-category").value,image:$("#f-image").value.trim(),youtube:$("#f-youtube").value.trim(),buttons,coupang:"",toss:"",status:formStatus};
   if(formStatus==="latest") state.picks.forEach(x=>{ if(x.status==="latest") x.status="live"; });
   if(editingId){ Object.assign(state.picks[idx(editingId)],data); toast("픽을 저장했어요"); }
   else{ state.picks.unshift({id:uid(),...data}); toast("새 픽을 추가했어요"); }
   markDirty(); closeEditor(); render();
 });
+
+// ── 자유 버튼 편집기 (라벨+URL, 최대 4 · 레거시 쿠팡/토스는 열 때 자동 변환) ──
+function legacyToButtons(p){ const a=[]; if(p&&p.coupang)a.push({label:"쿠팡",url:p.coupang}); if(p&&p.toss)a.push({label:"toss 쇼핑",url:p.toss}); return a; }
+function renderBtnList(){ const el=$("#btnlist"); if(!el)return;
+  el.innerHTML = editorButtons.length
+    ? editorButtons.map((b,i)=>`<div class="btnrow"><input data-bx="${i}" data-bk="label" placeholder="버튼 글자" value="${esc(b.label||"")}" maxlength="20" autocomplete="off"><input data-bx="${i}" data-bk="url" placeholder="주소(URL)" value="${esc(b.url||"")}" inputmode="url" autocomplete="off"><button type="button" class="brdel" data-brdel="${i}" aria-label="버튼 삭제">✕</button></div>`).join("")
+    : `<p class="btnempty">아직 버튼이 없어요. 아래에서 추가하세요.</p>`;
+}
+$("#btnlist").addEventListener("input",e=>{ const t=e.target,i=t.dataset.bx,k=t.dataset.bk; if(i==null||!k)return; editorButtons[+i][k]=t.value; markDirty(); });
+$("#btnlist").addEventListener("click",e=>{ const d=e.target.closest("[data-brdel]"); if(!d)return; editorButtons.splice(+d.dataset.brdel,1); renderBtnList(); markDirty(); });
+document.querySelector(".btnadd").addEventListener("click",e=>{ const b=e.target.closest("button[data-preset]"); if(!b)return; if(editorButtons.length>=4){toast("버튼은 최대 4개까지예요");return;} editorButtons.push({label:b.dataset.preset||"",url:""}); renderBtnList(); markDirty(); });
 
 function bindProfile(){
   const p=state.profile;

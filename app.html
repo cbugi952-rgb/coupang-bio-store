@@ -94,6 +94,11 @@
   .bf-soft .pick .buy.coupang,.bf-soft .lrow .buy.coupang{background:color-mix(in srgb,var(--accent) 20%,transparent);color:var(--accent-deep)}
   .bf-soft .pick .buy.toss,.bf-soft .lrow .buy.toss{background:color-mix(in srgb,var(--toss) 18%,transparent);color:var(--toss)}
   .buy.off{background:transparent;border-color:var(--border);color:var(--faint);cursor:not-allowed;pointer-events:none}
+  /* 자유 버튼 (쇼핑 전용 아님): 첫=강조, 나머지=아웃라인 */
+  .buy.b-pri{background:var(--accent);color:var(--accent-ink)}
+  .buy.b-sec{background:transparent;border-color:var(--accent);color:var(--accent-deep)}
+  .bf-outline .pick .buy.b-pri,.bf-outline .lrow .buy.b-pri{background:transparent;border-color:var(--accent);color:var(--accent-deep)}
+  .bf-soft .pick .buy.b-pri,.bf-soft .lrow .buy.b-pri{background:color-mix(in srgb,var(--accent) 20%,transparent);color:var(--accent-deep)}
   .buy:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
   .shortslink{display:inline-flex;align-items:center;gap:5px;margin-top:10px;font-size:12.5px;font-weight:700;color:var(--accent-deep);text-decoration:none}
   .shortslink:hover{text-decoration:underline}
@@ -229,33 +234,48 @@ function buyLink(url, cls, label, id){
 }
 const tossLabel = () => `<span class="tw">toss</span> 쇼핑`;
 const shortsLink = (u) => u ? `<a class="shortslink" href="${esc(u)}" target="_blank" rel="noopener">▶ 리뷰 영상</a>` : "";
+// 자유 버튼 하나 (첫=강조, 나머지=아웃라인)
+function btnLink(b, i, id){
+  const cls = i===0 ? "b-pri" : "b-sec", label = esc(b.label || "열기");
+  if(b.url) return `<a class="buy ${cls}" href="${esc(b.url)}" target="_blank" rel="nofollow noopener" data-id="${esc(id)}">${label} ${ARROW}</a>`;
+  return `<span class="buy ${cls} off" aria-disabled="true">${label}</span>`;
+}
+// 카드 CTA: 새 buttons[] 우선, 없으면 레거시 쿠팡/토스(하위호환). 둘 다 없으면 버튼 없음.
+function ctaHtml(p, coupangLabel){
+  if(Array.isArray(p.buttons) && p.buttons.length) return p.buttons.map((b,i)=>btnLink(b,i,p.id)).join("");
+  if(p.coupang || p.toss) return buyLink(p.coupang,"coupang",coupangLabel,p.id) + buyLink(p.toss,"toss",tossLabel(),p.id);
+  return "";
+}
 
 let ALL = SEED, activeCat = "전체";
 let LAYOUT = "card", SHOW_IMAGES = true;   // 프로필 스타일 (card|list · 사진 on/off)
 
 function heroCard(p){
+  const cta = ctaHtml(p, "쿠팡에서 보기");
   return `<div class="latest reveal">
         ${(SHOW_IMAGES && p.image) ? `<img class="hero-img" src="${esc(p.image)}" alt="${esc(p.topic)}" loading="lazy">` : ""}
-        <div class="top"><span class="ep mono">${esc(p.ep)} · ${esc(p.topic)}</span><span class="liveb">최신</span></div>
+        <div class="top"><span class="ep mono">${p.ep?esc(p.ep)+" · ":""}${esc(p.topic)}</span><span class="liveb">최신</span></div>
         <h3>${esc(p.verdict || p.topic)}</h3>
-        <div class="cta">${buyLink(p.coupang,"coupang","쿠팡에서 보기",p.id)}${buyLink(p.toss,"toss",tossLabel(),p.id)}</div>
+        ${cta?`<div class="cta">${cta}</div>`:""}
         ${shortsLink(p.youtube)}
         <svg class="doodle" viewBox="0 0 120 120" fill="none" aria-hidden="true"><path d="M60 14c26 0 46 20 46 46s-20 46-46 46S14 86 14 60 34 14 60 14Z" stroke="#131313" stroke-opacity=".18" stroke-width="3" stroke-dasharray="6 9" stroke-linecap="round"/></svg>
       </div>`;
 }
 function pickCard(p){
+  const cta = ctaHtml(p, "쿠팡");
   return `<div class="pick reveal">
-        <div class="phead">${(SHOW_IMAGES && p.image) ? `<img class="thumb" src="${esc(p.image)}" alt="" loading="lazy">` : ""}<span class="epc mono">${esc(p.ep)}</span><div class="txt"><h4>${esc(p.topic)}</h4><p>${esc(p.verdict)}</p></div></div>
-        <div class="cta">${buyLink(p.coupang,"coupang","쿠팡",p.id)}${buyLink(p.toss,"toss",tossLabel(),p.id)}</div>
+        <div class="phead">${(SHOW_IMAGES && p.image) ? `<img class="thumb" src="${esc(p.image)}" alt="" loading="lazy">` : ""}${p.ep?`<span class="epc mono">${esc(p.ep)}</span>`:""}<div class="txt"><h4>${esc(p.topic)}</h4><p>${esc(p.verdict)}</p></div></div>
+        ${cta?`<div class="cta">${cta}</div>`:""}
         ${shortsLink(p.youtube)}
       </div>`;
 }
 // 심플 리스트형 한 줄 (사진 없이 이름+한마디+구매버튼)
 function listRow(p){
   const hot = p.status==="latest" ? `<span class="lbadge">최신</span>` : "";
+  const cta = ctaHtml(p, "쿠팡");
   return `<div class="lrow reveal">
         <div class="lmeta"><h4>${esc(p.topic)}${hot}</h4><p>${esc(p.verdict)}</p></div>
-        <div class="lcta">${buyLink(p.coupang,"coupang","쿠팡",p.id)}${buyLink(p.toss,"toss",tossLabel(),p.id)}</div>
+        ${cta?`<div class="lcta">${cta}</div>`:""}
         ${shortsLink(p.youtube)}
       </div>`;
 }
@@ -380,9 +400,8 @@ function render(data){
   document.getElementById("pf-handle").textContent = h;
   document.getElementById("pf-sig").textContent = [pf.name, h].filter(Boolean).join(" · ");
   document.getElementById("pf-bio").textContent = pf.bio || "";
-  // 제휴 고지는 실제 제휴 링크(쿠팡·토스)가 있는 픽이 하나라도 있을 때만 (없으면 오고지)
-  const hasAff = (Array.isArray(data.picks) ? data.picks : []).some(p => p.coupang || p.toss);
-  document.getElementById("pf-disc").textContent = hasAff ? (pf.disclosure || "") : "";
+  // 제휴 고지는 사용자가 설정했을 때만 표시 (기본 빈값 → 안 뜸)
+  document.getElementById("pf-disc").textContent = pf.disclosure || "";
   document.title = pf.name || "내 링크";
 
   // 한줄 공지
