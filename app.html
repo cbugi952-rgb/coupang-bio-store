@@ -411,7 +411,7 @@ function render(data){
 
   // 소셜
   const sc = pf.socials || {};
-  const chips = [["유튜브",sc.youtube],["틱톡",sc.tiktok],["인스타",sc.instagram],["스레드",sc.threads],["네이버블로그",sc.naverBlog],["X",sc.x]]
+  const chips = [["유튜브",sc.youtube],["틱톡",sc.tiktok],["인스타",sc.instagram],["스레드",sc.threads],["블로그",sc.naverBlog],["X",sc.x]]
     .filter(([t,u]) => u).map(([t,u]) => `<a class="chip" href="${esc(u)}" target="_blank" rel="noopener">${t}</a>`).join("");
   document.getElementById("pf-socials").innerHTML = chips;
 
