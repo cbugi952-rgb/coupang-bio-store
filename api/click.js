@@ -1,6 +1,7 @@
 // 클릭 집계 — POST(공개, 카운트 +1) / GET(관리자, 카운트 조회).
 // Redis 해시 "clicks:{handle}", 필드 = "{pickId}:{store}" (store = coupang | toss).
 import { store, handleFrom } from "../lib/store.js";
+import { rateLimit } from "../lib/ratelimit.js";
 
 const STORES = ["coupang", "toss"];
 
@@ -8,6 +9,8 @@ export default async function handler(req, res) {
   const HKEY = "clicks:" + handleFrom(req);
 
   if (req.method === "POST") {
+    const rl = await rateLimit(req, { scope: "beacon", limit: 120, windowSec: 60 });
+    if (!rl.ok) return res.status(204).end();
     let body = req.body;
     if (typeof body === "string") { try { body = JSON.parse(body); } catch { body = null; } }
     const id = body && typeof body.id === "string" ? body.id.slice(0, 40) : "";

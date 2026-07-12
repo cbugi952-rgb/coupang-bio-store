@@ -4,8 +4,13 @@ import {
   getUserByEmail, createUser, sessionCookie, clearCookie, isSecureReq,
 } from "../../lib/auth.js";
 import { provisionSite, sanitizeHandle } from "../../lib/site.js";
+import { rateLimit } from "../../lib/ratelimit.js";
 
 const emailRe = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+const tooMany = (res, rl, msg) => {
+  res.setHeader("Retry-After", String(rl.retryAfter || 60));
+  return res.status(429).json({ ok: false, error: msg });
+};
 function readBody(req) {
   let b = req.body;
   if (typeof b === "string") { try { b = JSON.parse(b); } catch { b = {}; } }
@@ -34,6 +39,9 @@ export default async function handler(req, res) {
   }
 
   if (action === "signup") {
+    // 가입 남용 방어 = 사이트/키/유저 키가 무제한 생성되어 Upstash 쿼터 터지는 것 차단
+    const rl = await rateLimit(req, { scope: "signup", limit: 5, windowSec: 3600 });
+    if (!rl.ok) return tooMany(res, rl, "가입 시도가 너무 많습니다. 잠시 후 다시 시도해주세요.");
     const email = String(b.email || "").trim();
     const password = String(b.password || "");
     const handle = sanitizeHandle(b.handle);
@@ -50,6 +58,9 @@ export default async function handler(req, res) {
   }
 
   if (action === "login") {
+    // 무차별 대입(brute-force) 방어
+    const rl = await rateLimit(req, { scope: "login", limit: 12, windowSec: 600 });
+    if (!rl.ok) return tooMany(res, rl, "로그인 시도가 너무 많습니다. 잠시 후 다시 시도해주세요.");
     const email = String(b.email || "").trim();
     const user = await getUserByEmail(email);
     if (!user || !verifyPassword(String(b.password || ""), user.salt, user.hash)) {
