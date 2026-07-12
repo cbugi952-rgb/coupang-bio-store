@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>깐깐아재 · 링크 관리자</title>
+<title>링크 관리자</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23131313'/><circle cx='50' cy='50' r='20' fill='none' stroke='%23FFD400' stroke-width='9'/></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -214,7 +214,7 @@
 </head>
 <body>
 <div class="appbar">
-  <span class="brand"><span class="sq"></span><span id="siteName">깐깐아재</span> <small>링크 관리자</small></span>
+  <span class="brand"><span class="sq"></span><span id="siteName"></span> <small>링크 관리자</small></span>
   <span class="spacer"></span>
   <button class="btn ghost" id="keyBtn" title="관리자 비밀번호 설정/변경">🔑</button>
   <button class="btn ghost" id="logoutBtn" title="로그아웃" hidden>로그아웃</button>
@@ -224,12 +224,12 @@
 
 <div class="shell">
   <section>
-    <div class="col-h"><h2>아재 픽</h2><span class="sub">회차별 링크 · 맨 위 = 최신</span><span class="count" id="count">0개</span></div>
+    <div class="col-h"><h2>픽 목록</h2><span class="sub">맨 위 = 최신</span><span class="count" id="count">0개</span></div>
     <div class="statbar" id="statbar" hidden></div>
-    <button class="addbar" id="addBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>새 아재 픽 추가</button>
+    <button class="addbar" id="addBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>새 픽 추가</button>
 
     <form class="editor" id="editor" hidden>
-      <h3><span class="tick"></span><span id="editorTitle">새 아재 픽</span></h3>
+      <h3><span class="tick"></span><span id="editorTitle">새 픽</span></h3>
       <div class="grid2">
         <div class="fld"><label for="f-ep">회차 <span class="req">*</span></label><input type="text" id="f-ep" placeholder="EP09" maxlength="6" autocomplete="off"></div>
         <div class="fld"><label for="f-topic">주제 <span class="req">*</span> <span class="hint">· 상품명</span></label><input type="text" id="f-topic" placeholder="욕실 곰팡이 제거제" maxlength="24" autocomplete="off"></div>
@@ -241,7 +241,7 @@
         </select>
       </div>
       <div class="fld">
-        <label for="f-verdict">아재 한마디 <span class="hint">· 카드에 뜨는 코멘트</span></label>
+        <label for="f-verdict">한마디 <span class="hint">· 카드에 뜨는 코멘트</span></label>
         <input type="text" id="f-verdict" placeholder="곰팡이는 문지르는 게 아니라 녹이는 거다" maxlength="34" autocomplete="off">
         <div class="cc" id="cc-verdict">0 / 34</div>
       </div>
@@ -341,7 +341,7 @@
           <div class="fld"><label for="p-handle">핸들</label><input type="text" id="p-handle" maxlength="20"></div>
         </div>
         <div class="grid2">
-          <div class="fld"><label for="p-tagline">상단 태그 <span class="hint">· 훅바</span></label><input type="text" id="p-tagline" maxlength="16" placeholder="아재가 골라줬어"></div>
+          <div class="fld"><label for="p-tagline">상단 태그 <span class="hint">· 훅바</span></label><input type="text" id="p-tagline" maxlength="16" placeholder="한 줄 소개"></div>
           <div class="fld"><label for="p-accent">브랜드 색</label><input type="color" id="p-accent" value="#FFD400" style="height:40px;padding:4px"></div>
         </div>
         <div class="fld"><label for="p-bio">소개 <span class="hint">· 2줄</span></label><textarea id="p-bio" maxlength="60"></textarea></div>
@@ -374,7 +374,7 @@
   </aside>
 </div>
 
-<p class="note">깐깐아재 전용 관리자 · 로그인(비밀번호)한 사람만 게시 가능. 쿠팡=필수·토스쇼핑=선택 · 폰트=주아체(BM Jua) · 버튼 클릭 통계 자동 집계.</p>
+<p class="note">로그인(또는 사이트 키)한 사람만 게시 가능 · 쿠팡=필수·토스쇼핑=선택 · 버튼 클릭 통계 자동 집계.</p>
 <div class="toast" id="toast"><span class="k"></span><span id="toastText"></span></div>
 
 <script>
@@ -382,21 +382,16 @@
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const short=u=>esc(String(u).replace(/^https?:\/\//,''));
-// 멀티테넌트: ?u=핸들 사이트를 그 사이트 키로 편집 (기본 kkanajae)
-let HANDLE=((new URLSearchParams(location.search).get("u")||"kkanajae").replace(/[^a-z0-9_-]/gi,"").slice(0,40).toLowerCase())||"kkanajae";
+// 멀티테넌트: ?u=핸들 사이트를 그 사이트 키로 편집 (기본 = 루트 사이트 bugi)
+let HANDLE=((new URLSearchParams(location.search).get("u")||"bugi").replace(/[^a-z0-9_-]/gi,"").slice(0,40).toLowerCase())||"bugi";
 let API="/api/sites/"+encodeURIComponent(HANDLE);
 let KEYK="linkbio_key_"+HANDLE;   // 사이트별 키(비번) 저장 (비로그인 레거시)
 let LOGGEDIN=false;               // 세션 로그인 여부
 const uid=()=>"p"+Date.now().toString(36)+Math.floor(Math.random()*1e4).toString(36);
 
 const SEED={
-  profile:{name:"깐깐아재",handle:"kkanajae",tagline:"아재가 골라줬어",bio:"싸다고 다 사지 마세요.\n아재가 깐깐하게 따져서 골라줍니다.",avatar:"assets/avatar.jpg",accent:"#FFD400",layout:"card",showImages:true,theme:"cream",background:"solid",backgroundImage:"",font:"jua",buttonStyle:"round",buttonFill:"solid",notice:"",contactEmail:"",disclosure:"본 페이지의 상품 링크는 쿠팡 파트너스·토스쇼핑 쉐어링크 활동의 일환으로, 구매 시 이에 따른 일정액의 수수료를 제공받습니다.",socials:{youtube:"",tiktok:"",instagram:"",threads:"",naverBlog:"",x:""},stickers:[]},
-  picks:[
-    {id:uid(),ep:"EP08",topic:"샤워기 필터",verdict:"수돗물 냄새, 필터가 반은 잡는다",category:"욕실",image:"images/ep08.jpg",youtube:"",coupang:"https://link.coupang.com/a/ex08",toss:"https://sharelink.toss.im/ts08",status:"latest"},
-    {id:uid(),ep:"EP07",topic:"베개 커버 (진드기)",verdict:"진드기는 안 보여서 못 잡는다",category:"세탁",image:"",youtube:"",coupang:"https://link.coupang.com/a/ex07",toss:"",status:"live"},
-    {id:uid(),ep:"EP06",topic:"세탁조 클리너",verdict:"세탁기 속은 생각보다 시커멓다",category:"세탁",image:"images/ep06.jpg",youtube:"",coupang:"https://link.coupang.com/a/ex06",toss:"https://sharelink.toss.im/ts06",status:"live"},
-    {id:uid(),ep:"EP01",topic:"배수구 거름망",verdict:"싱크대 쉰내, 네 탓이 아니다",category:"주방",image:"",youtube:"",coupang:"https://link.coupang.com/a/ex01",toss:"https://sharelink.toss.im/ts01",status:"live"}
-  ],
+  profile:{name:"",handle:"",tagline:"",bio:"",avatar:"",accent:"#7C5CFC",layout:"card",showImages:true,theme:"cream",background:"solid",backgroundImage:"",font:"jua",buttonStyle:"round",buttonFill:"solid",notice:"",contactEmail:"",disclosure:"본 페이지의 상품 링크는 쿠팡 파트너스·토스쇼핑 쉐어링크 활동의 일환으로, 구매 시 이에 따른 일정액의 수수료를 제공받습니다.",socials:{youtube:"",tiktok:"",instagram:"",threads:"",naverBlog:"",x:""},stickers:[]},
+  picks:[],
   blocks:[]
 };
 
@@ -406,8 +401,8 @@ function normalize(d){
   const sc=pr.socials||{};
   return {
     profile:{
-      name:pr.name??"깐깐아재", handle:(pr.handle??"kkanajae").replace(/^@/,""), tagline:pr.tagline??"아재가 골라줬어", bio:pr.bio??"",
-      avatar:pr.avatar||"assets/avatar.jpg", accent:pr.accent||"#FFD400",
+      name:pr.name??"", handle:(pr.handle??"").replace(/^@/,""), tagline:pr.tagline??"", bio:pr.bio??"",
+      avatar:pr.avatar||"", accent:pr.accent||"#7C5CFC",
       layout:["card","list"].includes(pr.layout)?pr.layout:"card", showImages:pr.showImages===false?false:true,
       theme:["cream","dark","mint","pink","navy","mono"].includes(pr.theme)?pr.theme:"cream",
       background:["solid","gradient","dots","grid","image"].includes(pr.background)?pr.background:"solid",
@@ -461,7 +456,7 @@ function renderStats(){
 
 function renderList(){
   const L=$("#list"); L.innerHTML="";
-  if(!state.picks.length){ L.innerHTML=`<div class="pv-empty" style="max-width:none">아직 픽이 없어요. 위 <b>+ 새 아재 픽 추가</b>로 첫 픽을 넣어보세요.</div>`; $("#count").textContent="0개"; return; }
+  if(!state.picks.length){ L.innerHTML=`<div class="pv-empty" style="max-width:none">아직 픽이 없어요. 위 <b>+ 새 픽 추가</b>로 첫 픽을 넣어보세요.</div>`; $("#count").textContent="0개"; return; }
   state.picks.forEach((p,i)=>{
     const row=document.createElement("div");
     row.className="prow"+(p.status==="hidden"?" hidden":"")+(p.status==="latest"?" latest":"");
@@ -526,7 +521,7 @@ function act(a,id){
 function setFormStatus(v){ formStatus=v; document.querySelectorAll("#f-status button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===v)); }
 function openEditor(p){
   editingId=p?p.id:null;
-  $("#editorTitle").textContent=p?`${p.ep} 픽 편집`:"새 아재 픽";
+  $("#editorTitle").textContent=p?`${p.ep} 픽 편집`:"새 픽";
   $("#okBtn").textContent=p?"저장":"추가";
   $("#f-ep").value=p?p.ep:""; $("#f-topic").value=p?p.topic:""; $("#f-verdict").value=p?p.verdict:"";
   const catSel=$("#f-category"), pc=p?(p.category||""):"";
@@ -566,9 +561,9 @@ function bindProfile(){
   $("#d-bgimg").value=(p.backgroundImage||"").startsWith("data:")?"(업로드된 사진)":(p.backgroundImage||"");
   renderStickerPicker(); renderBlockList();
 }
-$("#p-name").addEventListener("input",e=>{state.profile.name=e.target.value||"깐깐아재";markDirty();renderPreview();});
-$("#p-handle").addEventListener("input",e=>{state.profile.handle=e.target.value.replace(/^@/,"")||"kkanajae";markDirty();renderPreview();});
-$("#p-tagline").addEventListener("input",e=>{state.profile.tagline=e.target.value||"아재 픽";markDirty();renderPreview();});
+$("#p-name").addEventListener("input",e=>{state.profile.name=e.target.value;markDirty();renderPreview();});
+$("#p-handle").addEventListener("input",e=>{state.profile.handle=e.target.value.replace(/^@/,"");markDirty();renderPreview();});
+$("#p-tagline").addEventListener("input",e=>{state.profile.tagline=e.target.value;markDirty();renderPreview();});
 $("#p-bio").addEventListener("input",e=>{state.profile.bio=e.target.value;markDirty();renderPreview();});
 $("#p-notice").addEventListener("input",e=>{state.profile.notice=e.target.value.trim();markDirty();});
 $("#p-contact").addEventListener("input",e=>{state.profile.contactEmail=e.target.value.trim();markDirty();});

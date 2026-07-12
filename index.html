@@ -4,14 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <base href="/"><!-- 예쁜 주소 /{handle} 에서도 상대경로 자산(avatar·이미지)이 루트 기준으로 풀리게 -->
-<title>깐깐아재 · 아재 픽</title>
-<meta name="description" content="싸다고 다 사지 마세요. 아재가 깐깐하게 따져서 골라줍니다.">
+<title>내 링크</title>
+<meta name="description" content="한 페이지에 내 모든 링크.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="깐깐아재 · 아재 픽">
-<meta property="og:description" content="싸다고 다 사지 마세요. 아재가 깐깐하게 따져서 골라줍니다.">
-<meta property="og:image" content="/assets/og.jpg">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="/assets/og.jpg">
+<meta property="og:title" content="내 링크">
+<meta property="og:description" content="한 페이지에 내 모든 링크.">
+<meta name="twitter:card" content="summary">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23131313'/><rect x='26' y='26' width='34' height='34' rx='7' fill='%23FFD400'/></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -170,17 +168,17 @@
   <section class="phone">
     <div class="stickers" id="stickers" aria-hidden="true"></div>
     <header class="hookbar">
-      <span class="brand"><span class="sq"></span><span id="pf-brand">깐깐아재</span></span>
-      <span class="bartag" id="pf-tag">아재가 골라줬어</span>
+      <span class="brand"><span class="sq"></span><span id="pf-brand"></span></span>
+      <span class="bartag" id="pf-tag"></span>
     </header>
     <div class="notice" id="notice" hidden><span class="dot"></span><span class="t" id="notice-t"></span></div>
     <div class="profile">
       <div class="ava">
-        <img id="pf-avatar" src="assets/avatar.jpg" alt="프로필" width="112" height="112">
+        <img id="pf-avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='50' fill='%23E2E2E6'/%3E%3Ccircle cx='50' cy='41' r='17' fill='%23B9B9C2'/%3E%3Cpath d='M22 82c0-16 13-25 28-25s28 9 28 25' fill='%23B9B9C2'/%3E%3C/svg%3E" alt="프로필" width="112" height="112">
         <svg viewBox="0 0 134 134" aria-hidden="true"><ellipse cx="67" cy="67" rx="61" ry="60" fill="none" stroke="var(--accent)" stroke-width="3.4" stroke-linecap="round" stroke-dasharray="352 40" stroke-dashoffset="18" filter="url(#rough)" transform="rotate(-6 67 67)"/></svg>
       </div>
-      <h1 class="name" id="pf-name">깐깐아재</h1>
-      <div class="handle mono" id="pf-handle">@kkanajae</div>
+      <h1 class="name" id="pf-name"></h1>
+      <div class="handle mono" id="pf-handle"></div>
       <p class="bio" id="pf-bio"></p>
       <nav class="socials" id="pf-socials"></nav>
     </div>
@@ -189,7 +187,7 @@
     <div class="contact" id="contact" hidden></div>
     <footer class="foot">
       <p class="disc" id="pf-disc"></p>
-      <span class="sig"><span class="sq"></span><span id="pf-sig">깐깐아재 · @kkanajae</span></span>
+      <span class="sig"><span class="sq"></span><span id="pf-sig"></span></span>
     </footer>
   </section>
 </main>
@@ -199,7 +197,9 @@
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
 
-// 멀티테넌트: 예쁜 주소 /{handle} 우선, 없으면 ?u=handle, 둘 다 없으면 기본(kkanajae).
+// 멀티테넌트: 예쁜 주소 /{handle} 우선, 없으면 ?u=handle, 둘 다 없으면 루트 기본 사이트.
+const ROOT_HANDLE = "bugi";   // 도메인 첫 화면(루트 /)이 보여줄 기본 사이트
+const NEUTRAL_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='50' fill='%23E2E2E6'/%3E%3Ccircle cx='50' cy='41' r='17' fill='%23B9B9C2'/%3E%3Cpath d='M22 82c0-16 13-25 28-25s28 9 28 25' fill='%23B9B9C2'/%3E%3C/svg%3E";
 function readHandle(pathname, search){
   let seg = String(pathname || "/").split("/").filter(Boolean)[0] || "";
   try { seg = decodeURIComponent(seg); } catch(_) {}
@@ -207,20 +207,17 @@ function readHandle(pathname, search){
   const reserved = new Set(["index","admin","login","api","assets","images"]);   // 파일시스템 라우트와 충돌 방지(방어)
   const fromPath = reserved.has(seg) ? "" : seg;
   const fromQuery = new URLSearchParams(search || "").get("u") || "";
-  return (fromPath || fromQuery).replace(/[^a-z0-9_-]/gi, "").slice(0, 40).toLowerCase();
+  const h = (fromPath || fromQuery).replace(/[^a-z0-9_-]/gi, "").slice(0, 40).toLowerCase();
+  return h || ROOT_HANDLE;
 }
 const HANDLE = readHandle(location.pathname, location.search);
 const QH = HANDLE ? "?handle=" + encodeURIComponent(HANDLE) : "";
 const PREVIEW = new URLSearchParams(location.search).get("preview") === "1";   // 관리자 미리보기(iframe) 모드
 
+// 페치 전 잠깐 보이는 시드 — 테넌트를 빌드타임에 알 수 없으니 중립(빈) 상태.
 const SEED = {
-  profile:{name:"깐깐아재",handle:"kkanajae",tagline:"아재가 골라줬어",bio:"싸다고 다 사지 마세요.\n아재가 깐깐하게 따져서 골라줍니다.",avatar:"assets/avatar.jpg",accent:"#FFD400",notice:"",contactEmail:"",disclosure:"본 페이지의 상품 링크는 쿠팡 파트너스·토스쇼핑 쉐어링크 활동의 일환으로, 구매 시 이에 따른 일정액의 수수료를 제공받습니다.",socials:{youtube:"",tiktok:"",instagram:"",threads:"",naverBlog:"",x:""}},
-  picks:[
-    {id:"s8",ep:"EP08",topic:"샤워기 필터",verdict:"수돗물 냄새, 필터가 반은 잡는다",category:"욕실",image:"images/ep08.jpg",youtube:"",coupang:"#",toss:"#",status:"latest"},
-    {id:"s6",ep:"EP06",topic:"세탁조 클리너",verdict:"세탁기 속은 생각보다 시커멓다",category:"세탁",image:"images/ep06.jpg",youtube:"",coupang:"#",toss:"#",status:"live"},
-    {id:"s3",ep:"EP03",topic:"수세미",verdict:"닦는 게 균 밭이면 답이 없다",category:"주방",image:"images/ep03.jpg",youtube:"",coupang:"#",toss:"",status:"live"},
-    {id:"s1",ep:"EP01",topic:"배수구 거름망",verdict:"싱크대 쉰내, 네 탓이 아니다",category:"주방",image:"",youtube:"",coupang:"#",toss:"#",status:"live"}
-  ]
+  profile:{name:"",handle:"",tagline:"",bio:"",avatar:"",accent:"#7C5CFC",notice:"",contactEmail:"",disclosure:"",socials:{youtube:"",tiktok:"",instagram:"",threads:"",naverBlog:"",x:""}},
+  picks:[]
 };
 
 function buyLink(url, cls, label, id){
@@ -229,7 +226,7 @@ function buyLink(url, cls, label, id){
   return `<span class="buy ${cls} off" aria-disabled="true" title="링크 없음">${label}</span>`;
 }
 const tossLabel = () => `<span class="tw">toss</span> 쇼핑`;
-const shortsLink = (u) => u ? `<a class="shortslink" href="${esc(u)}" target="_blank" rel="noopener">▶ 아재 리뷰 영상</a>` : "";
+const shortsLink = (u) => u ? `<a class="shortslink" href="${esc(u)}" target="_blank" rel="noopener">▶ 리뷰 영상</a>` : "";
 
 let ALL = SEED, activeCat = "전체";
 let LAYOUT = "card", SHOW_IMAGES = true;   // 프로필 스타일 (card|list · 사진 on/off)
@@ -277,7 +274,7 @@ function renderBoard(){
     const src = activeCat==="전체" ? visible : visible.filter(p=>p.category===activeCat);
     const ordered = src.slice().sort((a,b)=>(b.status==="latest"?1:0)-(a.status==="latest"?1:0));
     html += `<div class="eyebrow reveal"><span class="tick"></span>${activeCat==="전체"?"전체 픽":esc(activeCat)}</div>` + ordered.map(listRow).join("");
-    if(!visible.length) html = `<div class="empty">아재가 지금 픽을 고르는 중이에요. 곧 올라옵니다 🔧</div>`;
+    if(!visible.length) html = `<div class="empty">아직 등록된 링크가 없어요.</div>`;
     board.innerHTML = html;
     board.querySelectorAll(".reveal").forEach((el,i)=>el.style.animationDelay=(i*0.05)+"s");
     board.querySelectorAll(".catchip").forEach(b=>b.addEventListener("click",()=>{ activeCat=b.dataset.cat; renderBoard(); }));
@@ -286,13 +283,13 @@ function renderBoard(){
   if(activeCat==="전체"){
     const latest = picks.find(p=>p.status==="latest");
     const lives = picks.filter(p=>p.status==="live");
-    if(latest) html += `<div class="eyebrow reveal"><span class="tick"></span>이번 주 아재 픽</div>` + heroCard(latest);
+    if(latest) html += `<div class="eyebrow reveal"><span class="tick"></span>이번 주 픽</div>` + heroCard(latest);
     if(lives.length) html += `<div class="eyebrow arch reveal"><span class="tick"></span>지난 픽</div>` + lives.map(pickCard).join("");
   } else {
     const matched = visible.filter(p=>p.category===activeCat);
     html += `<div class="eyebrow reveal"><span class="tick"></span>${esc(activeCat)} · ${matched.length}개</div>` + matched.map(pickCard).join("");
   }
-  if(!visible.length) html = `<div class="empty">아재가 지금 픽을 고르는 중이에요. 곧 올라옵니다 🔧</div>`;
+  if(!visible.length) html = `<div class="empty">아직 등록된 링크가 없어요.</div>`;
   board.innerHTML = html;
   board.querySelectorAll(".reveal").forEach((el,i)=>el.style.animationDelay=(i*0.05)+"s");
   board.querySelectorAll(".catchip").forEach(b=>b.addEventListener("click",()=>{ activeCat=b.dataset.cat; renderBoard(); }));
@@ -373,16 +370,16 @@ function render(data){
   const phoneEl = document.querySelector(".phone");
   if(phoneEl){ phoneEl.classList.toggle("lay-list", LAYOUT==="list"); phoneEl.classList.toggle("no-img", !SHOW_IMAGES);
     phoneEl.classList.remove("bf-solid","bf-outline","bf-soft"); phoneEl.classList.add("bf-"+(["solid","outline","soft"].includes(pf.buttonFill)?pf.buttonFill:"solid")); }
-  document.getElementById("pf-avatar").src = pf.avatar || "assets/avatar.jpg";
-  document.getElementById("pf-brand").textContent = pf.name || "깐깐아재";
-  document.getElementById("pf-tag").textContent = pf.tagline || "아재 픽";
-  document.getElementById("pf-name").textContent = pf.name || "깐깐아재";
-  const h = "@" + (pf.handle || "kkanajae");
+  document.getElementById("pf-avatar").src = pf.avatar || NEUTRAL_AVATAR;
+  document.getElementById("pf-brand").textContent = pf.name || "";
+  document.getElementById("pf-tag").textContent = pf.tagline || "";
+  document.getElementById("pf-name").textContent = pf.name || "";
+  const h = pf.handle ? "@" + pf.handle : "";
   document.getElementById("pf-handle").textContent = h;
-  document.getElementById("pf-sig").textContent = (pf.name || "깐깐아재") + " · " + h;
+  document.getElementById("pf-sig").textContent = [pf.name, h].filter(Boolean).join(" · ");
   document.getElementById("pf-bio").textContent = pf.bio || "";
-  document.getElementById("pf-disc").textContent = pf.disclosure || SEED.profile.disclosure;
-  document.title = (pf.name || "깐깐아재") + " · 아재 픽";
+  document.getElementById("pf-disc").textContent = pf.disclosure || "";
+  document.title = pf.name || "내 링크";
 
   // 한줄 공지
   const noticeEl = document.getElementById("notice");
@@ -403,7 +400,7 @@ function render(data){
   const contact = document.getElementById("contact");
   if(pf.contactEmail){
     contact.hidden = false;
-    contact.innerHTML = `<a href="mailto:${esc(pf.contactEmail)}?subject=${encodeURIComponent("[" + (pf.name||"깐깐아재") + "] 협업·광고 문의")}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>협업·광고 문의</a>`;
+    contact.innerHTML = `<a href="mailto:${esc(pf.contactEmail)}?subject=${encodeURIComponent("[" + (pf.name||"내 링크") + "] 협업·광고 문의")}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>협업·광고 문의</a>`;
   } else contact.hidden = true;
 }
 
