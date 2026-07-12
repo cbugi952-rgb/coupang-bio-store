@@ -1,17 +1,25 @@
 // 세밀(RESTful) 사이트 API — CLI·MCP·자동화가 치는 프로그램용 엔드포인트.
-// 경로: /api/sites/{handle}[/picks[/{id}[/latest]]] | /picks/reorder | /profile | /stats
+// 공개 URL = /api/sites/{handle}[/picks[/{id}[/latest]]] | /picks/reorder | /profile | /stats
+//   → vercel.json rewrite 로 이 flat 함수에 매핑(path=세그먼트). Vercel spread catch-all([...path])이
+//     이 프로젝트에서 라우팅이 불안정해 flat 함수 + 명시 rewrite 로 대체(동작·URL 계약 불변).
 // 공개 GET(사이트 읽기)만 무인증, 나머지 쓰기는 authorize()(API키 또는 관리자 비번).
-// 통짜 저장 GUI는 그대로 /api/picks 사용 — 이 파일은 병렬 추가(기존 동작 불변).
-import { store } from "../../lib/store.js";
+import { store } from "../lib/store.js";
 import {
   DEFAULT, siteKey, getSite, saveSite, cleanPick, mergeProfile,
   enforceSingleLatest, newPickId, authorize, sanitizeHandle
-} from "../../lib/site.js";
+} from "../lib/site.js";
 
 function readBody(req) {
   let body = req.body;
   if (typeof body === "string") { try { body = JSON.parse(body); } catch { return {}; } }
   return body && typeof body === "object" ? body : {};
+}
+
+// rewrite 는 path 를 배열 또는 슬래시 결합 문자열로 넘길 수 있음 → 둘 다 수용.
+function pathParts(req) {
+  const raw = req.query ? req.query.path : undefined;
+  if (Array.isArray(raw)) return raw.flatMap((s) => String(s).split("/")).filter(Boolean);
+  return String(raw || "").split("/").filter(Boolean);
 }
 
 const ok = (res, obj, status = 200) => res.status(status).json({ ok: true, ...obj });
@@ -20,8 +28,7 @@ const fail = (res, status, error) => res.status(status).json({ ok: false, error 
 export default async function handler(req, res) {
   res.setHeader("content-type", "application/json; charset=utf-8");
 
-  const parts = Array.isArray(req.query.path) ? req.query.path
-    : (req.query.path ? [req.query.path] : []);
+  const parts = pathParts(req);
   const handle = sanitizeHandle(parts[0]);
   if (!handle) return fail(res, 400, "사이트 핸들이 필요합니다.");
   const seg1 = parts[1] || "";   // "" | picks | profile | stats

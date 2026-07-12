@@ -1,6 +1,7 @@
 {
   "cleanUrls": true,
   "rewrites": [
-    { "source": "/:handle([A-Za-z0-9_-]+)", "destination": "/index.html" }
+    { "source": "/api/sites/:path*", "destination": "/api/site-router?path=:path*" },
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
 }
