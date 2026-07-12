@@ -1,11 +1,15 @@
 {
-  "name": "@kkanajae/linkbio-mcp",
+  "name": "linkbio-mcp",
   "version": "0.1.0",
-  "private": true,
   "type": "module",
-  "description": "링크인바이오(kkanajae-links) 관리용 MCP 서버 — 클로드·커서 등 에이전트가 픽/프로필을 관리",
+  "description": "링크인바이오 관리용 MCP 서버 — 클로드·커서 등 AI 에이전트가 링크 페이지(픽/프로필)를 관리",
   "bin": { "linkbio-mcp": "server.js" },
+  "files": ["server.js", "README.md"],
   "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=18" },
+  "publishConfig": { "access": "public" },
+  "keywords": ["link-in-bio", "mcp", "claude", "linkbio"],
+  "license": "MIT",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.0",
     "zod": "^3.23.8"

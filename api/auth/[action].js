@@ -1,10 +1,11 @@
 // 인증 엔드포인트: POST /api/auth/{signup|login|logout} · GET /api/auth/me
 import {
   verifyPassword, createSession, destroySession, getSessionUser,
-  getUserByEmail, createUser, sessionCookie, clearCookie, isSecureReq,
+  getUserByEmail, createUser, sessionCookie, clearCookie, isSecureReq, saveUser,
 } from "../../lib/auth.js";
-import { provisionSite, sanitizeHandle } from "../../lib/site.js";
+import { provisionSite, sanitizeHandle, issueKey } from "../../lib/site.js";
 import { rateLimit } from "../../lib/ratelimit.js";
+import { store } from "../../lib/store.js";
 
 const emailRe = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 const tooMany = (res, rl, msg) => {
@@ -26,6 +27,22 @@ export default async function handler(req, res) {
     const u = await getSessionUser(req);
     if (!u) return res.status(401).json({ ok: false });
     return res.status(200).json({ ok: true, email: u.email, handle: u.handle });
+  }
+
+  // API 키 조회/재발급 (로그인 세션) — CLI·MCP·REST 연동용
+  if (action === "apikey") {
+    const u = await getSessionUser(req);
+    if (!u) return res.status(401).json({ ok: false, error: "로그인이 필요합니다." });
+    if (req.method === "GET") return res.status(200).json({ ok: true, key: u.apikey || null, handle: u.handle });
+    if (req.method === "POST") {
+      const rl = await rateLimit(req, { scope: "apikey", limit: 10, windowSec: 600 });
+      if (!rl.ok) return tooMany(res, rl, "요청이 너무 많습니다. 잠시 후 다시 시도해주세요.");
+      const key = await issueKey(u.handle);
+      if (u.apikey) { try { await store().del("apikey:" + u.apikey); } catch (e) {} }   // 옛 키 폐기
+      u.apikey = key; await saveUser(u);
+      return res.status(200).json({ ok: true, key });
+    }
+    res.setHeader("Allow", "GET, POST"); return res.status(405).json({ ok: false });
   }
 
   if (req.method !== "POST") { res.setHeader("Allow", "POST"); return res.status(405).json({ ok: false, error: "method not allowed" }); }
@@ -52,6 +69,7 @@ export default async function handler(req, res) {
     const prov = await provisionSite(handle, { name: handle });
     if (!prov.ok) return res.status(prov.status || 409).json({ ok: false, error: prov.error || "이미 쓰이는 주소입니다." });
     const user = await createUser(email, password, handle);
+    user.apikey = prov.key; await saveUser(user);   // 키를 유저에 저장 → 나중에 관리자에서 조회
     const token = await createSession(user.id);
     res.setHeader("Set-Cookie", sessionCookie(token, secure));
     return res.status(201).json({ ok: true, handle, key: prov.key });

@@ -159,6 +159,14 @@
   .panel > summary .chev{margin-left:auto;transition:transform .18s;color:var(--muted)}
   .panel[open] > summary .chev{transform:rotate(90deg)}
   .panel .body{padding:2px 15px 16px;border-top:1px solid var(--border)}
+  .devhint{font-size:12.5px;color:var(--muted);margin:8px 0 12px}
+  .keyrow{display:flex;gap:6px}
+  .keyrow input{flex:1;min-width:0;font-family:ui-monospace,SFMono-Regular,monospace;font-size:12.5px;padding:9px 10px;border:1px solid var(--border-strong);border-radius:9px;background:var(--field);color:var(--ink)}
+  .setblock{margin-top:12px}
+  .setlbl{display:flex;align-items:center;justify-content:space-between;font-size:11.5px;font-weight:800;color:var(--muted);margin-bottom:5px}
+  .setblock pre{margin:0;background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:11px 12px;font-family:ui-monospace,SFMono-Regular,monospace;font-size:11.5px;line-height:1.65;color:var(--ink);overflow-x:auto;white-space:pre;word-break:normal}
+  .cpy{font-family:inherit;font-size:11px;font-weight:700;color:var(--muted);background:transparent;border:1px solid var(--border);border-radius:7px;padding:3px 9px;cursor:pointer}
+  .cpy:hover{border-color:var(--accent);color:var(--ink)}
   .profthumb{display:flex;align-items:center;gap:12px;margin:12px 0 6px}
   .profthumb img{width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid var(--accent)}
   .profthumb .rp{font-size:11.5px;color:var(--muted)}
@@ -376,10 +384,19 @@
       </div>
     </details>
 
-    <div class="locked">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
-      <div class="t"><b>제휴 고지 문구 · 항상 표시</b><p>쿠팡 파트너스·토스쇼핑 둘 다 제휴(구매 시 수수료) 링크라, “활동의 일환으로 일정액의 수수료를 제공받습니다” 고지를 끌 수 없게 잠가둠. 페이지 하단에 자동으로 붙어.</p></div>
-    </div>
+    <details class="panel" id="devpanel">
+      <summary><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 9l-4 3 4 3M16 9l4 3-4 3M13 5l-2 14"/></svg> 개발자 · API 연동 <span class="chev">›</span></summary>
+      <div class="body">
+        <p class="devhint">CLI·MCP·API로 이 페이지를 코드나 AI(클로드)로 관리할 수 있어요. 키는 <b>내 사이트에만</b> 권한이 있어요.</p>
+        <div class="fld"><label for="apikey-in">내 API 키</label>
+          <div class="keyrow"><input type="text" id="apikey-in" readonly value="" placeholder="키 없음"><button type="button" id="apikey-copy" class="btn soft">복사</button><button type="button" id="apikey-new" class="btn soft">재발급</button></div>
+          <span class="hint">비밀이에요 — 노출되면 재발급하세요. REST는 지금 바로, CLI·MCP는 아래 이름으로 npm 공개 후 동작해요.</span>
+        </div>
+        <div class="setblock"><div class="setlbl">터미널 (CLI)<button type="button" class="cpy" data-cpy="snip-cli">복사</button></div><pre id="snip-cli"></pre></div>
+        <div class="setblock"><div class="setlbl">클로드·커서 (MCP)<button type="button" class="cpy" data-cpy="snip-mcp">복사</button></div><pre id="snip-mcp"></pre></div>
+        <div class="setblock"><div class="setlbl">직접 (REST API)<button type="button" class="cpy" data-cpy="snip-rest">복사</button></div><pre id="snip-rest"></pre></div>
+      </div>
+    </details>
   </section>
 
   <aside class="previewcol">
@@ -657,6 +674,28 @@ $("#blocklist").addEventListener("input",e=>{ const t=e.target,i=t.dataset.bi,f=
 $("#blocklist").addEventListener("click",e=>{ const d=e.target.closest("[data-bdel]"); if(!d) return; state.blocks.splice(+d.dataset.bdel,1); markDirty(); renderBlockList(); renderPreview(); });
 function addBlock(type){ state.blocks=state.blocks||[]; state.blocks.push({id:uid(),type,title:"",body:"",url:"",label:""}); markDirty(); renderBlockList(); renderPreview(); }
 $("#addText").addEventListener("click",()=>addBlock("text")); $("#addVideo").addEventListener("click",()=>addBlock("video")); $("#addLink").addEventListener("click",()=>addBlock("link"));
+
+// ── 개발자 패널: API 키 조회/재발급 + 연동 스니펫 ──
+function fillDev(key){
+  const K=key||"<내-API-키>", H=HANDLE, O=location.origin;
+  $("#apikey-in").value=key||"";
+  $("#snip-cli").textContent=`npm i -g linkbio\nlinkbio login --key ${K} --handle ${H}\nlinkbio add "새 링크" --url https://...`;
+  $("#snip-mcp").textContent=JSON.stringify({mcpServers:{linkbio:{command:"npx",args:["-y","linkbio-mcp"],env:{API_KEY:K,SITE_HANDLE:H,API_BASE:O+"/api"}}}},null,2);
+  $("#snip-rest").textContent=`curl -H "Authorization: Bearer ${K}" \\\n  ${O}/api/sites/${H}/picks`;
+}
+let devLoaded=false;
+async function loadDev(){
+  let key="";
+  if(LOGGEDIN){ try{ const r=await fetch("/api/auth/apikey"); const d=await r.json().catch(()=>({})); if(d.ok) key=d.key||""; }catch(e){} }
+  else { key=localStorage.getItem(KEYK)||""; const nb=$("#apikey-new"); if(nb) nb.style.display="none"; }   // 키모드는 재발급 불가
+  fillDev(key);
+}
+$("#devpanel").addEventListener("toggle",()=>{ if($("#devpanel").open && !devLoaded){ devLoaded=true; loadDev(); } });
+$("#apikey-copy").addEventListener("click",()=>{ const v=$("#apikey-in").value; if(!v){toast("키가 없어요");return;} try{navigator.clipboard.writeText(v);}catch(e){} toast("키를 복사했어요"); });
+$("#apikey-new").addEventListener("click",async()=>{
+  if(!confirm("새 키를 발급하면 이전 키는 즉시 무효화돼요. 계속할까요?")) return;
+  try{ const r=await fetch("/api/auth/apikey",{method:"POST"}); const d=await r.json().catch(()=>({})); if(d.ok&&d.key){ fillDev(d.key); toast("새 키를 발급했어요"); } else toast(d.error||"실패했어요",true); }catch(e){ toast("네트워크 오류",true); } });
+document.querySelectorAll(".cpy").forEach(b=>b.addEventListener("click",()=>{ const el=$("#"+b.dataset.cpy); if(el&&el.textContent){ try{navigator.clipboard.writeText(el.textContent);}catch(e){} toast("복사했어요"); } }));
 
 $("#keyBtn").addEventListener("click",()=>{
   const cur=localStorage.getItem(KEYK)||"";
