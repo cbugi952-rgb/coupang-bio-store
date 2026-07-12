@@ -2,6 +2,6 @@
   "cleanUrls": true,
   "rewrites": [
     { "source": "/api/sites/:path*", "destination": "/api/site-router?path=:path*" },
-    { "source": "/((?!api|assets|images).*)", "destination": "/" }
+    { "source": "/((?!api|assets|images).*)", "destination": "/app" }
   ]
 }
