@@ -3,14 +3,14 @@
 // 각 툴 = REST API(/api/sites/{handle}/...)의 얇은 래퍼. 진실의 원천은 API.
 //
 // 환경변수:
-//   API_BASE     기본 https://coupang-bio-store.vercel.app/api
+//   API_BASE     기본 https://onshelf.vercel.app/api
 //   API_KEY      사이트 스코프 키(sk_live_...) 또는 관리자 비밀번호(ADMIN_PASSWORD)
 //   SITE_HANDLE  기본 kkanajae
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 
-const API_BASE = (process.env.API_BASE || "https://coupang-bio-store.vercel.app/api").replace(/\/+$/, "");
+const API_BASE = (process.env.API_BASE || "https://onshelf.vercel.app/api").replace(/\/+$/, "");
 const API_KEY = process.env.API_KEY || "";
 const HANDLE = process.env.SITE_HANDLE || "kkanajae";
 

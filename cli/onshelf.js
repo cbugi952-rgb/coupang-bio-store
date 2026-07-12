@@ -9,7 +9,7 @@ import { homedir } from "node:os";
 import { join, dirname } from "node:path";
 
 const VERSION = "0.1.0";
-const DEFAULTS = { base: "https://coupang-bio-store.vercel.app/api", handle: "kkanajae" };
+const DEFAULTS = { base: "https://onshelf.vercel.app/api", handle: "kkanajae" };
 
 // ── 설정 파일 ──────────────────────────────────────────────
 function configPath() {

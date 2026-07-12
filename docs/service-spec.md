@@ -184,7 +184,7 @@ MVP 기능 완성 + 웨지 3종(웹·MCP·CLI) 완성. **`main`(라이브 kkanaj
 - **예쁜 주소** `/{handle}`: `vercel.json` rewrite(`/:handle → index.html`, cleanUrls로 /admin·/login·/assets·/api는 파일시스템 우선) + index.html `<base href="/">`(서브패스 상대경로 자산 보정) + 경로/`?u=` 겸용 핸들 리더. provision·CLI·가입 안내 주소 전부 `/{handle}`로 통일
 - **검증**: 로컬 목 저장소 + 미니 노드서버(실제 핸들러·실제 페이지 바이트·실제 CLI 프로세스), 누적 160+ 체크 통과
 
-**🟢 무료 소프트런치 배포 완료(2026-07-12).** `saas`→`main` fast-forward 머지 → Vercel 자동배포. 라이브 = `https://coupang-bio-store.vercel.app` (가입 `/login`, 공개 `/{handle}`, 관리자 `/admin?u={handle}`). 무료(과금 없음), 레이트리밋으로 남용 방어. 배포 4회로 실환경 확정: `c75df8f`(런치)→`92b3964`(catch-all 수정)→`4564afb`(SPA rewrite 형태)→`d5547ab`(destination `/`). 라이브 스모크 통과.
+**🟢 무료 소프트런치 배포 완료(2026-07-12).** `saas`→`main` fast-forward 머지 → Vercel 자동배포. 라이브 = `https://onshelf.vercel.app` (가입 `/login`, 공개 `/{handle}`, 관리자 `/admin?u={handle}`). 무료(과금 없음), 레이트리밋으로 남용 방어. 배포 4회로 실환경 확정: `c75df8f`(런치)→`92b3964`(catch-all 수정)→`4564afb`(SPA rewrite 형태)→`d5547ab`(destination `/`). 라이브 스모크 통과.
 
 **⚠️ Vercel 실배포 함정(로컬 목서버로 못 잡음 — 재사용 교훈)**
 - **spread catch-all(`api/sites/[...path].js`)이 이 프로젝트에서 라우팅 안 됨** (1세그 빈 param 400 / 2세그 404). → flat `api/site-router.js` + 명시 rewrite `/api/sites/:path* → /api/site-router?path=:path*`. 핸들러는 `req.query.path` 배열/슬래시문자열 둘 다 수용. (단일 동적 `[action].js`는 정상)

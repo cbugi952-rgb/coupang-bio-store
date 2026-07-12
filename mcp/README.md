@@ -17,7 +17,7 @@
 | `get_stats` | 방문·클릭·전환율 |
 
 ## 환경변수
-- `API_BASE` — 기본 `https://coupang-bio-store.vercel.app/api`
+- `API_BASE` — 기본 `https://onshelf.vercel.app/api`
 - `API_KEY` — 사이트 키(`sk_live_...`) **또는** 관리자 비밀번호(`ADMIN_PASSWORD`). 없으면 공개 읽기만.
 - `SITE_HANDLE` — 기본 `kkanajae`
 
@@ -30,7 +30,7 @@
       "command": "node",
       "args": ["C:\\Users\\yugeo\\Desktop\\kkanajae-links\\mcp\\server.js"],
       "env": {
-        "API_BASE": "https://coupang-bio-store.vercel.app/api",
+        "API_BASE": "https://onshelf.vercel.app/api",
         "API_KEY": "여기에_ADMIN_PASSWORD_또는_sk_live_키",
         "SITE_HANDLE": "kkanajae"
       }
@@ -41,7 +41,7 @@
 
 ## 설치 — Claude Code
 ```bash
-claude mcp add onshelf -e API_KEY=<키> -e API_BASE=https://coupang-bio-store.vercel.app/api -- node C:\Users\yugeo\Desktop\kkanajae-links\mcp\server.js
+claude mcp add onshelf -e API_KEY=<키> -e API_BASE=https://onshelf.vercel.app/api -- node C:\Users\yugeo\Desktop\kkanajae-links\mcp\server.js
 ```
 
 ## 데모
