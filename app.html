@@ -451,7 +451,7 @@ async function load(){
 window.addEventListener("message", e => {
   if(e.origin !== location.origin) return;
   const m = e.data;
-  if(m && m.type === "linkbio-preview" && m.data) render(m.data);
+  if(m && m.type === "onshelf-preview" && m.data) render(m.data);
 });
 
 // 방문 집계 (유입 경로 포함) — 미리보기 모드 제외

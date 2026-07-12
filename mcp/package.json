@@ -1,14 +1,14 @@
 {
-  "name": "linkbio-mcp",
+  "name": "onshelf-mcp",
   "version": "0.1.0",
   "type": "module",
-  "description": "링크인바이오 관리용 MCP 서버 — 클로드·커서 등 AI 에이전트가 링크 페이지(픽/프로필)를 관리",
-  "bin": { "linkbio-mcp": "server.js" },
+  "description": "Onshelf MCP 서버 — 클로드·커서 등 AI 에이전트가 링크 페이지(픽/프로필)를 관리",
+  "bin": { "onshelf-mcp": "server.js" },
   "files": ["server.js", "README.md"],
   "scripts": { "start": "node server.js" },
   "engines": { "node": ">=18" },
   "publishConfig": { "access": "public" },
-  "keywords": ["link-in-bio", "mcp", "claude", "linkbio"],
+  "keywords": ["link-in-bio", "mcp", "claude", "onshelf"],
   "license": "MIT",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.0",

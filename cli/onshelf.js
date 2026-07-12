@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-// linkbio — 자동화-네이티브 링크인바이오 CLI. REST API(/api/sites/{handle}/...)의 얇은 래퍼.
+// onshelf — 자동화-네이티브 링크인바이오 CLI. REST API(/api/sites/{handle}/...)의 얇은 래퍼.
 // 의존성 0 (Node 내장만). 웹 GUI·MCP와 같은 API를 친다 — 진실의 원천은 API.
 //
-// 설정: ~/.config/linkbio/config.json  ({ base, handle, key })  ← linkbio login 으로 저장
+// 설정: ~/.config/onshelf/config.json  ({ base, handle, key })  ← onshelf login 으로 저장
 // 우선순위(설정값): 환경변수(API_BASE/API_KEY/SITE_HANDLE) > config 파일 > 기본값
 import { readFileSync, writeFileSync, mkdirSync, chmodSync } from "node:fs";
 import { homedir } from "node:os";
@@ -13,9 +13,9 @@ const DEFAULTS = { base: "https://coupang-bio-store.vercel.app/api", handle: "kk
 
 // ── 설정 파일 ──────────────────────────────────────────────
 function configPath() {
-  if (process.env.LINKBIO_CONFIG) return process.env.LINKBIO_CONFIG;   // 테스트/오버라이드
+  if (process.env.ONSHELF_CONFIG) return process.env.ONSHELF_CONFIG;   // 테스트/오버라이드
   const dir = process.env.XDG_CONFIG_HOME || join(homedir(), ".config");
-  return join(dir, "linkbio", "config.json");
+  return join(dir, "onshelf", "config.json");
 }
 function loadConfig() {
   try { return JSON.parse(readFileSync(configPath(), "utf8")) || {}; } catch { return {}; }
@@ -52,7 +52,7 @@ async function api(method, path, { body, auth = true } = {}) {
   let data; try { data = text ? JSON.parse(text) : {}; } catch { data = { raw: text }; }
   if (!res.ok) {
     const msg = (data && data.error) || text || `HTTP ${res.status}`;
-    const hint = res.status === 401 ? "  → linkbio login 으로 키를 저장하세요."
+    const hint = res.status === 401 ? "  → onshelf login 으로 키를 저장하세요."
       : res.status === 403 ? "  → 이 키는 다른 사이트(handle)에 속합니다."
         : "";
     throw new Error(`${res.status} ${msg}${hint}`);
@@ -83,7 +83,7 @@ function parseArgs(argv, boolFlags) {
 // ── 표시 헬퍼 ──────────────────────────────────────────────
 const out = (...a) => console.log(...a);
 const mask = (k) => (!k ? "" : k.length <= 12 ? k.slice(0, 3) + "***" : k.slice(0, 7) + "…" + k.slice(-4));
-function fail(msg) { console.error("linkbio: " + msg); process.exit(1); }
+function fail(msg) { console.error("onshelf: " + msg); process.exit(1); }
 
 function readStdin() {
   return new Promise((resolve) => {
@@ -153,12 +153,12 @@ function profileBody(flags) {
   return b;
 }
 
-const USAGE = `linkbio — 자동화-네이티브 링크인바이오 CLI (v${VERSION})
+const USAGE = `onshelf — 자동화-네이티브 링크인바이오 CLI (v${VERSION})
 
-사용법: linkbio <명령> [옵션]
+사용법: onshelf <명령> [옵션]
 
 설정
-  login [--key <키>] [--base <url>] [--handle <핸들>]   키/서버/사이트 저장 (키는 stdin도 가능: echo <키> | linkbio login)
+  login [--key <키>] [--base <url>] [--handle <핸들>]   키/서버/사이트 저장 (키는 stdin도 가능: echo <키> | onshelf login)
   logout                                               저장된 키 삭제
   whoami                                               현재 base·handle·key(마스킹) 표시
   url                                                  공개/관리자 주소 출력
@@ -196,7 +196,7 @@ async function main() {
       let key = flags.key;
       if (key === undefined || key === true || key === "") key = await readStdin();
       if (key) cfg.key = String(key).trim();
-      if (!cfg.key) fail("키가 필요합니다.  linkbio login --key <sk_live_… 또는 관리자비번>  (또는 echo <키> | linkbio login)");
+      if (!cfg.key) fail("키가 필요합니다.  onshelf login --key <sk_live_… 또는 관리자비번>  (또는 echo <키> | onshelf login)");
       const p = saveConfig(cfg);
       out(`저장됨 → ${p}`);
       out(`  base=${cfg.base || DEFAULTS.base}  handle=${cfg.handle || DEFAULTS.handle}  key=${mask(cfg.key)}`);
@@ -228,27 +228,27 @@ async function main() {
       } else if (sub === "add") {
         const body = pickBody(flags);
         if (!body.topic) fail("--topic 은 필수입니다.");
-        if (!body.coupang) console.error("linkbio: (경고) --coupang 없음 — 쿠팡 링크 없이 게시됩니다.");
+        if (!body.coupang) console.error("onshelf: (경고) --coupang 없음 — 쿠팡 링크 없이 게시됩니다.");
         const { pick } = await api("POST", "/picks", { body });
         out(`추가됨: ${pick.id}  ${pick.ep ? `[${pick.ep}] ` : ""}${pick.topic}${pick.status === "latest" ? "  ★최신" : ""}`);
         if (flags.json) out(JSON.stringify(pick, null, 2));
       } else if (sub === "update" || sub === "set") {
-        const id = args[0]; if (!id) fail("픽 id가 필요합니다:  linkbio picks update <id> --toss <url>");
+        const id = args[0]; if (!id) fail("픽 id가 필요합니다:  onshelf picks update <id> --toss <url>");
         const body = pickBody(flags);
         if (!Object.keys(body).length) fail("바꿀 필드가 없습니다 (예: --toss <url>, --verdict \"...\").");
         const { pick } = await api("PATCH", `/picks/${encodeURIComponent(id)}`, { body });
         out(`수정됨: ${pick.id}  ${pick.topic}`);
         if (flags.json) out(JSON.stringify(pick, null, 2));
       } else if (sub === "rm" || sub === "remove" || sub === "delete" || sub === "del") {
-        const id = args[0]; if (!id) fail("픽 id가 필요합니다:  linkbio picks rm <id>");
+        const id = args[0]; if (!id) fail("픽 id가 필요합니다:  onshelf picks rm <id>");
         const r = await api("DELETE", `/picks/${encodeURIComponent(id)}`);
         out(`삭제됨: ${r.removed}`);
       } else if (sub === "latest") {
-        const id = args[0]; if (!id) fail("픽 id가 필요합니다:  linkbio picks latest <id>");
+        const id = args[0]; if (!id) fail("픽 id가 필요합니다:  onshelf picks latest <id>");
         const { pick } = await api("POST", `/picks/${encodeURIComponent(id)}/latest`);
         out(`최신 지정: ${pick.id}  ${pick.topic}`);
       } else if (sub === "reorder") {
-        if (!args.length) fail("id들을 순서대로 나열하세요:  linkbio picks reorder <id1> <id2> ...");
+        if (!args.length) fail("id들을 순서대로 나열하세요:  onshelf picks reorder <id1> <id2> ...");
         const { picks } = await api("POST", "/picks/reorder", { body: { ids: args } });
         out(fmtPicks(picks));
       } else fail(`알 수 없는 picks 하위명령: ${sub}  (list|add|update|rm|latest|reorder)`);
@@ -278,4 +278,4 @@ async function main() {
   }
 }
 
-main().catch((e) => { console.error("linkbio: " + e.message); process.exit(1); });
+main().catch((e) => { console.error("onshelf: " + e.message); process.exit(1); });

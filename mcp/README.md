@@ -1,6 +1,6 @@
-# linkbio MCP 서버
+# onshelf MCP 서버
 
-클로드·커서 등 AI 에이전트가 링크인바이오(kkanajae-links)의 픽·프로필을 **자연어로** 관리하게 하는 MCP 서버. "링크인바이오는 전부 GUI 전용"이라는 판을 깨는 웨지(자동화-네이티브)의 실물.
+클로드·커서 등 AI 에이전트가 Onshelf의 픽·프로필을 **자연어로** 관리하게 하는 MCP 서버. "링크인바이오는 전부 GUI 전용"이라는 판을 깨는 웨지(자동화-네이티브)의 실물.
 
 각 툴은 REST API(`/api/sites/{handle}/...`)의 얇은 래퍼다. 진실의 원천은 API.
 
@@ -26,7 +26,7 @@
 ```json
 {
   "mcpServers": {
-    "linkbio": {
+    "onshelf": {
       "command": "node",
       "args": ["C:\\Users\\yugeo\\Desktop\\kkanajae-links\\mcp\\server.js"],
       "env": {
@@ -41,7 +41,7 @@
 
 ## 설치 — Claude Code
 ```bash
-claude mcp add linkbio -e API_KEY=<키> -e API_BASE=https://coupang-bio-store.vercel.app/api -- node C:\Users\yugeo\Desktop\kkanajae-links\mcp\server.js
+claude mcp add onshelf -e API_KEY=<키> -e API_BASE=https://coupang-bio-store.vercel.app/api -- node C:\Users\yugeo\Desktop\kkanajae-links\mcp\server.js
 ```
 
 ## 데모

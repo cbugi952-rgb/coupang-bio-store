@@ -30,7 +30,7 @@ async function api(method, path, body) {
   return data;
 }
 
-const server = new McpServer({ name: "linkbio", version: "0.1.0" });
+const server = new McpServer({ name: "onshelf", version: "0.1.0" });
 
 const asText = (obj) => ({ content: [{ type: "text", text: JSON.stringify(obj, null, 2) }] });
 const wrap = (fn) => async (args) => {
@@ -115,4 +115,4 @@ server.registerTool("get_stats",
 
 const transport = new StdioServerTransport();
 await server.connect(transport);
-console.error(`linkbio MCP 실행 — API_BASE=${API_BASE} handle=${HANDLE} key=${API_KEY ? "설정됨" : "없음(공개읽기만)"}`);
+console.error(`onshelf MCP 실행 — API_BASE=${API_BASE} handle=${HANDLE} key=${API_KEY ? "설정됨" : "없음(공개읽기만)"}`);

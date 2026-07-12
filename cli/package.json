@@ -1,12 +1,12 @@
 {
-  "name": "linkbio",
+  "name": "onshelf",
   "version": "0.1.0",
   "type": "module",
-  "description": "링크인바이오 관리 CLI — 터미널·스크립트·발행훅에서 픽/프로필 관리. 의존성 0.",
-  "bin": { "linkbio": "linkbio.js" },
-  "files": ["linkbio.js", "README.md"],
+  "description": "Onshelf CLI — 터미널·스크립트·발행훅에서 링크 페이지(픽/프로필) 관리. 의존성 0.",
+  "bin": { "onshelf": "onshelf.js" },
+  "files": ["onshelf.js", "README.md"],
   "engines": { "node": ">=18" },
   "publishConfig": { "access": "public" },
-  "keywords": ["link-in-bio", "cli", "linkbio"],
+  "keywords": ["link-in-bio", "cli", "onshelf"],
   "license": "MIT"
 }

@@ -416,7 +416,7 @@ const short=u=>esc(String(u).replace(/^https?:\/\//,''));
 // 멀티테넌트: ?u=핸들 사이트를 그 사이트 키로 편집 (기본 = 루트 사이트 bugi)
 let HANDLE=((new URLSearchParams(location.search).get("u")||"bugi").replace(/[^a-z0-9_-]/gi,"").slice(0,40).toLowerCase())||"bugi";
 let API="/api/sites/"+encodeURIComponent(HANDLE);
-let KEYK="linkbio_key_"+HANDLE;   // 사이트별 키(비번) 저장 (비로그인 레거시)
+let KEYK="onshelf_key_"+HANDLE;   // 사이트별 키(비번) 저장 (비로그인 레거시)
 let LOGGEDIN=false;               // 세션 로그인 여부
 const uid=()=>"p"+Date.now().toString(36)+Math.floor(Math.random()*1e4).toString(36);
 
@@ -529,7 +529,7 @@ function heroBuys(p){
 // 미리보기 = 실제 공개페이지 iframe(/?preview=1)에 현재 상태를 postMessage로 밀어넣음 (WYSIWYG)
 function renderPreview(){
   const f=document.getElementById("pvframe");
-  if(f&&f.contentWindow){ try{ f.contentWindow.postMessage({type:"linkbio-preview",data:state}, location.origin); }catch(e){} }
+  if(f&&f.contentWindow){ try{ f.contentWindow.postMessage({type:"onshelf-preview",data:state}, location.origin); }catch(e){} }
 }
 
 function renderSave(){
@@ -679,8 +679,8 @@ $("#addText").addEventListener("click",()=>addBlock("text")); $("#addVideo").add
 function fillDev(key){
   const K=key||"<내-API-키>", H=HANDLE, O=location.origin;
   $("#apikey-in").value=key||"";
-  $("#snip-cli").textContent=`npm i -g linkbio\nlinkbio login --key ${K} --handle ${H}\nlinkbio add "새 링크" --url https://...`;
-  $("#snip-mcp").textContent=JSON.stringify({mcpServers:{linkbio:{command:"npx",args:["-y","linkbio-mcp"],env:{API_KEY:K,SITE_HANDLE:H,API_BASE:O+"/api"}}}},null,2);
+  $("#snip-cli").textContent=`npm i -g onshelf\nonshelf login --key ${K} --handle ${H}\nonshelf add "새 링크" --url https://...`;
+  $("#snip-mcp").textContent=JSON.stringify({mcpServers:{onshelf:{command:"npx",args:["-y","onshelf-mcp"],env:{API_KEY:K,SITE_HANDLE:H,API_BASE:O+"/api"}}}},null,2);
   $("#snip-rest").textContent=`curl -H "Authorization: Bearer ${K}" \\\n  ${O}/api/sites/${H}/picks`;
 }
 let devLoaded=false;
@@ -736,7 +736,7 @@ function setAuthUI(email){
 async function initAuth(){
   try{
     const r=await fetch("/api/auth/me",{cache:"no-store"});
-    if(r.ok){ const me=await r.json(); if(me.ok){ LOGGEDIN=true; if(me.handle) HANDLE=me.handle; API="/api/sites/"+encodeURIComponent(HANDLE); KEYK="linkbio_key_"+HANDLE; setAuthUI(me.email); } }
+    if(r.ok){ const me=await r.json(); if(me.ok){ LOGGEDIN=true; if(me.handle) HANDLE=me.handle; API="/api/sites/"+encodeURIComponent(HANDLE); KEYK="onshelf_key_"+HANDLE; setAuthUI(me.email); } }
   }catch(e){}
 }
 async function load(){
