@@ -28,7 +28,7 @@
   }
   *{box-sizing:border-box}
   html{scroll-behavior:smooth}
-  body{margin:0;font-family:var(--font);color:var(--ink);background:var(--bg);line-height:1.62;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  body{margin:0;font-family:var(--font);color:var(--ink);background:var(--bg);line-height:1.62;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;word-break:keep-all;overflow-x:hidden}
   a{color:inherit;text-decoration:none}
   img{max-width:100%;display:block}
   .wrap{max-width:var(--maxw);margin:0 auto;padding:0 var(--pad)}
@@ -169,8 +169,8 @@
         </div>
         <div class="cmd">
           <div class="dots"><i></i><i></i><i></i></div>
-          <div><span class="pr">$</span> linkbio picks add <span class="str">"새 영상"</span> <span class="dim">--latest</span></div>
-          <div><span class="ok">✓</span> 반영됐어요 · 공개 페이지 업데이트</div>
+          <div><span class="pr">$</span> linkbio add <span class="str">"새 영상"</span></div>
+          <div><span class="ok">✓</span> 공개 페이지 반영됨</div>
         </div>
       </div>
     </div>
