@@ -107,6 +107,14 @@
   .bub.ai{align-self:flex-start;background:rgba(255,255,255,.1);border-bottom-left-radius:4px}
   .gclick{display:flex;align-items:center;gap:9px;min-height:52px}
   .gclick .pill{font-size:12.5px;font-weight:800;color:#0d1712;background:var(--cyan);padding:8px 14px;border-radius:999px}
+  .cli-more{display:grid;grid-template-columns:1fr 1.08fr;gap:26px;align-items:center;text-align:left;margin-top:34px;padding-top:32px;border-top:1px solid rgba(255,255,255,.09)}
+  .cli-text h3{font-size:1.28rem;font-weight:900;color:#fff;margin:0 0 10px;letter-spacing:-.01em}
+  .cli-text h3 .hl{font-family:var(--mono);color:var(--cyan);font-size:.88em;font-weight:700}
+  .cli-text p{color:#A7BBB0;margin:0;font-size:.98rem}
+  .cli-text b{color:#DCEBE0;font-weight:700}
+  .cli-term{background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:18px}
+  .cli-term .ml{font-size:13px;line-height:2}
+  .cli-term .ml .dim{color:#6E837A}
 
   /* examples */
   .exs{padding:74px 0}
@@ -143,6 +151,7 @@
     .hero .sub{margin-left:auto;margin-right:auto} .hero-cta{justify-content:center}
     .phones{height:430px;max-width:360px;transform:scale(.92)}
     .feat-grid,.modes,.ex-grid{grid-template-columns:1fr}
+    .cli-more{grid-template-columns:1fr;gap:18px;text-align:center}
     .auto{margin:0 16px}.auto-in{padding:46px 22px}
     .nav-r .lg{display:none}
     .sec{padding:56px 0}.exs{padding:56px 0}
@@ -170,7 +179,7 @@
     </div>
     <div class="phones rv" aria-hidden="true">
       <div class="ph l"><img src="/assets/ph-demo.jpg" alt="" loading="lazy"></div>
-      <div class="ph r"><img src="/assets/ph-kkanajae.jpg" alt="" loading="lazy"></div>
+      <div class="ph r"><img src="/assets/ph-bomi.jpg" alt="" loading="lazy"></div>
       <div class="ph c"><img src="/assets/ph-bugi.jpg" alt="부기로 만든 링크 페이지 예시"></div>
     </div>
   </div></section>
@@ -199,6 +208,19 @@
       <div class="mode"><div class="k"><b>명령어</b> · CLI</div><div class="ml"><span class="p">$</span> linkbio add <span class="s">"새 영상"</span><br><span class="o">✓</span> 반영됨</div></div>
       <div class="mode"><div class="k"><b>AI</b> · MCP</div><div class="chat"><span class="bub me">부기야, 링크 추가해줘</span><span class="bub ai">✓ 올렸어요</span></div></div>
     </div>
+    <div class="cli-more">
+      <div class="cli-text">
+        <h3>터미널에서 바로, <span class="hl">linkbio</span></h3>
+        <p>명령어 한 줄로 링크를 추가·수정·정렬하고 통계까지 봐요. 영상 올리는 스크립트에 끼워두면 <b>발행할 때 링크가 자동으로 올라가요</b> — 화면을 열 필요도 없이.</p>
+      </div>
+      <div class="cli-term"><div class="ml">
+        <span class="dim">$</span> npm i -g linkbio<br>
+        <span class="p">$</span> linkbio add <span class="s">"새 영상"</span> --url youtu.be/…<br>
+        <span class="o">✓</span> <span class="dim">반영됨</span><br>
+        <span class="p">$</span> linkbio stats<br>
+        <span class="dim">방문 1,240 · 클릭 380 · 전환 30%</span>
+      </div></div>
+    </div>
   </div></section>
 
   <section class="exs" id="examples"><div class="wrap">
@@ -206,7 +228,7 @@
     <div class="ex-grid">
       <a class="ex rv" href="/bugi"><div class="shot"><img src="/assets/ph-bugi.jpg" alt="부기 개인 페이지"></div><h3>개인 링크</h3><p>유튜브·인스타·블로그를 한 곳에</p><span class="go">부기 페이지 보기 →</span></a>
       <a class="ex rv" href="/demo"><div class="shot"><img src="/assets/ph-demo.jpg" alt="미나 쇼핑 큐레이션"></div><h3>쇼핑 큐레이션</h3><p>상품 카드·카테고리 필터로</p><span class="go">미나 페이지 보기 →</span></a>
-      <a class="ex rv" href="/kkanajae"><div class="shot"><img src="/assets/ph-kkanajae.jpg" alt="깐깐아재 채널"></div><h3>크리에이터 채널</h3><p>회차별 추천을 카드로</p><span class="go">깐깐아재 보기 →</span></a>
+      <a class="ex rv" href="/bomi"><div class="shot"><img src="/assets/ph-bomi.jpg" alt="봄이 크리에이터 페이지"></div><h3>크리에이터·포트폴리오</h3><p>작업과 커미션을 한 곳에</p><span class="go">봄이 페이지 보기 →</span></a>
     </div>
   </div></section>
 
