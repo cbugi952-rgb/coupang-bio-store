@@ -76,6 +76,8 @@ function setMode(m){
 $("#tab-login").addEventListener("click",()=>setMode("login"));
 $("#tab-signup").addEventListener("click",()=>setMode("signup"));
 $("#handle").addEventListener("input",e=>{ e.target.value=e.target.value.replace(/[^a-zA-Z0-9_-]/g,"").toLowerCase(); });
+// 랜딩 클레임(onshelf.vercel.app/내이름)에서 넘어온 ?handle= 을 받아 가입 모드로 전환 + 프리필
+try{ const _h=new URLSearchParams(location.search).get("handle"); if(_h){ setMode("signup"); $("#handle").value=_h.replace(/[^a-zA-Z0-9_-]/g,"").toLowerCase().slice(0,40); } }catch(_){}
 
 $("#form").addEventListener("submit",async e=>{
   e.preventDefault();
