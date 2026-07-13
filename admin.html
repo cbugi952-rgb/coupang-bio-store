@@ -5,35 +5,34 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <title>링크 관리자</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23131313'/><circle cx='50' cy='50' r='20' fill='none' stroke='%23FFD400' stroke-width='9'/></svg>">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%2323A455'/><circle cx='38' cy='45' r='7' fill='%23fff'/><circle cx='62' cy='45' r='7' fill='%23fff'/></svg>">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
 <style>
   :root{
-    --bg:#EFE7D3; --panel:#FBF6EA; --card:#FFFFFF; --card-2:#F4ECD9; --field:#FFFFFF;
-    --border:#E4D9BE; --border-strong:#D6C8A4; --ink:#1B1710; --muted:#7A7059; --faint:#A99C7E;
-    --accent:#FFD400; --accent-deep:#A67D00; --accent-ink:#171307; --toss:#3182F6; --toss-deep:#1D6AE0;
+    --bg:#FAF6EE; --panel:#FFFDF8; --card:#FFFFFF; --card-2:#F4F0E4; --field:#FFFFFF;
+    --border:#ECE5D7; --border-strong:#DED5C4; --ink:#17231C; --muted:#5B6B60; --faint:#A2A99E;
+    --accent:#23A455; --accent-deep:#177E3D; --accent-ink:#FFFFFF; --toss:#3182F6; --toss-deep:#1D6AE0;
     --ok:#3E9E63; --ok-bg:#E6F3EA; --danger:#D8443F; --danger-bg:#FBE9E8;
-    --shadow:0 18px 44px -22px rgba(60,45,0,.5); --shadow-sm:0 6px 16px -12px rgba(60,45,0,.5);
+    --shadow:0 18px 44px -22px rgba(20,50,30,.45); --shadow-sm:0 6px 16px -12px rgba(20,50,30,.45);
   }
   @media (prefers-color-scheme:dark){
     :root{
-      --bg:#0E0E0D; --panel:#161512; --card:#1C1B15; --card-2:#232019; --field:#191813;
-      --border:#332F22; --border-strong:#423C2C; --ink:#F3ECD9; --muted:#A79D85; --faint:#7E7660;
-      --accent:#FFD400; --accent-deep:#FFD400; --accent-ink:#14120A; --toss:#4C90F7; --toss-deep:#7FB2FF;
+      --bg:#0E1512; --panel:#15201A; --card:#182219; --card-2:#202B23; --field:#18231C;
+      --border:#26332C; --border-strong:#33443A; --ink:#EAF2EC; --muted:#9DB2A7; --faint:#7E8C82;
+      --accent:#2CB863; --accent-deep:#2CB863; --accent-ink:#08130E; --toss:#4C90F7; --toss-deep:#7FB2FF;
       --ok:#57C083; --ok-bg:#16271C; --danger:#F0625D; --danger-bg:#2C1615;
       --shadow:0 22px 48px -22px rgba(0,0,0,.85); --shadow-sm:0 8px 20px -14px rgba(0,0,0,.8);
     }
   }
-  :root[data-theme="light"]{--bg:#EFE7D3;--panel:#FBF6EA;--card:#FFFFFF;--card-2:#F4ECD9;--field:#FFFFFF;--border:#E4D9BE;--border-strong:#D6C8A4;--ink:#1B1710;--muted:#7A7059;--faint:#A99C7E;--accent:#FFD400;--accent-deep:#A67D00;--accent-ink:#171307;--toss:#3182F6;--toss-deep:#1D6AE0;--ok:#3E9E63;--ok-bg:#E6F3EA;--danger:#D8443F;--danger-bg:#FBE9E8;--shadow:0 18px 44px -22px rgba(60,45,0,.5);--shadow-sm:0 6px 16px -12px rgba(60,45,0,.5)}
-  :root[data-theme="dark"]{--bg:#0E0E0D;--panel:#161512;--card:#1C1B15;--card-2:#232019;--field:#191813;--border:#332F22;--border-strong:#423C2C;--ink:#F3ECD9;--muted:#A79D85;--faint:#7E7660;--accent:#FFD400;--accent-deep:#FFD400;--accent-ink:#14120A;--toss:#4C90F7;--toss-deep:#7FB2FF;--ok:#57C083;--ok-bg:#16271C;--danger:#F0625D;--danger-bg:#2C1615;--shadow:0 22px 48px -22px rgba(0,0,0,.85);--shadow-sm:0 8px 20px -14px rgba(0,0,0,.8)}
+  :root[data-theme="light"]{--bg:#FAF6EE;--panel:#FFFDF8;--card:#FFFFFF;--card-2:#F4F0E4;--field:#FFFFFF;--border:#ECE5D7;--border-strong:#DED5C4;--ink:#17231C;--muted:#5B6B60;--faint:#A2A99E;--accent:#23A455;--accent-deep:#177E3D;--accent-ink:#FFFFFF;--toss:#3182F6;--toss-deep:#1D6AE0;--ok:#3E9E63;--ok-bg:#E6F3EA;--danger:#D8443F;--danger-bg:#FBE9E8;--shadow:0 18px 44px -22px rgba(20,50,30,.45);--shadow-sm:0 6px 16px -12px rgba(20,50,30,.45)}
+  :root[data-theme="dark"]{--bg:#0E1512;--panel:#15201A;--card:#182219;--card-2:#202B23;--field:#18231C;--border:#26332C;--border-strong:#33443A;--ink:#EAF2EC;--muted:#9DB2A7;--faint:#7E8C82;--accent:#2CB863;--accent-deep:#2CB863;--accent-ink:#08130E;--toss:#4C90F7;--toss-deep:#7FB2FF;--ok:#57C083;--ok-bg:#16271C;--danger:#F0625D;--danger-bg:#2C1615;--shadow:0 22px 48px -22px rgba(0,0,0,.85);--shadow-sm:0 8px 20px -14px rgba(0,0,0,.8)}
 
   *{box-sizing:border-box}
   [hidden]{display:none!important}
   html,body{margin:0}
   body{background:var(--bg);color:var(--ink);font-family:var(--font-body);-webkit-font-smoothing:antialiased;line-height:1.5;overflow-x:hidden}
-  :root{--font-display:'Jua','Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',system-ui,sans-serif;--font-body:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',system-ui,-apple-system,sans-serif}
+  :root{--font-display:"Pretendard Variable",Pretendard,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;--font-body:"Pretendard Variable",Pretendard,'Apple SD Gothic Neo','Malgun Gothic',system-ui,-apple-system,sans-serif}
   /* 주아체 = 브랜드/미리보기(공개페이지 미러). 관리 컨트롤은 고딕 유지 */
   .appbar .brand,.col-h h2,.pv-brand,.pv-name,.pv-hero h3,.pv-row h4,.pv-buy,.pv-eye,.pv-tag,.pv-chip{font-family:var(--font-display)}
   .mono{font-variant-numeric:tabular-nums;letter-spacing:.02em}
@@ -48,7 +47,7 @@
   .pv-contact{margin:9px 13px 0;text-align:center;font-size:10px;font-weight:800;color:var(--muted);border:1.3px dashed color-mix(in srgb,var(--accent) 45%,var(--border));border-radius:10px;padding:8px}
   button{font-family:inherit}
   h1,h2,h3,h4,p{margin:0}
-  .appbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px;padding:12px 20px;background:#131313;color:#F3ECD9;border-bottom:2px solid var(--accent)}
+  .appbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px;padding:12px 20px;background:#122019;color:#EAF2EC;border-bottom:2px solid var(--accent)}
   .appbar .brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:16px}
   .appbar .brand .sq{width:15px;height:15px;border-radius:4px;background:var(--accent)}
   .appbar .brand small{font-weight:600;font-size:12px;color:#B7AE96;margin-left:2px}
@@ -222,7 +221,7 @@
   .pv-foot p{font-size:9px;color:var(--muted);line-height:1.5}
   .pv-foot .sig{font-size:10px;font-weight:800;color:var(--muted);margin-top:8px;display:inline-flex;align-items:center;gap:5px}
   .pv-foot .sig i{width:9px;height:9px;border-radius:2px;background:var(--accent)}
-  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;background:#131313;color:#F3ECD9;font-weight:700;font-size:13.5px;padding:12px 18px;border-radius:12px;box-shadow:0 12px 30px -10px rgba(0,0,0,.6);display:flex;align-items:center;gap:9px;z-index:40;transition:opacity .25s,transform .25s;max-width:90vw}
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;background:#122019;color:#EAF2EC;font-weight:700;font-size:13.5px;padding:12px 18px;border-radius:12px;box-shadow:0 12px 30px -10px rgba(0,0,0,.6);display:flex;align-items:center;gap:9px;z-index:40;transition:opacity .25s,transform .25s;max-width:90vw}
   .toast .k{width:9px;height:9px;border-radius:50%;background:var(--accent);flex:none}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
   .toast.err .k{background:var(--danger)}
@@ -364,7 +363,7 @@
         </div>
         <div class="grid2">
           <div class="fld"><label for="p-tagline">상단 태그 <span class="hint">· 훅바</span></label><input type="text" id="p-tagline" maxlength="16" placeholder="한 줄 소개"></div>
-          <div class="fld"><label for="p-accent">브랜드 색</label><input type="color" id="p-accent" value="#FFD400" style="height:40px;padding:4px"></div>
+          <div class="fld"><label for="p-accent">브랜드 색</label><input type="color" id="p-accent" value="#23A455" style="height:40px;padding:4px"></div>
         </div>
         <div class="fld"><label for="p-bio">소개 <span class="hint">· 2줄</span></label><textarea id="p-bio" maxlength="60"></textarea></div>
         <div class="fld"><label for="p-notice">한줄 공지 <span class="opt">· 선택(비우면 숨김)</span></label><input type="text" id="p-notice" maxlength="60" placeholder="이번 주 신상 3종 업데이트"></div>
@@ -599,7 +598,7 @@ document.querySelector(".btnadd").addEventListener("click",e=>{ const b=e.target
 function bindProfile(){
   const p=state.profile;
   $("#p-name").value=p.name; $("#p-handle").value=p.handle; $("#p-tagline").value=p.tagline||""; $("#p-bio").value=p.bio;
-  $("#p-notice").value=p.notice||""; $("#p-contact").value=p.contactEmail||""; $("#p-accent").value=/^#[0-9a-fA-F]{6}$/.test(p.accent||"")?p.accent:"#FFD400";
+  $("#p-notice").value=p.notice||""; $("#p-contact").value=p.contactEmail||""; $("#p-accent").value=/^#[0-9a-fA-F]{6}$/.test(p.accent||"")?p.accent:"#23A455";
   $("#p-youtube").value=p.socials.youtube; $("#p-tiktok").value=p.socials.tiktok; $("#p-instagram").value=p.socials.instagram;
   $("#p-threads").value=p.socials.threads||""; $("#p-naverBlog").value=p.socials.naverBlog||""; $("#p-x").value=p.socials.x||"";
   segActive("d-theme",p.theme); segActive("d-bg",p.background); segActive("d-font",p.font); segActive("d-btn",p.buttonStyle); segActive("d-fill",p.buttonFill); segActive("d-layout",p.layout); segActive("d-images",p.showImages===false?"off":"on");
