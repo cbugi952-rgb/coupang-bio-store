@@ -159,7 +159,7 @@
   .auto-cta a{color:var(--cyan);font-weight:800}
 
   /* examples */
-  .ex-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .ex-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:18px}
   .ex{background:#fff;border:1px solid var(--line);border-radius:24px;padding:16px 16px 20px;transition:transform .18s,box-shadow .25s;display:block}
   .ex:hover{transform:translateY(-6px) rotate(-.6deg);box-shadow:0 30px 56px -30px rgba(20,50,30,.45)}
   .ex .shot{border-radius:16px;overflow:hidden;aspect-ratio:440/430;border:1px solid var(--line);margin-bottom:15px}
@@ -238,7 +238,7 @@
         <p class="hero-note">카드 등록 없이 · 설치 없이 · 무료로</p>
       </div>
       <div class="art rv" aria-hidden="true">
-        <div class="phone"><img src="/assets/ph-bugi.jpg" alt=""></div>
+        <div class="phone"><img src="/assets/ph-jia.jpg" alt=""></div>
         <img class="fmascot" src="/assets/bugi-mascot.jpg" alt="">
         <span class="chip c1"><span class="d"></span>＋ 링크 추가</span>
         <span class="chip c2"><span class="d" style="background:var(--cyan)"></span>방문 +240</span>
@@ -331,6 +331,7 @@
         <p style="margin-left:auto;margin-right:auto">"70만 명이 쓴다" 같은 문구 대신 — 같은 도구로 만든 실제 페이지를 눌러서 직접 둘러보세요.</p>
       </div>
       <div class="ex-grid">
+        <a class="ex rv" href="/jia"><div class="shot"><img src="/assets/ph-jia.jpg" alt="지아 패션 인플루언서 페이지"></div><h3>패션 인플루언서</h3><p>코디·아이템·공구를 한 곳에</p><span class="go">지아 페이지 →</span></a>
         <a class="ex rv" href="/bugi"><div class="shot"><img src="/assets/ph-bugi.jpg" alt="부기 개인 페이지"></div><h3>개인 링크</h3><p>유튜브·인스타·블로그를 한 곳에</p><span class="go">부기 페이지 →</span></a>
         <a class="ex rv" href="/demo"><div class="shot"><img src="/assets/ph-demo.jpg" alt="미나 쇼핑 큐레이션"></div><h3>쇼핑 큐레이션</h3><p>상품 카드·카테고리 필터로</p><span class="go">미나 페이지 →</span></a>
         <a class="ex rv" href="/bomi"><div class="shot"><img src="/assets/ph-bomi.jpg" alt="봄이 크리에이터 페이지"></div><h3>크리에이터·포트폴리오</h3><p>작업과 커미션을 한 곳에</p><span class="go">봄이 페이지 →</span></a>
