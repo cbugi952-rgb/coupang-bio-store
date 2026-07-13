@@ -12,7 +12,7 @@
 <meta property="og:image" content="https://onshelf.vercel.app/assets/bugi-og.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://onshelf.vercel.app/assets/bugi-og.jpg">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23131313'/><rect x='26' y='26' width='34' height='34' rx='7' fill='%23FFD400'/></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%2323A455'/><circle cx='38' cy='45' r='7' fill='%23fff'/><circle cx='62' cy='45' r='7' fill='%23fff'/></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
@@ -22,79 +22,72 @@
     --ink:#1B1710; --muted:#7A7059; --faint:#A99C7E;
     --accent:#FFD400; --accent-deep:#B98A00; --accent-ink:#171307;
     --toss:#3182F6; --toss-ink:#FFFFFF;
-    --shadow:0 14px 34px -18px rgba(60,45,0,.45);
+    --shadow:0 10px 26px -14px rgba(30,25,0,.35); --btn-radius:14px;
   }
   @media (prefers-color-scheme:dark){
-    :root{
-      --bg:#101010; --panel:#161512; --card:#1D1B15; --card-2:#232019; --border:#332F22;
-      --ink:#F3ECD9; --muted:#A79D85; --faint:#7E7660;
-      --accent:#FFD400; --accent-deep:#FFD400; --accent-ink:#14120A;
-      --toss:#4C90F7; --toss-ink:#0B1220;
-      --shadow:0 18px 40px -20px rgba(0,0,0,.8);
-    }
+    :root{--bg:#101010;--panel:#161512;--card:#1D1B15;--card-2:#232019;--border:#332F22;--ink:#F3ECD9;--muted:#A79D85;--faint:#7E7660;--accent:#FFD400;--accent-deep:#FFD400;--accent-ink:#14120A;--toss:#4C90F7;--toss-ink:#0B1220;--shadow:0 14px 34px -18px rgba(0,0,0,.8)}
   }
-  :root[data-theme="light"]{--bg:#F1E9D6;--panel:#FBF6EA;--card:#FFFFFF;--card-2:#F6EFDD;--border:#E4D9BE;--ink:#1B1710;--muted:#7A7059;--faint:#A99C7E;--accent:#FFD400;--accent-deep:#B98A00;--accent-ink:#171307;--toss:#3182F6;--toss-ink:#FFFFFF;--shadow:0 14px 34px -18px rgba(60,45,0,.45)}
-  :root[data-theme="dark"]{--bg:#101010;--panel:#161512;--card:#1D1B15;--card-2:#232019;--border:#332F22;--ink:#F3ECD9;--muted:#A79D85;--faint:#7E7660;--accent:#FFD400;--accent-deep:#FFD400;--accent-ink:#14120A;--toss:#4C90F7;--toss-ink:#0B1220;--shadow:0 18px 40px -20px rgba(0,0,0,.8)}
+  :root[data-theme="light"]{--bg:#F1E9D6;--panel:#FBF6EA;--card:#FFFFFF;--card-2:#F6EFDD;--border:#E4D9BE;--ink:#1B1710;--muted:#7A7059;--faint:#A99C7E;--accent:#FFD400;--accent-deep:#B98A00;--accent-ink:#171307;--toss:#3182F6;--toss-ink:#FFFFFF;--shadow:0 10px 26px -14px rgba(30,25,0,.35)}
+  :root[data-theme="dark"]{--bg:#101010;--panel:#161512;--card:#1D1B15;--card-2:#232019;--border:#332F22;--ink:#F3ECD9;--muted:#A79D85;--faint:#7E7660;--accent:#FFD400;--accent-deep:#FFD400;--accent-ink:#14120A;--toss:#4C90F7;--toss-ink:#0B1220;--shadow:0 14px 34px -18px rgba(0,0,0,.8)}
   :root{--font-display:'Jua','Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',system-ui,sans-serif;--font-body:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',system-ui,-apple-system,sans-serif}
 
   *{box-sizing:border-box}
   [hidden]{display:none!important}
   html,body{margin:0}
-  body{background:var(--bg);color:var(--ink);font-family:var(--font-body);-webkit-font-smoothing:antialiased;line-height:1.5;overflow-x:hidden;background-image:radial-gradient(120% 60% at 50% -8%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 60%);background-attachment:fixed}
-  .brand,.bartag,.name,.liveb,.eyebrow,.latest h3,.phead .txt h4,.buy,.bio,.empty,.contact a{font-family:var(--font-display)}
+  body{background:var(--bg);color:var(--ink);font-family:var(--font-body);-webkit-font-smoothing:antialiased;line-height:1.5;overflow-x:hidden;min-height:100dvh;background-image:radial-gradient(120% 55% at 50% -6%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 62%);background-attachment:fixed}
+  .name,.liveb,.eyebrow,.latest h3,.phead .txt h4,.buy,.bio,.empty,.contact a,.blk-text h3,.sig-name{font-family:var(--font-display)}
   .mono{font-variant-numeric:tabular-nums;letter-spacing:.02em}
 
   /* in-app browser (틱톡·인스타) 안내 */
   .inapp{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;background:#131313;color:#F3ECD9;font-size:12px;font-weight:600;line-height:1.4}
-  .inapp b{color:var(--accent);font-weight:800}
+  .inapp b{color:#fff;font-weight:800}
   .inapp button{margin-left:auto;background:transparent;border:1px solid #3a3a34;color:#F3ECD9;border-radius:8px;padding:4px 9px;font-size:11px;cursor:pointer;flex:none}
 
-  .wrap{max-width:460px;margin:0 auto;padding:0 16px 40px;min-height:100dvh}
-  .phone{position:relative;background:var(--panel);border:1px solid var(--border);border-radius:26px;margin-top:22px;box-shadow:var(--shadow);overflow:hidden}
-  .hookbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 16px;background:#131313;color:#F3ECD9;border-bottom:2px solid var(--accent)}
-  .brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:16px}
-  .brand .sq{width:16px;height:16px;border-radius:4px;background:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%,transparent)}
-  .bartag{font-size:11.5px;font-weight:800;color:#131313;background:var(--accent);padding:4px 10px;border-radius:999px;white-space:nowrap}
+  .wrap{max-width:496px;margin:0 auto;padding:20px 18px 44px;min-height:100dvh}
+  /* Linktree/Newdeet식: 폰 프레임 없이 솔리드 배경 위 중앙 컬럼 */
+  .phone{position:relative;background:transparent;border:0;border-radius:0;box-shadow:none;overflow:visible}
 
-  /* 한줄 공지 */
-  .notice{display:flex;align-items:center;gap:8px;padding:9px 16px;background:color-mix(in srgb,var(--accent) 15%,var(--panel));border-bottom:1px solid var(--border);font-size:12.5px;font-weight:700;color:var(--ink)}
+  /* 한줄 공지 — 상단 알약 배너 */
+  .notice{display:inline-flex;align-items:center;gap:8px;padding:8px 15px;background:color-mix(in srgb,var(--accent) 20%,var(--card));border:1px solid color-mix(in srgb,var(--accent) 40%,var(--border));border-radius:999px;font-size:12.5px;font-weight:700;color:var(--ink);margin:2px auto 0;max-width:100%}
+  .notice-wrap{display:flex;justify-content:center;padding:0 4px}
   .notice .dot{width:7px;height:7px;border-radius:50%;background:var(--accent-deep);flex:none}
   .notice span.t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
-  .profile{display:flex;flex-direction:column;align-items:center;text-align:center;padding:26px 22px 8px}
-  .ava{position:relative;width:112px;height:112px;margin-bottom:12px}
-  .ava img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block;background:#1b1b1b}
-  .ava svg{position:absolute;inset:-11px;width:calc(100% + 22px);height:calc(100% + 22px);pointer-events:none}
-  .name{font-size:27px;font-weight:800;letter-spacing:-.01em;margin:0}
-  .handle{font-size:13px;color:var(--muted);margin-top:1px}
-  .bio{font-size:14.5px;color:var(--ink);max-width:20em;margin:10px auto 0;text-wrap:balance;opacity:.92;white-space:pre-line}
-  .socials{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:16px}
-  .chip{font-size:12.5px;font-weight:700;color:var(--ink);background:var(--card-2);border:1px solid var(--border);padding:7px 13px;border-radius:999px;text-decoration:none;transition:transform .12s,border-color .12s}
-  .chip:hover{transform:translateY(-1px);border-color:color-mix(in srgb,var(--accent) 55%,var(--border))}
+  .profile{display:flex;flex-direction:column;align-items:center;text-align:center;padding:22px 12px 6px}
+  .ava{width:104px;height:104px;margin-bottom:14px}
+  .ava img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block;background:var(--card-2);border:4px solid var(--card);box-shadow:0 14px 30px -14px rgba(0,0,0,.4)}
+  .name{font-size:26px;font-weight:800;letter-spacing:-.01em;margin:0}
+  .handle{font-size:13.5px;color:var(--muted);margin-top:2px;font-weight:600}
+  .bio{font-size:14.5px;color:var(--ink);max-width:24em;margin:11px auto 0;text-wrap:balance;opacity:.94;white-space:pre-line}
+  .socials{display:flex;gap:11px;justify-content:center;flex-wrap:wrap;margin-top:17px}
+  .soc{width:44px;height:44px;border-radius:50%;background:var(--card);border:1px solid var(--border);display:grid;place-items:center;color:var(--ink);box-shadow:var(--shadow);transition:transform .14s,background .16s,color .16s}
+  .soc:hover{transform:translateY(-2px);background:var(--accent);color:var(--accent-ink)}
+  .soc svg{width:20px;height:20px;fill:currentColor}
+  .soc:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 
-  .board{padding:20px 16px 8px;display:flex;flex-direction:column;gap:13px}
-  .eyebrow{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:800;color:var(--muted);margin:6px 2px 0}
-  .eyebrow .tick{width:9px;height:9px;border-radius:2px;background:var(--accent)}
-  .eyebrow.arch{margin-top:12px}
-  .cats{display:flex;gap:7px;flex-wrap:wrap;margin:2px 2px 0}
-  .catchip{font-family:var(--font-display);font-size:12.5px;font-weight:700;padding:6px 13px;border-radius:999px;border:1.5px solid var(--border);background:var(--card);color:var(--muted);cursor:pointer;transition:transform .1s,border-color .12s,background .12s,color .12s}
-  .catchip:hover{border-color:color-mix(in srgb,var(--accent) 50%,var(--border));color:var(--ink)}
+  .board{padding:22px 4px 4px;display:flex;flex-direction:column;gap:12px}
+  .eyebrow{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:800;color:var(--muted);margin:8px 4px 0;letter-spacing:.01em}
+  .eyebrow .tick{width:9px;height:9px;border-radius:3px;background:var(--accent)}
+  .eyebrow.arch{margin-top:14px}
+  .cats{display:flex;gap:7px;flex-wrap:wrap;margin:2px 2px 2px;justify-content:center}
+  .catchip{font-size:12.5px;font-weight:700;padding:8px 15px;border-radius:999px;border:1.5px solid var(--border);background:var(--card);color:var(--muted);cursor:pointer;transition:transform .1s,border-color .12s,background .12s,color .12s;box-shadow:var(--shadow)}
+  .catchip:hover{border-color:color-mix(in srgb,var(--accent) 50%,var(--border));color:var(--ink);transform:translateY(-1px)}
   .catchip.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
   .catchip:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+  /* 버튼(구매/링크) */
   .cta{display:flex;gap:8px;margin-top:12px}
-  .buy{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;font-weight:800;font-size:14px;padding:12px;border-radius:var(--btn-radius,12px);border:1.5px solid transparent;transition:transform .12s,filter .12s;white-space:nowrap}
+  .buy{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;font-weight:800;font-size:14px;padding:12px;border-radius:var(--btn-radius);border:1.5px solid transparent;transition:transform .12s,filter .12s;white-space:nowrap}
   .buy:hover{transform:translateY(-1px)}
   .buy svg{width:14px;height:14px;flex:none}
   .buy.coupang{background:var(--accent);color:var(--accent-ink)}
   .buy.toss{background:var(--toss);color:var(--toss-ink)}
   .buy.toss .tw{font-weight:900;letter-spacing:-.02em}
-  /* 버튼 채우기 스타일 (지난 픽·리스트 버튼) */
   .bf-outline .pick .buy.coupang,.bf-outline .lrow .buy.coupang{background:transparent;border-color:var(--accent);color:var(--accent-deep)}
   .bf-outline .pick .buy.toss,.bf-outline .lrow .buy.toss{background:transparent;border-color:var(--toss);color:var(--toss)}
   .bf-soft .pick .buy.coupang,.bf-soft .lrow .buy.coupang{background:color-mix(in srgb,var(--accent) 20%,transparent);color:var(--accent-deep)}
   .bf-soft .pick .buy.toss,.bf-soft .lrow .buy.toss{background:color-mix(in srgb,var(--toss) 18%,transparent);color:var(--toss)}
   .buy.off{background:transparent;border-color:var(--border);color:var(--faint);cursor:not-allowed;pointer-events:none}
-  /* 자유 버튼 (쇼핑 전용 아님): 첫=강조, 나머지=아웃라인 */
   .buy.b-pri{background:var(--accent);color:var(--accent-ink)}
   .buy.b-sec{background:transparent;border-color:var(--accent);color:var(--accent-deep)}
   .bf-outline .pick .buy.b-pri,.bf-outline .lrow .buy.b-pri{background:transparent;border-color:var(--accent);color:var(--accent-deep)}
@@ -102,59 +95,68 @@
   .buy:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
   .shortslink{display:inline-flex;align-items:center;gap:5px;margin-top:10px;font-size:12.5px;font-weight:700;color:var(--accent-deep);text-decoration:none}
   .shortslink:hover{text-decoration:underline}
-  .latest .shortslink{color:#131313;opacity:.75}
-  .latest{position:relative;background:var(--accent);color:var(--accent-ink);border-radius:20px;padding:18px;overflow:hidden;box-shadow:0 12px 30px -14px rgba(255,190,0,.6)}
+
+  /* 최신(featured) 카드 */
+  .latest{position:relative;background:var(--accent);color:var(--accent-ink);border-radius:20px;padding:18px;overflow:hidden;box-shadow:0 16px 34px -18px color-mix(in srgb,var(--accent) 80%,rgba(0,0,0,.4))}
   .latest .top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:9px}
-  .latest .ep{font-size:12px;font-weight:800;letter-spacing:.03em;opacity:.72}
-  .latest .liveb{font-size:11px;font-weight:800;background:#131313;color:var(--accent);padding:4px 9px;border-radius:999px}
-  .latest h3{margin:0;font-size:23px;font-weight:800;letter-spacing:-.01em;line-height:1.15}
-  .latest .cta .buy.coupang{background:#131313;color:var(--accent)}
-  .latest .cta .buy.toss{background:#131313;color:#7FB2FF}
-  .latest .cta .buy.off{background:transparent;border-color:rgba(19,19,19,.28);color:rgba(19,19,19,.5)}
-  .latest .doodle{position:absolute;right:-8px;bottom:-16px;width:118px;height:118px;opacity:.85;pointer-events:none}
-  .latest .hero-img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:14px;margin-bottom:13px;background:rgba(0,0,0,.05)}
-  .pick{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:14px}
+  .latest .ep{font-size:12px;font-weight:800;letter-spacing:.03em;opacity:.75}
+  .latest .liveb{font-size:11px;font-weight:800;background:color-mix(in srgb,var(--accent-ink) 88%,transparent);color:var(--accent);padding:4px 9px;border-radius:999px}
+  .latest h3{margin:0;font-size:22px;font-weight:800;letter-spacing:-.01em;line-height:1.18}
+  .latest .cta .buy.coupang{background:color-mix(in srgb,var(--accent-ink) 88%,transparent);color:var(--accent)}
+  .latest .cta .buy.toss{background:color-mix(in srgb,var(--accent-ink) 88%,transparent);color:#8FBEFF}
+  .latest .cta .buy.b-pri{background:color-mix(in srgb,var(--accent-ink) 88%,transparent);color:var(--accent)}
+  .latest .cta .buy.b-sec{border-color:color-mix(in srgb,var(--accent-ink) 40%,transparent);color:var(--accent-ink)}
+  .latest .cta .buy.off{background:transparent;border-color:color-mix(in srgb,var(--accent-ink) 28%,transparent);color:color-mix(in srgb,var(--accent-ink) 55%,transparent)}
+  .latest .shortslink{color:var(--accent-ink);opacity:.72}
+  .latest .hero-img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:14px;margin-bottom:13px;background:rgba(0,0,0,.06)}
+
+  /* 픽 카드 (상품) */
+  .pick{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:15px;box-shadow:var(--shadow)}
   .phead{display:flex;align-items:center;gap:12px}
-  .phead .thumb{width:52px;height:52px;border-radius:12px;object-fit:cover;flex:none;background:var(--card-2);border:1px solid var(--border)}
+  .phead .thumb{width:54px;height:54px;border-radius:13px;object-fit:cover;flex:none;background:var(--card-2);border:1px solid var(--border)}
   .phead .txt{min-width:0;flex:1}
-  .epc{font-size:11.5px;font-weight:800;color:var(--accent-deep);border:1.5px solid color-mix(in srgb,var(--accent) 55%,var(--border));padding:6px 9px;border-radius:9px;background:color-mix(in srgb,var(--accent) 9%,transparent)}
+  .epc{font-size:11.5px;font-weight:800;color:var(--accent-deep);border:1.5px solid color-mix(in srgb,var(--accent) 55%,var(--border));padding:6px 9px;border-radius:9px;background:color-mix(in srgb,var(--accent) 9%,transparent);flex:none}
   .phead .txt h4{margin:0;font-size:16.5px;font-weight:800;letter-spacing:-.01em}
   .phead .txt p{margin:2px 0 0;font-size:12.5px;color:var(--muted);line-height:1.35}
-  .pick .cta{margin-top:11px}
-  .pick .cta .buy{font-size:13px;padding:10px}
+  .pick .cta{margin-top:12px}
+  .pick .cta .buy{font-size:13px;padding:11px}
   .empty{text-align:center;color:var(--muted);font-size:14px;padding:30px 12px}
 
-  /* 심플 리스트형 스타일 */
-  .lrow{display:flex;flex-direction:column;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:14px 16px}
+  /* 심플 리스트형 */
+  .lrow{display:flex;flex-direction:column;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:18px;padding:15px 16px;box-shadow:var(--shadow)}
   .lrow .lmeta h4{margin:0;font-size:16.5px;font-weight:800;letter-spacing:-.01em;display:flex;align-items:center;gap:8px}
   .lrow .lmeta p{margin:3px 0 0;font-size:13px;color:var(--muted);line-height:1.4}
   .lrow .lbadge{font-size:10.5px;font-weight:800;background:var(--accent);color:var(--accent-ink);padding:2px 9px;border-radius:999px;flex:none}
   .lrow .lcta{display:flex;gap:8px}
+
   /* 이모지 스티커 */
   .stickers{position:absolute;inset:0;pointer-events:none;z-index:6}
   .stickers span{position:absolute;font-size:30px;line-height:1;filter:drop-shadow(0 2px 5px rgba(0,0,0,.22))}
-  /* 콘텐츠 블록 (텍스트·영상·링크) */
-  .blocks{padding:4px 16px 0;display:flex;flex-direction:column;gap:12px}
+
+  /* 콘텐츠 블록 — 링크 블록 = Linktree식 링크 버튼(흰 카드, 가운데 라벨) */
+  .blocks{padding:14px 4px 0;display:flex;flex-direction:column;gap:12px}
   .blocks:empty{display:none}
-  .blk-text{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:14px 16px}
+  .blk-text{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:15px 17px;box-shadow:var(--shadow)}
   .blk-text h3{margin:0 0 5px;font-size:16px;font-weight:800;color:var(--ink)}
   .blk-text p{margin:0;font-size:13.5px;color:var(--muted);line-height:1.5;white-space:pre-line}
-  .blk-video{border-radius:16px;overflow:hidden;border:1px solid var(--border);background:#000}
+  .blk-video{border-radius:18px;overflow:hidden;border:1px solid var(--border);background:#000;box-shadow:var(--shadow)}
   .blk-video iframe{display:block;width:100%;aspect-ratio:16/9;border:0}
-  .blk-video .blk-cap{margin:0;padding:8px 12px;font-size:12.5px;color:var(--muted);background:var(--card)}
-  .blk-link{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--accent);color:var(--accent-ink);font-weight:800;font-size:14px;padding:13px;border-radius:var(--btn-radius,12px);text-decoration:none}
-  .blk-link svg{width:14px;height:14px}
+  .blk-video .blk-cap{margin:0;padding:9px 13px;font-size:12.5px;color:var(--muted);background:var(--card)}
+  .blk-link{position:relative;display:flex;align-items:center;justify-content:center;gap:8px;background:var(--card);color:var(--ink);border:1px solid var(--border);font-weight:800;font-size:15px;padding:16px;border-radius:var(--btn-radius);text-decoration:none;box-shadow:var(--shadow);transition:transform .14s,box-shadow .2s}
+  .blk-link:hover{transform:translateY(-2px);box-shadow:0 18px 34px -18px rgba(0,0,0,.4)}
+  .blk-link svg{width:15px;height:15px;position:absolute;right:16px;opacity:.55}
 
-  /* 협업·문의 */
-  .contact{padding:16px 16px 0}
-  .contact a{display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;font-weight:800;font-size:14px;padding:13px;border-radius:14px;border:1.5px dashed color-mix(in srgb,var(--accent) 45%,var(--border));color:var(--ink);background:var(--card-2);transition:border-color .12s,transform .12s}
-  .contact a:hover{border-color:var(--accent);transform:translateY(-1px)}
-  .contact svg{width:16px;height:16px}
+  /* 협업·문의 — 링크 버튼 스타일 */
+  .contact{padding:12px 4px 0}
+  .contact a{position:relative;display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;font-weight:800;font-size:15px;padding:16px;border-radius:var(--btn-radius);border:1px solid var(--border);color:var(--ink);background:var(--card);box-shadow:var(--shadow);transition:transform .14s,box-shadow .2s}
+  .contact a:hover{transform:translateY(-2px);box-shadow:0 18px 34px -18px rgba(0,0,0,.4)}
+  .contact svg{width:16px;height:16px;position:absolute;left:16px;opacity:.7}
 
-  .foot{padding:18px 20px 22px;text-align:center;border-top:1px solid var(--border);margin-top:16px}
-  .foot .disc{font-size:11px;color:var(--muted);line-height:1.55;max-width:25em;margin:0 auto}
-  .foot .sig{display:inline-flex;align-items:center;gap:6px;margin-top:12px;font-size:11.5px;font-weight:800;color:var(--muted)}
-  .foot .sig .sq{width:11px;height:11px;border-radius:3px;background:var(--accent)}
+  .foot{padding:26px 20px 8px;text-align:center}
+  .foot .disc{font-size:11px;color:var(--muted);line-height:1.55;max-width:26em;margin:0 auto}
+  .sig{display:inline-flex;align-items:center;gap:7px;margin-top:16px;padding:9px 16px;border-radius:999px;background:var(--card);border:1px solid var(--border);font-size:12px;font-weight:700;color:var(--muted);box-shadow:var(--shadow)}
+  .sig .sq{width:14px;height:14px;border-radius:5px;background:var(--accent)}
+  .sig b{color:var(--ink);font-weight:800}
   @media (prefers-reduced-motion:no-preference){
     .reveal{opacity:0;transform:translateY(10px);animation:rise .5s cubic-bezier(.2,.7,.3,1) forwards}
     @keyframes rise{to{opacity:1;transform:none}}
@@ -162,27 +164,18 @@
 </style>
 </head>
 <body>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <filter id="rough"><feTurbulence type="fractalNoise" baseFrequency="0.028" numOctaves="2" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="6"/></filter>
-</svg>
-
 <div class="inapp" id="inapp" hidden>
-  <div>틱톡·인스타 앱에서 열었나요? 상품 링크가 안 열리면 <b>우측 상단 ⋯ → 브라우저로 열기</b>로 눌러주세요.</div>
+  <div>틱톡·인스타 앱에서 열었나요? 링크가 안 열리면 <b>우측 상단 ⋯ → 브라우저로 열기</b>로 눌러주세요.</div>
   <button id="inapp-x" aria-label="닫기">닫기</button>
 </div>
 
 <main class="wrap">
   <section class="phone">
     <div class="stickers" id="stickers" aria-hidden="true"></div>
-    <header class="hookbar">
-      <span class="brand"><span class="sq"></span><span id="pf-brand"></span></span>
-      <span class="bartag" id="pf-tag"></span>
-    </header>
-    <div class="notice" id="notice" hidden><span class="dot"></span><span class="t" id="notice-t"></span></div>
+    <div class="notice-wrap"><div class="notice" id="notice" hidden><span class="dot"></span><span class="t" id="notice-t"></span></div></div>
     <div class="profile">
       <div class="ava">
-        <img id="pf-avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='50' fill='%23E2E2E6'/%3E%3Ccircle cx='50' cy='41' r='17' fill='%23B9B9C2'/%3E%3Cpath d='M22 82c0-16 13-25 28-25s28 9 28 25' fill='%23B9B9C2'/%3E%3C/svg%3E" alt="프로필" width="112" height="112">
-        <svg viewBox="0 0 134 134" aria-hidden="true"><ellipse cx="67" cy="67" rx="61" ry="60" fill="none" stroke="var(--accent)" stroke-width="3.4" stroke-linecap="round" stroke-dasharray="352 40" stroke-dashoffset="18" filter="url(#rough)" transform="rotate(-6 67 67)"/></svg>
+        <img id="pf-avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='50' fill='%23E2E2E6'/%3E%3Ccircle cx='50' cy='41' r='17' fill='%23B9B9C2'/%3E%3Cpath d='M22 82c0-16 13-25 28-25s28 9 28 25' fill='%23B9B9C2'/%3E%3C/svg%3E" alt="프로필" width="104" height="104">
       </div>
       <h1 class="name" id="pf-name"></h1>
       <div class="handle mono" id="pf-handle"></div>
@@ -194,7 +187,7 @@
     <div class="contact" id="contact" hidden></div>
     <footer class="foot">
       <p class="disc" id="pf-disc"></p>
-      <span class="sig"><span class="sq"></span><span id="pf-sig"></span></span>
+      <span class="sig"><span class="sq"></span><span class="sig-name" id="pf-sig"></span></span>
     </footer>
   </section>
 </main>
@@ -203,15 +196,24 @@
 "use strict";
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+// 소셜 아이콘 (Linktree/Newdeet식 아이콘 원형)
+const SOC_ICON = {
+  youtube:'<svg viewBox="0 0 24 24"><path d="M23 12s0-3.8-.5-5.6a2.9 2.9 0 0 0-2-2C18.7 4 12 4 12 4s-6.7 0-8.5.4a2.9 2.9 0 0 0-2 2C1 8.2 1 12 1 12s0 3.8.5 5.6a2.9 2.9 0 0 0 2 2C5.3 20 12 20 12 20s6.7 0 8.5-.4a2.9 2.9 0 0 0 2-2C23 15.8 23 12 23 12zM10 15.5v-7l6 3.5z"/></svg>',
+  instagram:'<svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 1.8.3 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.4 1 .4 2.2.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 1.2-.3 1.8-.4 2.2-.2.6-.5 1-.9 1.4s-.8.7-1.4.9c-.4.2-1 .4-2.2.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-1.8-.3-2.2-.4a3.7 3.7 0 0 1-1.4-.9 3.7 3.7 0 0 1-.9-1.4c-.2-.4-.4-1-.4-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c.1-1.2.3-1.8.4-2.2.2-.6.5-1 .9-1.4s.8-.7 1.4-.9c.4-.2 1-.4 2.2-.4C8.4 2.2 8.8 2.2 12 2.2zM12 6.9a5.1 5.1 0 1 0 0 10.2 5.1 5.1 0 0 0 0-10.2zm0 8.4a3.3 3.3 0 1 1 0-6.6 3.3 3.3 0 0 1 0 6.6zm5.3-8.6a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4z"/></svg>',
+  tiktok:'<svg viewBox="0 0 24 24"><path d="M16.5 3c.3 2.1 1.5 3.6 3.5 3.9v2.6c-1.3.1-2.5-.3-3.6-1v5.6c0 4-2.9 6.4-6.1 5.8-3.4-.6-4.6-4.6-2.6-7.2 1-1.3 2.7-2 4.4-1.8v2.7c-.4-.1-.9-.1-1.3 0-1.2.3-1.7 1.5-1.3 2.6.4 1.1 1.8 1.5 2.7.8.6-.4.8-1 .8-1.8V3z"/></svg>',
+  threads:'<svg viewBox="0 0 24 24"><path d="M16.3 11.4c-.1 0-.2-.1-.3-.1-.2-2.8-1.7-4.4-4.2-4.4-1.7 0-3 .7-3.8 2l1.6 1.1c.6-.9 1.4-1.1 2.2-1.1 1.3 0 2.2.8 2.4 2.2-.6-.1-1.2-.2-1.9-.1-2.3.1-3.8 1.3-3.7 3.1.1 1.7 1.6 2.7 3.2 2.6 1.4-.1 2.5-.9 3-2.1.4 1 1.1 1.6 1.9 2l.9-1.7c-.6-.3-1-.7-1.2-1.3.5-.8.7-1.8.6-3-.1-.5-.3-1-.5-1.2zm-4 4.4c-.7 0-1.3-.3-1.3-1 0-.7.8-1.1 1.9-1.1.4 0 .8 0 1.2.1-.1 1.2-.9 2-1.8 2z"/></svg>',
+  naverBlog:'<svg viewBox="0 0 24 24"><path d="M4 4h16v13H7l-3 3zM7 9h10v1.6H7zm0 3.4h7V14H7z"/></svg>',
+  x:'<svg viewBox="0 0 24 24"><path d="M17.5 3h3l-6.6 7.5L21.7 21h-5.9l-4.2-5.4L6.7 21H3.7l7-8-6.6-10h6l3.8 5 4.6-5zm-1 16.2h1.6L8.1 4.7H6.4l10.1 14.5z"/></svg>',
+};
 
 // 멀티테넌트: 예쁜 주소 /{handle} 우선, 없으면 ?u=handle, 둘 다 없으면 루트 기본 사이트.
-const ROOT_HANDLE = "bugi";   // 도메인 첫 화면(루트 /)이 보여줄 기본 사이트
+const ROOT_HANDLE = "bugi";
 const NEUTRAL_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='50' fill='%23E2E2E6'/%3E%3Ccircle cx='50' cy='41' r='17' fill='%23B9B9C2'/%3E%3Cpath d='M22 82c0-16 13-25 28-25s28 9 28 25' fill='%23B9B9C2'/%3E%3C/svg%3E";
 function readHandle(pathname, search){
   let seg = String(pathname || "/").split("/").filter(Boolean)[0] || "";
   try { seg = decodeURIComponent(seg); } catch(_) {}
   seg = seg.toLowerCase();
-  const reserved = new Set(["index","app","admin","login","api","assets","images"]);   // 파일시스템 라우트와 충돌 방지(방어)
+  const reserved = new Set(["index","app","admin","login","api","assets","images"]);
   const fromPath = reserved.has(seg) ? "" : seg;
   const fromQuery = new URLSearchParams(search || "").get("u") || "";
   const h = (fromPath || fromQuery).replace(/[^a-z0-9_-]/gi, "").slice(0, 40).toLowerCase();
@@ -219,9 +221,8 @@ function readHandle(pathname, search){
 }
 const HANDLE = readHandle(location.pathname, location.search);
 const QH = HANDLE ? "?handle=" + encodeURIComponent(HANDLE) : "";
-const PREVIEW = new URLSearchParams(location.search).get("preview") === "1";   // 관리자 미리보기(iframe) 모드
+const PREVIEW = new URLSearchParams(location.search).get("preview") === "1";
 
-// 페치 전 잠깐 보이는 시드 — 테넌트를 빌드타임에 알 수 없으니 중립(빈) 상태.
 const SEED = {
   profile:{name:"",handle:"",tagline:"",bio:"",avatar:"",accent:"#7C5CFC",notice:"",contactEmail:"",disclosure:"",socials:{youtube:"",tiktok:"",instagram:"",threads:"",naverBlog:"",x:""}},
   picks:[]
@@ -234,13 +235,11 @@ function buyLink(url, cls, label, id){
 }
 const tossLabel = () => `<span class="tw">toss</span> 쇼핑`;
 const shortsLink = (u) => u ? `<a class="shortslink" href="${esc(u)}" target="_blank" rel="noopener">▶ 리뷰 영상</a>` : "";
-// 자유 버튼 하나 (첫=강조, 나머지=아웃라인)
 function btnLink(b, i, id){
   const cls = i===0 ? "b-pri" : "b-sec", label = esc(b.label || "열기");
   if(b.url) return `<a class="buy ${cls}" href="${esc(b.url)}" target="_blank" rel="nofollow noopener" data-id="${esc(id)}">${label} ${ARROW}</a>`;
   return `<span class="buy ${cls} off" aria-disabled="true">${label}</span>`;
 }
-// 카드 CTA: 새 buttons[] 우선, 없으면 레거시 쿠팡/토스(하위호환). 둘 다 없으면 버튼 없음.
 function ctaHtml(p, coupangLabel){
   if(Array.isArray(p.buttons) && p.buttons.length) return p.buttons.map((b,i)=>btnLink(b,i,p.id)).join("");
   if(p.coupang || p.toss) return buyLink(p.coupang,"coupang",coupangLabel,p.id) + buyLink(p.toss,"toss",tossLabel(),p.id);
@@ -248,7 +247,7 @@ function ctaHtml(p, coupangLabel){
 }
 
 let ALL = SEED, activeCat = "전체";
-let LAYOUT = "card", SHOW_IMAGES = true;   // 프로필 스타일 (card|list · 사진 on/off)
+let LAYOUT = "card", SHOW_IMAGES = true;
 
 function heroCard(p){
   const cta = ctaHtml(p, "쿠팡에서 보기");
@@ -258,7 +257,6 @@ function heroCard(p){
         <h3>${esc(p.verdict || p.topic)}</h3>
         ${cta?`<div class="cta">${cta}</div>`:""}
         ${shortsLink(p.youtube)}
-        <svg class="doodle" viewBox="0 0 120 120" fill="none" aria-hidden="true"><path d="M60 14c26 0 46 20 46 46s-20 46-46 46S14 86 14 60 34 14 60 14Z" stroke="#131313" stroke-opacity=".18" stroke-width="3" stroke-dasharray="6 9" stroke-linecap="round"/></svg>
       </div>`;
 }
 function pickCard(p){
@@ -269,7 +267,6 @@ function pickCard(p){
         ${shortsLink(p.youtube)}
       </div>`;
 }
-// 심플 리스트형 한 줄 (사진 없이 이름+한마디+구매버튼)
 function listRow(p){
   const hot = p.status==="latest" ? `<span class="lbadge">최신</span>` : "";
   const cta = ctaHtml(p, "쿠팡");
@@ -291,12 +288,11 @@ function renderBoard(){
   if(cats.length>=2){
     html += `<div class="cats">` + ["전체"].concat(cats).map(c=>`<button class="catchip${c===activeCat?" on":""}" data-cat="${esc(c)}">${esc(c)}</button>`).join("") + `</div>`;
   }
-  // 심플 리스트형: 큰 최신카드·사진 없이 한 줄씩
   if(LAYOUT==="list"){
     const src = activeCat==="전체" ? visible : visible.filter(p=>p.category===activeCat);
     const ordered = src.slice().sort((a,b)=>(b.status==="latest"?1:0)-(a.status==="latest"?1:0));
     html += `<div class="eyebrow reveal"><span class="tick"></span>${activeCat==="전체"?"전체 픽":esc(activeCat)}</div>` + ordered.map(listRow).join("");
-    if(!visible.length) html = "";   // 픽 없으면 공개페이지엔 빈 보드(소셜·블록·문의가 콘텐츠를 채움)
+    if(!visible.length) html = "";
     board.innerHTML = html;
     board.querySelectorAll(".reveal").forEach((el,i)=>el.style.animationDelay=(i*0.05)+"s");
     board.querySelectorAll(".catchip").forEach(b=>b.addEventListener("click",()=>{ activeCat=b.dataset.cat; renderBoard(); }));
@@ -311,7 +307,7 @@ function renderBoard(){
     const matched = visible.filter(p=>p.category===activeCat);
     html += `<div class="eyebrow reveal"><span class="tick"></span>${esc(activeCat)} · ${matched.length}개</div>` + matched.map(pickCard).join("");
   }
-  if(!visible.length) html = "";   // 픽 없으면 공개페이지엔 빈 보드(소셜·블록·문의가 콘텐츠를 채움)
+  if(!visible.length) html = "";
   board.innerHTML = html;
   board.querySelectorAll(".reveal").forEach((el,i)=>el.style.animationDelay=(i*0.05)+"s");
   board.querySelectorAll(".catchip").forEach(b=>b.addEventListener("click",()=>{ activeCat=b.dataset.cat; renderBoard(); }));
@@ -333,7 +329,7 @@ const FONTS = {
   gaegu:    { css:"'Gaegu'", g:"Gaegu:wght@400;700" },
   myeongjo: { css:"'Nanum Myeongjo'", g:"Nanum+Myeongjo:wght@400;700;800" },
 };
-const _fonts = new Set(["Jua"]);   // Jua는 head에 이미 로드됨
+const _fonts = new Set(["Jua"]);
 function loadFont(g){ if(!g) return; const name=g.split(":")[0]; if(_fonts.has(name)) return; _fonts.add(name); const l=document.createElement("link"); l.rel="stylesheet"; l.href="https://fonts.googleapis.com/css2?family="+g+"&display=swap"; document.head.appendChild(l); }
 function _rgb(h){ h=String(h||"").replace("#",""); if(h.length!==6) h="FFD400"; return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)]; }
 function inkOn(hex){ const [r,g,b]=_rgb(hex); return (0.299*r+0.587*g+0.114*b)/255 > 0.62 ? "#191307" : "#FFFFFF"; }
@@ -347,9 +343,9 @@ function applyStyle(pf){
   root.style.setProperty("--accent-ink",inkOn(accent));
   const f=FONTS[pf.font]||FONTS.jua; loadFont(f.g);
   root.style.setProperty("--font-display", f.css+",'Apple SD Gothic Neo','Malgun Gothic',sans-serif");
-  root.style.setProperty("--btn-radius", pf.buttonStyle==="pill"?"999px":pf.buttonStyle==="square"?"5px":"12px");
+  root.style.setProperty("--btn-radius", pf.buttonStyle==="pill"?"999px":pf.buttonStyle==="square"?"6px":"14px");
   const BG={
-    solid:["radial-gradient(120% 60% at 50% -8%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 60%)","auto"],
+    solid:["radial-gradient(120% 55% at 50% -6%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 62%)","auto"],
     gradient:["linear-gradient(165deg, var(--bg), color-mix(in srgb, var(--accent) 22%, var(--bg)))","auto"],
     dots:["radial-gradient(color-mix(in srgb, var(--accent) 30%, transparent) 1.5px, transparent 1.6px)","18px 18px"],
     grid:["linear-gradient(color-mix(in srgb,var(--accent) 16%,transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb,var(--accent) 16%,transparent) 1px, transparent 1px)","22px 22px"],
@@ -365,8 +361,7 @@ function applyStyle(pf){
   document.body.style.backgroundAttachment="fixed";
 }
 
-// 이모지 스티커 위치 프리셋 (최대 6)
-const STICKER_POS=[{top:"7%",left:"4%",r:"-12deg"},{top:"10%",right:"5%",r:"11deg"},{top:"33%",left:"2%",r:"7deg"},{top:"41%",right:"2%",r:"-9deg"},{top:"64%",left:"5%",r:"-7deg"},{top:"70%",right:"6%",r:"12deg"}];
+const STICKER_POS=[{top:"4%",left:"3%",r:"-12deg"},{top:"6%",right:"4%",r:"11deg"},{top:"30%",left:"1%",r:"7deg"},{top:"38%",right:"1%",r:"-9deg"},{top:"62%",left:"4%",r:"-7deg"},{top:"68%",right:"5%",r:"12deg"}];
 function renderStickers(pf){
   const el=document.getElementById("stickers"); if(!el) return;
   const st=Array.isArray(pf.stickers)?pf.stickers.slice(0,6):[];
@@ -393,33 +388,28 @@ function render(data){
   if(phoneEl){ phoneEl.classList.toggle("lay-list", LAYOUT==="list"); phoneEl.classList.toggle("no-img", !SHOW_IMAGES);
     phoneEl.classList.remove("bf-solid","bf-outline","bf-soft"); phoneEl.classList.add("bf-"+(["solid","outline","soft"].includes(pf.buttonFill)?pf.buttonFill:"solid")); }
   document.getElementById("pf-avatar").src = pf.avatar || NEUTRAL_AVATAR;
-  document.getElementById("pf-brand").textContent = pf.name || "";
-  document.getElementById("pf-tag").textContent = pf.tagline || "";
   document.getElementById("pf-name").textContent = pf.name || "";
   const h = pf.handle ? "@" + pf.handle : "";
-  document.getElementById("pf-handle").textContent = h;
-  document.getElementById("pf-sig").textContent = [pf.name, h].filter(Boolean).join(" · ");
+  document.getElementById("pf-handle").textContent = pf.tagline || h;
+  document.getElementById("pf-sig").textContent = pf.name || "내 페이지";
   document.getElementById("pf-bio").textContent = pf.bio || "";
-  // 제휴 고지는 사용자가 설정했을 때만 표시 (기본 빈값 → 안 뜸)
   document.getElementById("pf-disc").textContent = pf.disclosure || "";
   document.title = pf.name || "내 링크";
 
-  // 한줄 공지
   const noticeEl = document.getElementById("notice");
   if(pf.notice){ document.getElementById("notice-t").textContent = pf.notice; noticeEl.hidden = false; }
   else noticeEl.hidden = true;
 
-  // 소셜
+  // 소셜 — 아이콘 원형
   const sc = pf.socials || {};
-  const chips = [["유튜브",sc.youtube],["틱톡",sc.tiktok],["인스타",sc.instagram],["스레드",sc.threads],["블로그",sc.naverBlog],["X",sc.x]]
-    .filter(([t,u]) => u).map(([t,u]) => `<a class="chip" href="${esc(u)}" target="_blank" rel="noopener">${t}</a>`).join("");
-  document.getElementById("pf-socials").innerHTML = chips;
+  const socs = [["youtube","유튜브",sc.youtube],["tiktok","틱톡",sc.tiktok],["instagram","인스타",sc.instagram],["threads","스레드",sc.threads],["naverBlog","블로그",sc.naverBlog],["x","X",sc.x]]
+    .filter(([k,t,u]) => u).map(([k,t,u]) => `<a class="soc" href="${esc(u)}" target="_blank" rel="noopener" aria-label="${t}">${SOC_ICON[k]||""}</a>`).join("");
+  document.getElementById("pf-socials").innerHTML = socs;
 
   renderBoard();
   renderBlocks();
   renderStickers(pf);
 
-  // 협업·문의
   const contact = document.getElementById("contact");
   if(pf.contactEmail){
     contact.hidden = false;
@@ -427,7 +417,6 @@ function render(data){
   } else contact.hidden = true;
 }
 
-/* 유입 경로 판별 */
 function trafficSource(){
   const r = document.referrer || "", ua = navigator.userAgent;
   if(/instagram/i.test(r) || /instagram/i.test(ua)) return "instagram";
@@ -440,30 +429,26 @@ function isInApp(){ return /Instagram|TikTok|musical_ly|BytedanceWebview|FBAN|FB
 
 async function load(){
   render(SEED);
-  if(PREVIEW) return;                          // 미리보기 모드: postMessage로만 갱신
+  if(PREVIEW) return;
   try{
     const r = await fetch("/api/picks" + QH, {cache:"no-store"});
     if(r.ok){ render(await r.json()); }
   }catch(e){}
 }
 
-// 관리자 미리보기(iframe)에서 초안 상태 수신 → 실제 페이지 그대로 렌더 (WYSIWYG)
 window.addEventListener("message", e => {
   if(e.origin !== location.origin) return;
   const m = e.data;
   if(m && m.type === "onshelf-preview" && m.data) render(m.data);
 });
 
-// 방문 집계 (유입 경로 포함) — 미리보기 모드 제외
 if(!PREVIEW){ try{ navigator.sendBeacon("/api/view" + QH, new Blob([JSON.stringify({source:trafficSource()})],{type:"application/json"})); }catch(_){} }
 
-// 인앱 브라우저 안내
 if(isInApp() && !sessionStorage.getItem("inapp-x")){
   const el = document.getElementById("inapp"); el.hidden = false;
   document.getElementById("inapp-x").addEventListener("click", () => { el.hidden = true; sessionStorage.setItem("inapp-x","1"); });
 }
 
-// 버튼 클릭 집계
 document.getElementById("board").addEventListener("click", e => {
   const a = e.target.closest("a.buy[data-id]");
   if(!a) return;
