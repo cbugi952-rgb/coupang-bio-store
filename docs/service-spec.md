@@ -192,7 +192,7 @@ MVP 기능 완성 + 웨지 3종(웹·MCP·CLI) 완성. **`main`(라이브 kkanaj
 - 최종 `vercel.json`: cleanUrls + rewrites 2개(`/api/sites/:path*`→router, `/((?!api|assets|images).*)`→`/`).
 
 **공개 출시 확대 전 남은 것(대부분 사업/운영 — 부기)**
-- **개인정보처리방침·이용약관**(남의 이메일·비번 수집 시작 → 한국 법상 무료여도 필요)
+- ~~**개인정보처리방침·이용약관**~~ ✅ 2026-07-14 배포 — `/terms`·`/privacy`(실제 수집항목 기반: scrypt 해시·세션 30일·레이트리밋 IP 최대 1h·집계통계·Vercel/Upstash 국외이전 고지). 가입/로그인 동의 문구(login) + 랜딩 푸터 링크 + 예약 핸들 차단(`RESERVED_HANDLES` 서버측, terms/privacy 포함 — 기존에 admin/login 등도 서버측 차단이 없었음)
 - 결제·요금제 → 사업자등록 (유료 전환 시 Vercel Pro 또는 Cloudflare 이전 — 무료 Hobby는 상업이용 불가)
 - 이미지 클라우드 저장소(스케일 시 Vercel Blob/R2 — 현재는 리사이즈 후 data URL로 KV에 담음)
 - 하드닝: 이메일 인증·비밀번호 재설정(이메일서비스 필요) (레이트리밋·예쁜주소 = 완료)

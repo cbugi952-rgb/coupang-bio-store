@@ -7,6 +7,7 @@
   "files": ["server.js", "README.md"],
   "scripts": { "start": "node server.js" },
   "engines": { "node": ">=18" },
+  "homepage": "https://onshelf.vercel.app",
   "publishConfig": { "access": "public" },
   "keywords": ["link-in-bio", "mcp", "claude", "onshelf"],
   "license": "MIT",

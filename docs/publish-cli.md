@@ -1,5 +1,7 @@
 # CLI · MCP npm 배포 가이드
 
+> ✅ 2026-07-14 프리플라이트 완료: `onshelf`·`onshelf-mcp` 둘 다 npm에서 404(=이름 사용 가능), `npm pack --dry-run` 통과(각 3파일), 기본 API_BASE=프로덕션 확인. **남은 건 아래 1번(npm 가입+login)과 3번(publish 두 줄)뿐.**
+
 CLI(`cli/`)와 MCP 서버(`mcp/`)는 완성·검증됐지만 **아직 npm에 배포 안 됨**. 배포하면 관리자 "개발자 · API 연동" 패널의 `npm i -g onshelf` / `npx -y onshelf-mcp`가 실제로 동작한다. **배포엔 부기의 npm 계정이 필요**(Claude가 대신 못 함).
 
 ## 순서

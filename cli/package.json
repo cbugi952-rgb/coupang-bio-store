@@ -6,6 +6,7 @@
   "bin": { "onshelf": "onshelf.js" },
   "files": ["onshelf.js", "README.md"],
   "engines": { "node": ">=18" },
+  "homepage": "https://onshelf.vercel.app",
   "publishConfig": { "access": "public" },
   "keywords": ["link-in-bio", "cli", "onshelf"],
   "license": "MIT"
