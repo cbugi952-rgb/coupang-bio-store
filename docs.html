@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>개발자 문서 · Onshelf</title>
+<meta name="description" content="Onshelf 개발자 문서 — REST API · CLI · MCP로 링크 페이지(픽·프로필)를 코드·터미널·AI 에이전트로 관리하세요.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%2323A455'/><circle cx='38' cy='45' r='7' fill='%23fff'/><circle cx='62' cy='45' r='7' fill='%23fff'/></svg>">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+  :root{
+    --bg:#FAF6EE;--card:#FFFDF8;--ink:#17231C;--muted:#5B6B60;--border:#ECE5D7;
+    --accent:#23A455;--accent-deep:#177E3D;--accent-soft:#E7F4EC;
+    --code-bg:#0E1A13;--code-ink:#E7F0E9;--code-border:#1D2C23;
+    --get:#177E3D;--post:#1D6FD6;--patch:#B0740B;--put:#7A46C9;--del:#C0392B;
+  }
+  @media (prefers-color-scheme:dark){:root{
+    --bg:#0E1512;--card:#15201A;--ink:#EAF2EC;--muted:#9DB2A7;--border:#26332C;
+    --accent:#2CB863;--accent-deep:#2CB863;--accent-soft:#16271D;
+    --code-bg:#0A120D;--code-ink:#DCE8DF;--code-border:#233128;
+    --get:#4FD08A;--post:#6AB0FF;--patch:#E5A93C;--put:#B492F0;--del:#F0736A;
+  }}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Pretendard Variable",Pretendard,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;
+    word-break:keep-all;line-height:1.72;-webkit-font-smoothing:antialiased}
+  a{color:var(--accent-deep);font-weight:700;text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  /* sticky header */
+  .top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);
+    backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid var(--border)}
+  .top-in{max-width:960px;margin:0 auto;padding:11px 20px;display:flex;align-items:center;gap:16px}
+  .brand{display:flex;align-items:center;gap:8px;font-size:18px;font-weight:900;letter-spacing:-.02em;color:var(--ink);flex:none}
+  .brand img{width:23px;height:23px;border-radius:7px}
+  .brand .tag{font-size:11px;font-weight:800;color:var(--accent-deep);background:var(--accent-soft);
+    padding:2px 7px;border-radius:999px;margin-left:2px}
+  .subnav{display:flex;gap:3px;overflow-x:auto;margin-left:auto;scrollbar-width:none}
+  .subnav::-webkit-scrollbar{display:none}
+  .subnav a{color:var(--muted);font-size:13px;font-weight:700;padding:6px 10px;border-radius:8px;white-space:nowrap}
+  .subnav a:hover{color:var(--ink);background:var(--accent-soft);text-decoration:none}
+  .login-b{flex:none;font-size:13px;font-weight:800;color:#fff;background:var(--accent);padding:7px 13px;border-radius:9px}
+  .login-b:hover{background:var(--accent-deep);text-decoration:none}
+  @media(max-width:720px){.subnav{order:3;width:100%;margin:6px 0 0}.top-in{flex-wrap:wrap}}
+
+  .wrap{max-width:960px;margin:0 auto;padding:0 20px 90px}
+  section{scroll-margin-top:72px;padding-top:52px}
+  h1{font-size:34px;font-weight:900;letter-spacing:-.03em;margin:0 0 12px;line-height:1.2}
+  h2{font-size:23px;font-weight:900;letter-spacing:-.02em;margin:0 0 6px;display:flex;align-items:center;gap:9px}
+  h2 .hash{color:var(--accent);font-size:19px}
+  h3{font-size:16px;font-weight:800;margin:26px 0 8px}
+  p,li{font-size:15px}
+  ul,ol{padding-left:20px}
+  li{margin:5px 0}
+  .lead{font-size:16px;color:var(--muted);margin:0 0 4px}
+  code:not(pre code){background:var(--accent-soft);color:var(--accent-deep);font-weight:700;
+    padding:1.5px 6px;border-radius:6px;font-size:.88em;
+    font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;word-break:break-all}
+
+  /* hero */
+  .hero{padding-top:56px}
+  .hero .kick{display:inline-block;font-size:13px;font-weight:800;color:var(--accent-deep);
+    background:var(--accent-soft);padding:5px 12px;border-radius:999px;margin-bottom:16px}
+  .hero p.sell{font-size:17px;max-width:620px;margin:0 0 8px}
+  .hero .mono-line{font-size:14px;color:var(--muted);max-width:640px}
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:26px 0 8px}
+  @media(max-width:720px){.cards{grid-template-columns:1fr}}
+  .qcard{display:block;background:var(--card);border:1px solid var(--border);border-radius:14px;
+    padding:16px 16px 15px;color:var(--ink)}
+  .qcard:hover{border-color:var(--accent);text-decoration:none;transform:translateY(-1px);transition:.14s}
+  .qcard .ic{font-size:20px}
+  .qcard b{display:block;font-size:15px;font-weight:900;margin:7px 0 2px}
+  .qcard span{font-size:13px;color:var(--muted);line-height:1.55;display:block}
+
+  /* code blocks */
+  .code{position:relative;margin:12px 0}
+  .code pre{margin:0;background:var(--code-bg);color:var(--code-ink);border:1px solid var(--code-border);
+    border-radius:12px;padding:15px 16px;overflow-x:auto;font-size:13px;line-height:1.7;
+    font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace}
+  .code pre .c{color:#7FA98C}      /* comment */
+  .code pre .k{color:#8FD3A8;font-weight:700}  /* keyword/method */
+  .code pre .s{color:#E5C07B}      /* string */
+  .copy{position:absolute;top:9px;right:9px;background:rgba(255,255,255,.09);color:#D6E5DA;
+    border:1px solid rgba(255,255,255,.16);border-radius:7px;font-size:11.5px;font-weight:700;
+    padding:4px 9px;cursor:pointer;font-family:inherit}
+  .copy:hover{background:rgba(255,255,255,.16)}
+  .copy.done{color:#8FD3A8;border-color:#3a6b4d}
+
+  /* endpoint table */
+  .tbl-wrap{overflow-x:auto;margin:14px 0;border:1px solid var(--border);border-radius:12px}
+  table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:520px}
+  th,td{text-align:left;padding:10px 13px;border-bottom:1px solid var(--border);vertical-align:top}
+  th{font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;background:var(--card)}
+  tr:last-child td{border-bottom:0}
+  td code{white-space:nowrap}
+  .m{font-family:ui-monospace,Consolas,monospace;font-weight:800;font-size:12px;padding:2px 7px;border-radius:6px;color:#fff}
+  .m.get{background:var(--get)}.m.post{background:var(--post)}.m.patch{background:var(--patch)}
+  .m.put{background:var(--put)}.m.del{background:var(--del)}
+  .lock{font-size:13px}
+
+  /* callout */
+  .note{background:var(--accent-soft);border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);
+    border-radius:12px;padding:13px 16px;margin:16px 0;font-size:14px}
+  .note b{color:var(--accent-deep)}
+  .warn{background:color-mix(in srgb,#E5A93C 12%,var(--bg));border:1px solid color-mix(in srgb,#E5A93C 40%,transparent)}
+  .fields{font-size:14px}
+  .fields li{margin:6px 0}
+  .fields code{font-weight:800}
+
+  .foot{margin-top:66px;padding-top:22px;border-top:1px solid var(--border);
+    display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;font-size:13.5px;color:var(--muted)}
+  .foot a{color:var(--muted);font-weight:700}
+  .foot .fb{display:flex;align-items:center;gap:7px;font-weight:900;color:var(--ink)}
+  .foot .fb img{width:20px;height:20px;border-radius:6px}
+</style>
+</head>
+<body>
+
+<header class="top"><div class="top-in">
+  <a class="brand" href="/"><img src="/assets/bugi-mascot.jpg" alt="">Onshelf<span class="tag">개발자</span></a>
+  <nav class="subnav">
+    <a href="#start">빠른 시작</a>
+    <a href="#auth">인증</a>
+    <a href="#rest">REST API</a>
+    <a href="#model">데이터 모델</a>
+    <a href="#cli">CLI</a>
+    <a href="#mcp">MCP</a>
+    <a href="#status">현황</a>
+  </nav>
+  <a class="login-b" href="/login">키 받기</a>
+</div></header>
+
+<main class="wrap">
+
+  <!-- HERO -->
+  <section class="hero" id="top" style="scroll-margin-top:0">
+    <span class="kick">API · CLI · MCP</span>
+    <h1>코드로 관리하는<br>링크 인 바이오</h1>
+    <p class="sell">링크인바이오 서비스는 전부 GUI 전용입니다. <b>Onshelf</b>는 웹 편집기와 <b>똑같은 REST API</b>를
+      터미널·발행 스크립트·AI 에이전트(MCP)에도 그대로 엽니다. 진실의 원천은 API 하나, 클라이언트는 셋.</p>
+    <p class="mono-line">공개 페이지 · CLI · MCP 서버가 모두 같은 엔드포인트(<code>/api/sites/{handle}/…</code>)를 칩니다.</p>
+    <div class="cards">
+      <a class="qcard" href="#rest"><span class="ic">🔌</span><b>REST API</b><span>픽·프로필 CRUD. 키만 있으면 지금 바로 <code>curl</code>로 동작.</span></a>
+      <a class="qcard" href="#cli"><span class="ic">⌨️</span><b>CLI</b><span>의존성 0. 발행 파이프라인에서 "영상 올리면 픽 자동 추가".</span></a>
+      <a class="qcard" href="#mcp"><span class="ic">🤖</span><b>MCP 서버</b><span>클로드에게 "새 픽 추가해" 하면 라이브 반영.</span></a>
+    </div>
+  </section>
+
+  <!-- QUICK START -->
+  <section id="start">
+    <h2><span class="hash">#</span> 빠른 시작</h2>
+    <p class="lead">키를 받아 60초 안에 첫 픽을 올립니다.</p>
+
+    <h3>1. 사이트 + API 키 발급</h3>
+    <p><a href="/login">/login</a>에서 이메일·비밀번호·원하는 주소(핸들)로 가입하면 <b>사이트와 API 키가 자동 발급</b>됩니다.
+      키는 로그인 후 <a href="/admin">/admin</a> 우측 <b>“개발자 · API 연동”</b> 패널에서 언제든 복사·재발급할 수 있어요.
+      키 형식은 <code>sk_live_…</code> 이며 <b>해당 사이트 한 곳에만</b> 쓰기 권한이 있습니다.</p>
+
+    <h3>2. 공개 데이터 읽기 (인증 불필요)</h3>
+    <div class="code"><button class="copy">복사</button><pre><span class="c"># 누구나 읽을 수 있는 공개 데이터 (프로필 + 픽)</span>
+curl https://onshelf.vercel.app/api/sites/<span class="s">kkanajae</span></pre></div>
+
+    <h3>3. 첫 픽 추가하기 (키 필요)</h3>
+    <div class="code"><button class="copy">복사</button><pre>curl -X <span class="k">POST</span> https://onshelf.vercel.app/api/sites/<span class="s">kkanajae</span>/picks \
+  -H <span class="s">"Authorization: Bearer sk_live_여기에_내_키"</span> \
+  -H <span class="s">"Content-Type: application/json"</span> \
+  -d <span class="s">'{ "ep":"EP14", "topic":"텀블러", "verdict":"진공 이중벽이 다 한다",
+        "category":"주방", "coupang":"https://link.coupang.com/a/..",
+        "status":"latest" }'</span></pre></div>
+    <div class="note"><b>바로 반영됩니다.</b> 방금 추가한 픽은 <code>/kkanajae</code> 공개 페이지에 즉시 나타납니다.
+      <code>status:"latest"</code> 는 맨 위 대표 카드로 올려줍니다(사이트당 최대 1개).</div>
+  </section>
+
+  <!-- AUTH -->
+  <section id="auth">
+    <h2><span class="hash">#</span> 인증</h2>
+    <p>쓰기 요청은 <code>Authorization</code> 헤더에 <b>사이트 스코프 키</b>를 담습니다. 공개 <span class="m get">GET</span>
+      (사이트 읽기)은 인증이 필요 없습니다.</p>
+    <div class="code"><button class="copy">복사</button><pre>Authorization: Bearer sk_live_xxxxxxxxxxxxxxxxxxxx</pre></div>
+    <ul>
+      <li>키는 <b>발급된 사이트 한 곳</b>에만 유효합니다. 다른 핸들에 쓰기를 시도하면 <code>403</code>.</li>
+      <li>키가 유효하지 않거나 없으면 <code>401</code>.</li>
+      <li>키 유출이 의심되면 <a href="/admin">/admin</a>에서 <b>재발급</b>하세요. 이전 키는 즉시 폐기됩니다.</li>
+      <li>남용 방지를 위해 요청 수가 제한됩니다. 초과 시 <code>429</code> + <code>Retry-After</code> 헤더가 옵니다.</li>
+    </ul>
+    <div class="note">웹 편집기·CLI·MCP는 <b>모두 같은 API·같은 키 체계</b>를 씁니다. 웹은 로그인 세션 쿠키로,
+      프로그램 접근은 <code>sk_live_…</code> 키로 인증할 뿐, 엔드포인트는 동일합니다.</div>
+  </section>
+
+  <!-- REST -->
+  <section id="rest">
+    <h2><span class="hash">#</span> REST API</h2>
+    <p class="lead">Base URL — <code>https://onshelf.vercel.app/api</code></p>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>메서드</th><th>경로</th><th>인증</th><th>설명</th></tr></thead>
+      <tbody>
+        <tr><td><span class="m get">GET</span></td><td><code>/sites/{h}</code></td><td class="lock">🔓</td><td>공개 데이터(프로필 + 픽 + 블록)</td></tr>
+        <tr><td><span class="m put">PUT</span></td><td><code>/sites/{h}</code></td><td class="lock">🔒</td><td>사이트 통짜 교체(<code>picks</code> 배열 필수) — GUI 저장용</td></tr>
+        <tr><td><span class="m get">GET</span></td><td><code>/sites/{h}/picks</code></td><td class="lock">🔒</td><td>픽 목록</td></tr>
+        <tr><td><span class="m post">POST</span></td><td><code>/sites/{h}/picks</code></td><td class="lock">🔒</td><td>픽 추가(<code>topic</code> 필수) → <code>201</code>, 생성된 픽 반환 <b>(자동화 주력)</b></td></tr>
+        <tr><td><span class="m patch">PATCH</span></td><td><code>/sites/{h}/picks/{id}</code></td><td class="lock">🔒</td><td>픽 부분 수정(보낸 필드만)</td></tr>
+        <tr><td><span class="m del">DELETE</span></td><td><code>/sites/{h}/picks/{id}</code></td><td class="lock">🔒</td><td>픽 삭제</td></tr>
+        <tr><td><span class="m post">POST</span></td><td><code>/sites/{h}/picks/{id}/latest</code></td><td class="lock">🔒</td><td>대표(최신) 지정 — 기존 최신은 일반 게시로</td></tr>
+        <tr><td><span class="m post">POST</span></td><td><code>/sites/{h}/picks/reorder</code></td><td class="lock">🔒</td><td>순서 재정렬 · body <code>{ ids:[…] }</code></td></tr>
+        <tr><td><span class="m patch">PATCH</span></td><td><code>/sites/{h}/profile</code></td><td class="lock">🔒</td><td>프로필 필드 병합</td></tr>
+        <tr><td><span class="m get">GET</span></td><td><code>/sites/{h}/stats</code></td><td class="lock">🔒</td><td>방문·클릭·전환율</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>응답 형식</h3>
+    <p>쓰기 응답은 <code>{ "ok": true, … }</code> 또는 <code>{ "ok": false, "error": "…" }</code> 봉투를 씁니다.
+      공개 <span class="m get">GET</span> <code>/sites/{h}</code> 만 사이트 객체를 그대로 반환합니다.</p>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>상태</th><th>의미</th></tr></thead>
+      <tbody>
+        <tr><td><code>200</code> / <code>201</code></td><td>성공 (201 = 픽 생성)</td></tr>
+        <tr><td><code>401</code></td><td>인증 없음/실패</td></tr>
+        <tr><td><code>403</code></td><td>키가 다른 사이트 소속</td></tr>
+        <tr><td><code>404</code></td><td>픽·경로 없음</td></tr>
+        <tr><td><code>422</code></td><td>검증 실패(필수값 누락 등)</td></tr>
+        <tr><td><code>429</code></td><td>요청 제한 초과(<code>Retry-After</code> 참고)</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>예) 픽 추가 → 응답</h3>
+    <div class="code"><button class="copy">복사</button><pre><span class="k">POST</span> /api/sites/kkanajae/picks
+Authorization: Bearer sk_live_xxx
+
+{ <span class="s">"ep"</span>:<span class="s">"EP14"</span>, <span class="s">"topic"</span>:<span class="s">"텀블러"</span>, <span class="s">"coupang"</span>:<span class="s">"https://link.coupang.com/a/.."</span>,
+  <span class="s">"toss"</span>:<span class="s">"https://sharelink.toss.im/.."</span>, <span class="s">"category"</span>:<span class="s">"주방"</span>, <span class="s">"status"</span>:<span class="s">"latest"</span> }
+
+<span class="c">→ 201</span>
+{ <span class="s">"ok"</span>:true, <span class="s">"pick"</span>:{ <span class="s">"id"</span>:<span class="s">"p_ab12"</span>, <span class="s">"ep"</span>:<span class="s">"EP14"</span>, <span class="s">"topic"</span>:<span class="s">"텀블러"</span>, <span class="s">"status"</span>:<span class="s">"latest"</span>, … } }</pre></div>
+
+    <h3>예) 부분 수정 · 최신 지정 · 통계</h3>
+    <div class="code"><button class="copy">복사</button><pre><span class="c"># 토스 링크만 교체</span>
+curl -X <span class="k">PATCH</span> …/sites/kkanajae/picks/p_ab12 \
+  -H <span class="s">"Authorization: Bearer sk_live_xxx"</span> -H <span class="s">"Content-Type: application/json"</span> \
+  -d <span class="s">'{ "toss":"https://sharelink.toss.im/new" }'</span>
+
+<span class="c"># 이 픽을 대표(최신)로</span>
+curl -X <span class="k">POST</span> …/sites/kkanajae/picks/p_ab12/latest -H <span class="s">"Authorization: Bearer sk_live_xxx"</span>
+
+<span class="c"># 통계 (방문·유입·클릭·전환율)</span>
+curl …/sites/kkanajae/stats -H <span class="s">"Authorization: Bearer sk_live_xxx"</span>
+<span class="c"># → { "ok":true, "stats":{ "totalViews":120, "totalClicks":18, "ctr":15, "views":{…}, "clicks":{…} } }</span></pre></div>
+    <div class="note">방문(view)·클릭(click) 집계는 공개 페이지가 자동으로 쌓습니다. 개발자는 위 <code>/stats</code>로 집계값만 읽으면 됩니다.
+      정밀 매출은 쿠팡 파트너스·토스 대시보드가 정본입니다.</div>
+  </section>
+
+  <!-- DATA MODEL -->
+  <section id="model">
+    <h2><span class="hash">#</span> 데이터 모델</h2>
+    <p>사이트 하나 = <code>profile</code> + <code>picks[]</code> + <code>blocks[]</code>.</p>
+    <div class="code"><button class="copy">복사</button><pre>{
+  <span class="s">"profile"</span>: { <span class="s">"name"</span>, <span class="s">"handle"</span>, <span class="s">"tagline"</span>, <span class="s">"bio"</span>, <span class="s">"avatar"</span>, <span class="s">"accent"</span>,
+                <span class="s">"notice"</span>, <span class="s">"contactEmail"</span>, <span class="s">"disclosure"</span>,
+                <span class="s">"socials"</span>: { <span class="s">"youtube"</span>, <span class="s">"tiktok"</span>, <span class="s">"instagram"</span>, <span class="s">"threads"</span>, <span class="s">"naverBlog"</span>, <span class="s">"x"</span> } },
+  <span class="s">"picks"</span>: [
+    { <span class="s">"id"</span>, <span class="s">"ep"</span>, <span class="s">"topic"</span>, <span class="s">"verdict"</span>, <span class="s">"category"</span>, <span class="s">"image"</span>, <span class="s">"youtube"</span>,
+      <span class="s">"buttons"</span>: [ { <span class="s">"label"</span>, <span class="s">"url"</span> } ], <span class="s">"status"</span> }
+  ],
+  <span class="s">"blocks"</span>: [ { <span class="s">"type"</span>: <span class="s">"text|video|link"</span>, … } ]
+}</pre></div>
+    <h3>픽(pick) 필드</h3>
+    <ul class="fields">
+      <li><code>id</code> — 서버가 생성(추가 시 자동). 수정·삭제·재정렬의 키.</li>
+      <li><code>topic</code> — 카드 제목 <b>(추가 시 필수)</b>. <code>verdict</code> — 한 줄 코멘트, <code>ep</code> — 회차 뱃지, <code>category</code> — 필터용 분류.</li>
+      <li><code>buttons</code> — 구매/이동 버튼 배열 <b>(라벨+URL, 최대 4개)</b>. 쿠팡·토스·네이버·알리 등 <b>아무 스토어나</b> 자유롭게.</li>
+      <li><code>coupang</code> / <code>toss</code> — 레거시 단축 필드(<code>buttons</code>가 없을 때 하위호환 렌더). 신규는 <code>buttons</code> 권장.</li>
+      <li><code>status</code> — <code>latest</code>(대표, 사이트당 최대 1개·서버 강제) · <code>live</code>(일반 게시, 기본) · <code>hidden</code>(숨김).</li>
+      <li><code>image</code> / <code>youtube</code> — 카드 이미지·리뷰 쇼츠 링크(선택).</li>
+    </ul>
+    <div class="note">URL 필드는 <b>스킴 화이트리스트</b>(<code>http</code>·<code>https</code>·<code>mailto</code>)로 정리됩니다.
+      <code>javascript:</code>·<code>data:text/html</code> 등은 저장 단계에서 제거되어 XSS를 차단합니다. 길이도 서버에서 슬라이스됩니다.</div>
+  </section>
+
+  <!-- CLI -->
+  <section id="cli">
+    <h2><span class="hash">#</span> CLI <span style="font-size:13px;font-weight:800;color:var(--patch);background:color-mix(in srgb,var(--patch) 15%,transparent);padding:3px 9px;border-radius:999px">npm 배포 예정</span></h2>
+    <p>터미널·발행 스크립트에서 픽·프로필을 관리하는 <code>onshelf</code> 커맨드. <b>의존성 0</b>(Node 18+ 내장만),
+      MCP 툴과 1:1 대응합니다.</p>
+    <div class="code"><button class="copy">복사</button><pre><span class="c"># 설치 (npm 배포 후)</span>
+npm i -g onshelf
+
+<span class="c"># 로그인 — 키는 ~/.config/onshelf/config.json 에 저장</span>
+onshelf login --key sk_live_xxx --handle kkanajae
+echo sk_live_xxx | onshelf login          <span class="c"># 키를 stdin으로(히스토리 안 남김)</span></pre></div>
+    <div class="code"><button class="copy">복사</button><pre>onshelf picks list                        <span class="c"># 픽 목록</span>
+onshelf picks add --ep EP15 --topic 쿨매트 --coupang &lt;url&gt; --toss &lt;url&gt; --category 반려 --latest
+onshelf picks update &lt;id&gt; --toss &lt;url&gt;    <span class="c"># 값 없는 --toss = 그 필드 지우기</span>
+onshelf picks rm &lt;id&gt;
+onshelf picks latest &lt;id&gt;                  <span class="c"># 대표(최신) 지정</span>
+onshelf picks reorder &lt;id1&gt; &lt;id2&gt; …
+
+onshelf profile get                       <span class="c"># 공개 읽기(키 불필요)</span>
+onshelf profile set --notice "이번 주 신상 3종" --instagram &lt;url&gt;
+onshelf stats                             <span class="c"># 방문·클릭·전환율</span>
+onshelf whoami | url | logout</pre></div>
+    <p><code>--json</code>을 붙이면 원본 JSON(파이프·<code>jq</code>용). 환경변수 <code>API_BASE</code>·<code>API_KEY</code>·<code>SITE_HANDLE</code>로도
+      덮어쓸 수 있어(CI·일회성) 로그인 없이 씁니다.</p>
+    <h3>발행 파이프라인 훅 — "영상 올리면 픽 자동 추가"</h3>
+    <div class="code"><button class="copy">복사</button><pre>onshelf picks add --ep <span class="s">"$EP"</span> --topic <span class="s">"$TOPIC"</span> \
+  --coupang <span class="s">"$COUPANG"</span> --toss <span class="s">"$TOSS"</span> --category <span class="s">"$CAT"</span> --latest</pre></div>
+    <div class="note warn">배포 전에는 레포에서 <code>node cli/onshelf.js …</code>로 바로 실행됩니다(개발·도그푸딩용).
+      <b>REST API는 배포와 무관하게 지금 동작</b>하니, 키만 있으면 위 명령 없이도 <code>curl</code>·자기 스크립트로 자동화할 수 있습니다.</div>
+  </section>
+
+  <!-- MCP -->
+  <section id="mcp">
+    <h2><span class="hash">#</span> MCP 서버 <span style="font-size:13px;font-weight:800;color:var(--patch);background:color-mix(in srgb,var(--patch) 15%,transparent);padding:3px 9px;border-radius:999px">npm 배포 예정</span></h2>
+    <p>클로드·커서 같은 <b>AI 에이전트</b>에 링크 페이지를 <b>도구로</b> 노출합니다. 에이전트에게 말로 시키면
+      해당 REST 호출로 라이브 반영 — 이게 Onshelf의 핵심 웨지입니다.</p>
+    <h3>설정 (Claude Desktop / Claude Code)</h3>
+    <p>MCP 설정 파일(<code>claude_desktop_config.json</code> 또는 프로젝트 <code>.mcp.json</code>)에 추가:</p>
+    <div class="code"><button class="copy">복사</button><pre>{
+  <span class="s">"mcpServers"</span>: {
+    <span class="s">"onshelf"</span>: {
+      <span class="s">"command"</span>: <span class="s">"npx"</span>,
+      <span class="s">"args"</span>: [<span class="s">"-y"</span>, <span class="s">"onshelf-mcp"</span>],
+      <span class="s">"env"</span>: {
+        <span class="s">"API_KEY"</span>: <span class="s">"sk_live_여기에_내_키"</span>,
+        <span class="s">"SITE_HANDLE"</span>: <span class="s">"kkanajae"</span>
+      }
+    }
+  }
+}</pre></div>
+    <p><code>API_BASE</code>는 기본값이 프로덕션(<code>https://onshelf.vercel.app/api</code>)이라 생략 가능합니다.
+      키 없이 실행하면 <b>공개 읽기만</b> 됩니다.</p>
+    <h3>노출 툴 (8종)</h3>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>툴</th><th>동작</th></tr></thead>
+      <tbody>
+        <tr><td><code>list_picks</code></td><td>픽 목록</td></tr>
+        <tr><td><code>add_pick</code></td><td>픽 추가(<code>topic</code>·<code>coupang</code> 필수)</td></tr>
+        <tr><td><code>update_pick</code></td><td>픽 부분 수정</td></tr>
+        <tr><td><code>delete_pick</code></td><td>픽 삭제</td></tr>
+        <tr><td><code>set_latest</code></td><td>대표(최신) 지정</td></tr>
+        <tr><td><code>reorder_picks</code></td><td>순서 재정렬</td></tr>
+        <tr><td><code>update_profile</code></td><td>프로필(이름·공지·소셜 등) 수정</td></tr>
+        <tr><td><code>get_stats</code></td><td>방문·유입·클릭·전환율</td></tr>
+      </tbody>
+    </table></div>
+    <div class="note"><b>데모.</b> 클로드에게 이렇게 말하면 됩니다 —<br>
+      <i>“EP15 쿨매트 픽 추가해줘. 쿠팡 링크는 …, 카테고리 반려, 최신으로.”</i> → 공개 페이지에 즉시 반영.</div>
+  </section>
+
+  <!-- STATUS -->
+  <section id="status">
+    <h2><span class="hash">#</span> 현황</h2>
+    <ul>
+      <li><b>REST API</b> — 지금 바로 동작. 가입해서 키만 받으면 <code>curl</code>·스크립트로 자동화 가능.</li>
+      <li><b>CLI · MCP</b> — 완성·검증 완료, npm 배포 준비 상태(패키지명 <code>onshelf</code>·<code>onshelf-mcp</code> 확보). 배포되면 위 <code>npm i</code>/<code>npx</code>가 그대로 동작하고, 그전에는 레포에서 직접 실행.</li>
+      <li><b>데이터 소유권</b> — 언제든 <code>GET /api/sites/{handle}</code>로 내 데이터를 통째로 내려받아 백업할 수 있습니다.</li>
+      <li>서비스는 현재 <b>무료 베타</b>입니다. 문의: <a href="mailto:yugeonjae@gmail.com">yugeonjae@gmail.com</a></li>
+    </ul>
+  </section>
+
+  <div class="foot">
+    <a class="fb" href="/"><img src="/assets/bugi-mascot.jpg" alt="">Onshelf</a>
+    <a href="/">홈</a><a href="/login">로그인</a><a href="/terms">이용약관</a><a href="/privacy">개인정보처리방침</a>
+    <span style="margin-left:auto;color:var(--muted)">API 하나 · 클라이언트 셋</span>
+  </div>
+</main>
+
+<script>
+  // 코드 블록 복사 버튼 (의존성 0)
+  document.querySelectorAll(".copy").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var pre = btn.parentElement.querySelector("pre");
+      var text = pre ? pre.innerText : "";
+      navigator.clipboard.writeText(text).then(function(){
+        btn.textContent = "복사됨 ✓"; btn.classList.add("done");
+        setTimeout(function(){ btn.textContent = "복사"; btn.classList.remove("done"); }, 1400);
+      }).catch(function(){ /* 클립보드 미지원 무시 */ });
+    });
+  });
+</script>
+</body>
+</html>
