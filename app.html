@@ -157,6 +157,18 @@
   .sig{display:inline-flex;align-items:center;gap:7px;margin-top:16px;padding:9px 16px;border-radius:999px;background:var(--card);border:1px solid var(--border);font-size:12px;font-weight:700;color:var(--muted);box-shadow:var(--shadow)}
   .sig .sq{width:14px;height:14px;border-radius:5px;background:var(--accent)}
   .sig b{color:var(--ink);font-weight:800}
+  /* 없는(빈) 주소 = claim 화면 */
+  .claim{max-width:440px;margin:0 auto;padding:40px 24px;min-height:82dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:2px}
+  .claim .logo{width:74px;height:74px;margin-bottom:8px;filter:drop-shadow(0 12px 24px rgba(35,164,85,.28))}
+  .claim .curl{font-size:14px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:999px;padding:8px 16px;box-shadow:var(--shadow);word-break:break-all;max-width:100%}
+  .claim .curl b{color:var(--ink)}
+  .claim h1{font-size:24px;font-weight:800;margin:16px 0 0;letter-spacing:-.01em;line-height:1.25}
+  .claim p{font-size:14.5px;color:var(--muted);max-width:22em;margin:8px 0 0;line-height:1.6}
+  .claim .cta{margin-top:22px;display:inline-flex;align-items:center;gap:7px;background:#23A455;color:#fff;font-weight:800;font-size:15.5px;padding:14px 26px;border-radius:14px;text-decoration:none;box-shadow:0 14px 30px -14px rgba(35,164,85,.6);transition:transform .12s}
+  .claim .cta:hover{transform:translateY(-2px)}
+  .claim .alt{margin-top:13px;font-size:13px;font-weight:700;color:var(--muted);text-decoration:none}
+  .claim .alt:hover{text-decoration:underline}
+  .claim .cta:focus-visible,.claim .alt:focus-visible{outline:3px solid #23A455;outline-offset:3px}
   @media (prefers-reduced-motion:no-preference){
     .reveal{opacity:0;transform:translateY(10px);animation:rise .5s cubic-bezier(.2,.7,.3,1) forwards}
     @keyframes rise{to{opacity:1;transform:none}}
@@ -427,12 +439,36 @@ function trafficSource(){
 }
 function isInApp(){ return /Instagram|TikTok|musical_ly|BytedanceWebview|FBAN|FBAV|KAKAOTALK/i.test(navigator.userAgent); }
 
+const SHELL_SVG = '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="4" y="4" width="92" height="92" rx="22" fill="#23A455"/><g fill="none" stroke="#fff" stroke-width="3.4" stroke-linejoin="round"><path d="M 50 35.5 L 50 20 A 30 30 0 0 1 75.98 35 L 62.56 42.75 Z"/><path d="M 62.56 42.75 L 75.98 35 A 30 30 0 0 1 75.98 65 L 62.56 57.25 Z"/><path d="M 62.56 57.25 L 75.98 65 A 30 30 0 0 1 50 80 L 50 64.5 Z"/><path d="M 50 64.5 L 50 80 A 30 30 0 0 1 24.02 65 L 37.44 57.25 Z"/><path d="M 37.44 57.25 L 24.02 65 A 30 30 0 0 1 24.02 35 L 37.44 42.75 Z"/><path d="M 37.44 42.75 L 24.02 35 A 30 30 0 0 1 50 20 L 50 35.5 Z"/><path d="M 50 35.5 L 62.56 42.75 L 62.56 57.25 L 50 64.5 L 37.44 57.25 L 37.44 42.75 Z"/></g></svg>';
+// 등록되지 않은(빈) 주소 → 클레임 안내 화면
+function renderClaim(handle){
+  const h = esc(handle);
+  document.documentElement.style.setProperty("--accent","#23A455");   // 브랜드 초록(빈 페이지는 테넌트 테마 없음)
+  document.body.style.backgroundImage="radial-gradient(120% 55% at 50% -6%, rgba(35,164,85,.14), transparent 62%)";
+  document.title = handle + " · Onshelf에서 사용 가능한 주소";
+  try{ const m=document.createElement("meta"); m.name="robots"; m.content="noindex"; document.head.appendChild(m); }catch(_){}
+  const main = document.querySelector("main.wrap");
+  if(!main) return;
+  main.innerHTML = `<div class="claim">
+    <div class="logo">${SHELL_SVG}</div>
+    <div class="curl">onshelf.vercel.app/<b>${h}</b></div>
+    <h1>아직 비어 있는 주소예요</h1>
+    <p>이 주소는 아직 아무도 쓰고 있지 않아요.<br>지금 내 링크 페이지로 만들어 보세요.</p>
+    <a class="cta" href="/login?handle=${encodeURIComponent(handle)}">이 주소로 시작하기 →</a>
+    <a class="alt" href="/">Onshelf 둘러보기</a>
+  </div>`;
+}
 async function load(){
   render(SEED);
   if(PREVIEW) return;
   try{
     const r = await fetch("/api/picks" + QH, {cache:"no-store"});
-    if(r.ok){ render(await r.json()); }
+    if(r.ok){
+      const data = await r.json();
+      const exists = data && data.profile && data.profile.handle;   // 프로비저닝 시 profile.handle 세팅됨 → 없으면 미등록
+      if(!exists && HANDLE !== ROOT_HANDLE){ renderClaim(HANDLE); return; }
+      render(data);
+    }
   }catch(e){}
 }
 
