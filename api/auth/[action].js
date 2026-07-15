@@ -1,10 +1,12 @@
 // 인증 엔드포인트: POST /api/auth/{signup|login|logout} · GET /api/auth/me
 import {
   verifyPassword, createSession, destroySession, getSessionUser,
-  getUserByEmail, createUser, sessionCookie, clearCookie, isSecureReq, saveUser,
+  getUserByEmail, getUserById, createUser, sessionCookie, clearCookie, isSecureReq, saveUser,
+  createResetToken, consumeResetToken, deleteResetToken, setUserPassword,
 } from "../../lib/auth.js";
 import { provisionSite, sanitizeHandle, issueKey } from "../../lib/site.js";
 import { rateLimit } from "../../lib/ratelimit.js";
+import { sendMail } from "../../lib/mailer.js";
 import { store } from "../../lib/store.js";
 
 const emailRe = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
@@ -12,6 +14,11 @@ const tooMany = (res, rl, msg) => {
   res.setHeader("Retry-After", String(rl.retryAfter || 60));
   return res.status(429).json({ ok: false, error: msg });
 };
+function baseUrl(req) {
+  const proto = String(req.headers["x-forwarded-proto"] || "https").split(",")[0].trim();
+  const host = req.headers["host"] || "onshelf.vercel.app";
+  return `${proto}://${host}`;
+}
 function readBody(req) {
   let b = req.body;
   if (typeof b === "string") { try { b = JSON.parse(b); } catch { b = {}; } }
@@ -87,6 +94,44 @@ export default async function handler(req, res) {
     const token = await createSession(user.id);
     res.setHeader("Set-Cookie", sessionCookie(token, secure));
     return res.status(200).json({ ok: true, handle: user.handle });
+  }
+
+  // 비밀번호 재설정 요청 — 이메일로 링크 발송. 열거 방지 위해 항상 동일 응답.
+  if (action === "forgot") {
+    const rl = await rateLimit(req, { scope: "forgot", limit: 5, windowSec: 3600 });
+    if (!rl.ok) return tooMany(res, rl, "요청이 너무 많습니다. 잠시 후 다시 시도해주세요.");
+    const email = String(b.email || "").trim();
+    const generic = { ok: true, message: "가입된 이메일이라면 재설정 링크를 보냈어요. 메일함(스팸함 포함)을 확인해주세요." };
+    if (!emailRe.test(email)) return res.status(200).json(generic);
+    const user = await getUserByEmail(email);
+    if (user) {
+      const token = await createResetToken(user.id);
+      const link = `${baseUrl(req)}/reset?token=${token}`;
+      // 링크는 이메일로만 — HTTP 응답/로그에 노출 금지(계정 탈취 방지). 키 미설정 시 mailer가 무발송.
+      await sendMail({
+        to: user.email,
+        subject: "[Onshelf] 비밀번호 재설정",
+        text: `아래 링크에서 비밀번호를 재설정하세요 (30분 내 유효):\n${link}\n\n요청한 적이 없다면 이 메일을 무시하세요.`,
+        html: `<div style="font-family:system-ui,sans-serif;max-width:440px"><p>Onshelf 비밀번호를 재설정하려면 아래 버튼을 누르세요. <b>30분</b> 동안 유효합니다.</p><p><a href="${link}" style="display:inline-block;background:#23A455;color:#fff;font-weight:700;padding:12px 22px;border-radius:10px;text-decoration:none">비밀번호 재설정</a></p><p style="color:#888;font-size:13px">요청한 적이 없다면 이 메일을 무시하세요.</p></div>`,
+      });
+    }
+    return res.status(200).json(generic);
+  }
+
+  // 새 비밀번호로 변경 (재설정 토큰 소비)
+  if (action === "reset") {
+    const rl = await rateLimit(req, { scope: "reset", limit: 10, windowSec: 3600 });
+    if (!rl.ok) return tooMany(res, rl, "요청이 너무 많습니다. 잠시 후 다시 시도해주세요.");
+    const token = String(b.token || "");
+    const password = String(b.password || "");
+    if (password.length < 6) return res.status(422).json({ ok: false, error: "비밀번호는 6자 이상이어야 합니다." });
+    const userId = await consumeResetToken(token);
+    if (!userId) return res.status(400).json({ ok: false, error: "링크가 만료되었거나 올바르지 않아요. 다시 요청해주세요." });
+    const user = await getUserById(userId);
+    if (!user) { await deleteResetToken(token); return res.status(400).json({ ok: false, error: "계정을 찾을 수 없어요." }); }
+    await setUserPassword(user, password);
+    await deleteResetToken(token);
+    return res.status(200).json({ ok: true, message: "비밀번호가 바뀌었어요. 새 비밀번호로 로그인하세요." });
   }
 
   return res.status(404).json({ ok: false, error: "알 수 없는 요청입니다." });

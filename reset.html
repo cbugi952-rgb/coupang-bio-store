@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>비밀번호 재설정 · Onshelf</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='4' y='4' width='92' height='92' rx='22' fill='%2323A455'/><g fill='none' stroke='%23fff' stroke-width='4' stroke-linejoin='round'><path d='M 50 35.5 L 50 20 A 30 30 0 0 1 75.98 35 L 62.56 42.75 Z'/><path d='M 62.56 42.75 L 75.98 35 A 30 30 0 0 1 75.98 65 L 62.56 57.25 Z'/><path d='M 62.56 57.25 L 75.98 65 A 30 30 0 0 1 50 80 L 50 64.5 Z'/><path d='M 50 64.5 L 50 80 A 30 30 0 0 1 24.02 65 L 37.44 57.25 Z'/><path d='M 37.44 57.25 L 24.02 65 A 30 30 0 0 1 24.02 35 L 37.44 42.75 Z'/><path d='M 37.44 42.75 L 24.02 35 A 30 30 0 0 1 50 20 L 50 35.5 Z'/><path d='M 50 35.5 L 62.56 42.75 L 62.56 57.25 L 50 64.5 L 37.44 57.25 L 37.44 42.75 Z'/></g></svg>">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+  :root{--bg:#FAF6EE;--card:#FFFDF8;--field:#FFF;--ink:#17231C;--muted:#5B6B60;--border:#ECE5D7;--border-strong:#DED5C4;--accent:#23A455;--accent-deep:#177E3D;--accent-ink:#FFFFFF;--danger:#D8443F;--ok:#3E9E63}
+  @media (prefers-color-scheme:dark){:root{--bg:#0E1512;--card:#15201A;--field:#18231C;--ink:#EAF2EC;--muted:#9DB2A7;--border:#26332C;--border-strong:#33443A;--accent:#2CB863;--accent-deep:#2CB863;--accent-ink:#08130E;--danger:#F0625D;--ok:#57C083}}
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100dvh;display:grid;place-items:center;background:var(--bg);color:var(--ink);font-family:"Pretendard Variable",Pretendard,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;word-break:keep-all;padding:20px;background-image:radial-gradient(120% 55% at 50% -10%, color-mix(in srgb,var(--accent) 15%,transparent), transparent 60%)}
+  .brand{display:flex;align-items:center;gap:9px;justify-content:center;font-size:22px;font-weight:900;letter-spacing:-.02em;margin-bottom:18px}
+  .brand img{width:26px;height:26px;border-radius:8px}
+  .card{width:100%;max-width:380px;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:26px 24px;box-shadow:0 24px 50px -26px rgba(20,50,30,.45)}
+  h1{font-size:18px;font-weight:800;margin:0 0 6px;text-align:center}
+  .lead{font-size:13px;color:var(--muted);text-align:center;margin:0 0 18px;line-height:1.5}
+  .fld{margin-bottom:14px}
+  .fld label{display:block;font-size:12.5px;font-weight:700;color:var(--muted);margin-bottom:5px}
+  .fld input{width:100%;font-family:inherit;font-size:14.5px;color:var(--ink);background:var(--field);border:1px solid var(--border-strong);border-radius:10px;padding:11px 12px}
+  .fld input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 28%,transparent)}
+  .btn{width:100%;font-family:inherit;font-weight:800;font-size:15px;padding:13px;border:none;border-radius:11px;background:var(--accent);color:var(--accent-ink);cursor:pointer;margin-top:4px}
+  .btn:disabled{opacity:.55;cursor:default}
+  .msg{font-size:13px;font-weight:700;margin-top:12px;min-height:18px;text-align:center;line-height:1.5}
+  .msg.err{color:var(--danger)}
+  .msg.ok{color:var(--ok)}
+  .foot{text-align:center;font-size:12px;color:var(--muted);margin-top:16px}
+  .foot a{color:var(--accent-deep);font-weight:700;text-decoration:none}
+  .foot a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div>
+  <div class="brand"><img src="/assets/onshelf-shell.svg" alt="">Onshelf</div>
+  <div class="card">
+    <h1>비밀번호 재설정</h1>
+    <p class="lead">새 비밀번호를 입력하세요. 링크는 30분간 유효해요.</p>
+    <form id="form">
+      <div class="fld"><label for="pw">새 비밀번호</label><input type="password" id="pw" autocomplete="new-password" placeholder="6자 이상" required></div>
+      <div class="fld"><label for="pw2">새 비밀번호 확인</label><input type="password" id="pw2" autocomplete="new-password" placeholder="한 번 더" required></div>
+      <button type="submit" class="btn" id="submit">비밀번호 바꾸기</button>
+      <div class="msg" id="msg" role="status" aria-live="polite"></div>
+    </form>
+    <div class="foot"><a href="/login">← 로그인으로</a></div>
+  </div>
+</div>
+<script>
+"use strict";
+const $=s=>document.querySelector(s);
+const token=new URLSearchParams(location.search).get("token")||"";
+if(!token){ $("#msg").className="msg err"; $("#msg").textContent="잘못된 링크예요. 비밀번호 찾기를 다시 시도해주세요."; $("#submit").disabled=true; }
+$("#form").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const msg=$("#msg"); msg.className="msg"; msg.textContent="";
+  const pw=$("#pw").value, pw2=$("#pw2").value;
+  if(pw.length<6){ msg.className="msg err"; msg.textContent="비밀번호는 6자 이상이어야 해요."; return; }
+  if(pw!==pw2){ msg.className="msg err"; msg.textContent="두 비밀번호가 달라요."; return; }
+  $("#submit").disabled=true; $("#submit").textContent="바꾸는 중…";
+  try{
+    const r=await fetch("/api/auth/reset",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({token,password:pw})});
+    const d=await r.json().catch(()=>({}));
+    if(r.ok && d.ok){
+      msg.className="msg ok"; msg.textContent=(d.message||"비밀번호가 바뀌었어요.")+" 로그인 화면으로 이동해요…";
+      setTimeout(()=>{ location.href="/login"; },1600); return;
+    }
+    msg.className="msg err"; msg.textContent=d.error||"실패했어요. 다시 시도해주세요.";
+    $("#submit").disabled=false; $("#submit").textContent="비밀번호 바꾸기";
+  }catch(err){ msg.className="msg err"; msg.textContent="네트워크 오류예요."; $("#submit").disabled=false; $("#submit").textContent="비밀번호 바꾸기"; }
+});
+</script>
+</body>
+</html>

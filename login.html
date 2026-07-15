@@ -30,6 +30,9 @@
   .btn:disabled{opacity:.55;cursor:default}
   .msg{font-size:13px;font-weight:700;margin-top:12px;min-height:18px;text-align:center}
   .msg.err{color:var(--danger)}
+  .msg.ok{color:var(--accent-deep)}
+  .forgot a,.backrow a{color:var(--accent-deep);font-weight:700;text-decoration:none;font-size:12.5px}
+  .forgot a:hover,.backrow a:hover{text-decoration:underline}
   .foot{text-align:center;font-size:11.5px;color:var(--muted);margin-top:16px;line-height:1.5}
   .foot a{color:var(--accent-deep);font-weight:700;text-decoration:none}
   .foot a:hover{text-decoration:underline}
@@ -52,9 +55,11 @@
         <div class="urlrow"><span class="pre" id="urlpre">/</span><input type="text" id="handle" placeholder="mypage" maxlength="40" autocomplete="off"></div>
         <div class="hint">영문·숫자·-·_ · 나중에 못 바꿔요</div>
       </div>
-      <div class="fld"><label for="password">비밀번호</label><input type="password" id="password" autocomplete="current-password" placeholder="6자 이상" required></div>
+      <div class="fld" id="pw-fld"><label for="password">비밀번호</label><input type="password" id="password" autocomplete="current-password" placeholder="6자 이상" required></div>
+      <div class="forgot" id="forgotLink" style="text-align:right;margin:-6px 0 12px"><a href="#" id="toForgot">비밀번호를 잊으셨나요?</a></div>
       <button type="submit" class="btn" id="submit">로그인</button>
-      <div class="msg" id="msg"></div>
+      <div class="backrow" id="backLink" hidden style="text-align:center;margin-top:13px"><a href="#" id="toLogin">← 로그인으로</a></div>
+      <div class="msg" id="msg" role="status" aria-live="polite"></div>
     </form>
     <div class="foot">로그인하면 내 링크페이지를 꾸미고 관리할 수 있어요.<br>가입 또는 로그인 시 <a href="/terms">이용약관</a>과 <a href="/privacy">개인정보처리방침</a>에 동의하게 됩니다.</div>
   </div>
@@ -67,15 +72,23 @@ try{ $("#urlpre").textContent = location.host + "/"; }catch(_){}   // 예쁜 주
 let mode="login";
 function setMode(m){
   mode=m;
+  const isSignup=m==="signup", isForgot=m==="forgot";
   $("#tab-login").setAttribute("aria-selected",m==="login");
-  $("#tab-signup").setAttribute("aria-selected",m==="signup");
-  $("#handle-fld").hidden = m!=="signup";
-  $("#submit").textContent = m==="signup"?"회원가입":"로그인";
-  $("#password").autocomplete = m==="signup"?"new-password":"current-password";
-  $("#msg").textContent="";
+  $("#tab-signup").setAttribute("aria-selected",isSignup);
+  document.querySelector(".tabs").hidden = isForgot;
+  $("#handle-fld").hidden = !isSignup;
+  $("#pw-fld").hidden = isForgot;
+  $("#password").required = !isForgot;
+  $("#forgotLink").hidden = m!=="login";
+  $("#backLink").hidden = !isForgot;
+  $("#submit").textContent = isForgot?"재설정 메일 받기":(isSignup?"회원가입":"로그인");
+  $("#password").autocomplete = isSignup?"new-password":"current-password";
+  $("#msg").className="msg"; $("#msg").textContent="";
 }
 $("#tab-login").addEventListener("click",()=>setMode("login"));
 $("#tab-signup").addEventListener("click",()=>setMode("signup"));
+$("#toForgot").addEventListener("click",e=>{e.preventDefault();setMode("forgot");});
+$("#toLogin").addEventListener("click",e=>{e.preventDefault();setMode("login");});
 $("#handle").addEventListener("input",e=>{ e.target.value=e.target.value.replace(/[^a-zA-Z0-9_-]/g,"").toLowerCase(); });
 // 랜딩 클레임(onshelf.vercel.app/내이름)에서 넘어온 ?handle= 을 받아 가입 모드로 전환 + 프리필
 try{ const _h=new URLSearchParams(location.search).get("handle"); if(_h){ setMode("signup"); $("#handle").value=_h.replace(/[^a-zA-Z0-9_-]/g,"").toLowerCase().slice(0,40); } }catch(_){}
@@ -84,15 +97,20 @@ $("#form").addEventListener("submit",async e=>{
   e.preventDefault();
   const msg=$("#msg"); msg.className="msg"; msg.textContent="";
   const email=$("#email").value.trim(), password=$("#password").value, handle=$("#handle").value.trim();
-  const body= mode==="signup"?{email,password,handle}:{email,password};
+  const action = mode==="forgot"?"forgot":mode;
+  const body = mode==="signup"?{email,password,handle} : mode==="forgot"?{email} : {email,password};
+  const restore = mode==="forgot"?"재설정 메일 받기":(mode==="signup"?"회원가입":"로그인");
   $("#submit").disabled=true; $("#submit").textContent="잠시만요…";
   try{
-    const r=await fetch("/api/auth/"+mode,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(body)});
+    const r=await fetch("/api/auth/"+action,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(body)});
     const d=await r.json().catch(()=>({}));
-    if(r.ok && d.ok){ location.href="/admin.html"; return; }
-    msg.className="msg err"; msg.textContent=d.error||"실패했어요. 다시 시도해주세요.";
+    if(mode==="forgot"){
+      if(r.ok && d.ok){ msg.className="msg ok"; msg.textContent=d.message||"메일을 확인해주세요."; }
+      else { msg.className="msg err"; msg.textContent=d.error||"실패했어요. 다시 시도해주세요."; }
+    } else if(r.ok && d.ok){ location.href="/admin.html"; return; }
+    else { msg.className="msg err"; msg.textContent=d.error||"실패했어요. 다시 시도해주세요."; }
   }catch(err){ msg.className="msg err"; msg.textContent="네트워크 오류예요."; }
-  $("#submit").disabled=false; $("#submit").textContent = mode==="signup"?"회원가입":"로그인";
+  $("#submit").disabled=false; $("#submit").textContent=restore;
 });
 
 // 이미 로그인돼 있으면 관리자로

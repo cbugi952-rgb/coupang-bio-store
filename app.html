@@ -225,7 +225,7 @@ function readHandle(pathname, search){
   let seg = String(pathname || "/").split("/").filter(Boolean)[0] || "";
   try { seg = decodeURIComponent(seg); } catch(_) {}
   seg = seg.toLowerCase();
-  const reserved = new Set(["index","app","admin","login","api","assets","images","terms","privacy","docs"]);
+  const reserved = new Set(["index","app","admin","login","api","assets","images","terms","privacy","docs","reset"]);
   const fromPath = reserved.has(seg) ? "" : seg;
   const fromQuery = new URLSearchParams(search || "").get("u") || "";
   const h = (fromPath || fromQuery).replace(/[^a-z0-9_-]/gi, "").slice(0, 40).toLowerCase();
