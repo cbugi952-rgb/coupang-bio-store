@@ -3,10 +3,11 @@ import {
   verifyPassword, createSession, destroySession, getSessionUser,
   getUserByEmail, getUserById, createUser, sessionCookie, clearCookie, isSecureReq, saveUser,
   createResetToken, consumeResetToken, deleteResetToken, setUserPassword,
+  createVerifyToken, consumeVerifyToken, deleteVerifyToken,
 } from "../../lib/auth.js";
 import { provisionSite, sanitizeHandle, issueKey } from "../../lib/site.js";
 import { rateLimit } from "../../lib/ratelimit.js";
-import { sendMail } from "../../lib/mailer.js";
+import { sendMail, mailerConfigured } from "../../lib/mailer.js";
 import { store } from "../../lib/store.js";
 
 const emailRe = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
@@ -25,6 +26,18 @@ function readBody(req) {
   return b && typeof b === "object" ? b : {};
 }
 
+// 이메일 인증 링크 발송 — 토큰은 이메일로만(HTTP 응답/로그 미노출). 키 미설정 시 mailer가 무발송.
+async function sendVerifyMail(req, user) {
+  const token = await createVerifyToken(user.id);
+  const link = `${baseUrl(req)}/verify?token=${token}`;
+  await sendMail({
+    to: user.email,
+    subject: "[Onshelf] 이메일 인증",
+    text: `아래 링크를 눌러 이메일을 인증해주세요 (24시간 내 유효):\n${link}\n\n요청한 적이 없다면 이 메일을 무시하세요.`,
+    html: `<div style="font-family:system-ui,sans-serif;max-width:440px"><p>Onshelf 가입을 환영해요! 아래 버튼을 눌러 이메일을 인증해주세요. <b>24시간</b> 동안 유효합니다.</p><p><a href="${link}" style="display:inline-block;background:#23A455;color:#fff;font-weight:700;padding:12px 22px;border-radius:10px;text-decoration:none">이메일 인증하기</a></p><p style="color:#888;font-size:13px">요청한 적이 없다면 이 메일을 무시하세요.</p></div>`,
+  });
+}
+
 export default async function handler(req, res) {
   res.setHeader("content-type", "application/json; charset=utf-8");
   const action = Array.isArray(req.query.action) ? req.query.action[0] : req.query.action;
@@ -33,7 +46,7 @@ export default async function handler(req, res) {
   if (action === "me") {
     const u = await getSessionUser(req);
     if (!u) return res.status(401).json({ ok: false });
-    return res.status(200).json({ ok: true, email: u.email, handle: u.handle });
+    return res.status(200).json({ ok: true, email: u.email, handle: u.handle, verified: !!u.verified, mailReady: mailerConfigured() });
   }
 
   // API 키 조회/재발급 (로그인 세션) — CLI·MCP·REST 연동용
@@ -77,6 +90,7 @@ export default async function handler(req, res) {
     if (!prov.ok) return res.status(prov.status || 409).json({ ok: false, error: prov.error || "이미 쓰이는 주소입니다." });
     const user = await createUser(email, password, handle);
     user.apikey = prov.key; await saveUser(user);   // 키를 유저에 저장 → 나중에 관리자에서 조회
+    try { await sendVerifyMail(req, user); } catch (e) { /* 비차단 — 가입은 성공, 인증메일 실패해도 진행 */ }
     const token = await createSession(user.id);
     res.setHeader("Set-Cookie", sessionCookie(token, secure));
     return res.status(201).json({ ok: true, handle, key: prov.key });
@@ -132,6 +146,31 @@ export default async function handler(req, res) {
     await setUserPassword(user, password);
     await deleteResetToken(token);
     return res.status(200).json({ ok: true, message: "비밀번호가 바뀌었어요. 새 비밀번호로 로그인하세요." });
+  }
+
+  // 이메일 인증 (가입 시 발송한 토큰 소비) — verify.html이 POST
+  if (action === "verify") {
+    const rl = await rateLimit(req, { scope: "verify", limit: 20, windowSec: 3600 });
+    if (!rl.ok) return tooMany(res, rl, "요청이 너무 많습니다. 잠시 후 다시 시도해주세요.");
+    const token = String(b.token || "");
+    const userId = await consumeVerifyToken(token);
+    if (!userId) return res.status(400).json({ ok: false, error: "링크가 만료되었거나 올바르지 않아요. 다시 요청해주세요." });
+    const user = await getUserById(userId);
+    if (!user) { await deleteVerifyToken(token); return res.status(400).json({ ok: false, error: "계정을 찾을 수 없어요." }); }
+    user.verified = true; await saveUser(user);
+    await deleteVerifyToken(token);
+    return res.status(200).json({ ok: true, message: "이메일 인증이 완료되었어요." });
+  }
+
+  // 인증 메일 재전송 (로그인 세션 본인만) — 미인증일 때만 발송
+  if (action === "resend-verify") {
+    const u = await getSessionUser(req);
+    if (!u) return res.status(401).json({ ok: false, error: "로그인이 필요합니다." });
+    const rl = await rateLimit(req, { scope: "resend-verify", limit: 5, windowSec: 3600 });
+    if (!rl.ok) return tooMany(res, rl, "요청이 너무 많습니다. 잠시 후 다시 시도해주세요.");
+    if (u.verified) return res.status(200).json({ ok: true, message: "이미 인증된 이메일이에요." });
+    try { await sendVerifyMail(req, u); } catch (e) {}
+    return res.status(200).json({ ok: true, message: "인증 메일을 다시 보냈어요. 메일함(스팸함 포함)을 확인해주세요." });
   }
 
   return res.status(404).json({ ok: false, error: "알 수 없는 요청입니다." });

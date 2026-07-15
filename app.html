@@ -225,7 +225,7 @@ function readHandle(pathname, search){
   let seg = String(pathname || "/").split("/").filter(Boolean)[0] || "";
   try { seg = decodeURIComponent(seg); } catch(_) {}
   seg = seg.toLowerCase();
-  const reserved = new Set(["index","app","admin","login","api","assets","images","terms","privacy","docs","reset"]);
+  const reserved = new Set(["index","app","admin","login","api","assets","images","terms","privacy","docs","reset","verify"]);
   const fromPath = reserved.has(seg) ? "" : seg;
   const fromQuery = new URLSearchParams(search || "").get("u") || "";
   const h = (fromPath || fromQuery).replace(/[^a-z0-9_-]/gi, "").slice(0, 40).toLowerCase();
@@ -405,7 +405,7 @@ function render(data){
   document.getElementById("pf-handle").textContent = pf.tagline || h;
   document.getElementById("pf-sig").textContent = pf.name || "내 페이지";
   document.getElementById("pf-bio").textContent = pf.bio || "";
-  document.getElementById("pf-disc").textContent = pf.disclosure || "";
+  const discEl = document.getElementById("pf-disc"); discEl.textContent = pf.disclosure || ""; discEl.hidden = !pf.disclosure;
   document.title = pf.name || "내 링크";
 
   const noticeEl = document.getElementById("notice");

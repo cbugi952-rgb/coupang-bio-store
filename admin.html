@@ -52,6 +52,10 @@
   .appbar .brand .sq{width:15px;height:15px;border-radius:4px;background:var(--accent)}
   .appbar .brand small{font-weight:600;font-size:12px;color:#B7AE96;margin-left:2px}
   .appbar .spacer{flex:1}
+  .vbanner{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;padding:9px 16px;background:#FFF7E0;color:#7A5B00;border-bottom:1px solid #F0E4B8;font-size:13px;font-weight:600}
+  .vbanner button{font-family:inherit;font-size:12.5px;font-weight:700;border:1px solid #E4C766;background:#fff;color:#7A5B00;border-radius:8px;padding:6px 12px;cursor:pointer}
+  .vbanner button:disabled{opacity:.55;cursor:default}
+  @media(prefers-color-scheme:dark){.vbanner{background:#2A2410;color:#E8D08A;border-color:#3E351A}.vbanner button{background:#1c1808;color:#E8D08A;border-color:#5A4B1E}}
   .savestate{display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;color:#C9BE9E}
   .savestate .dot{width:8px;height:8px;border-radius:50%;background:var(--faint)}
   .savestate.dirty .dot{background:var(--accent);box-shadow:0 0 0 3px rgba(255,212,0,.2)}
@@ -252,6 +256,10 @@
   <span class="savestate" id="savestate"><span class="dot"></span><span id="savetext">불러오는 중…</span></span>
   <button class="btn primary" id="saveBtn" disabled>변경사항 게시</button>
 </div>
+<div class="vbanner" id="vbanner" hidden>
+  <span>📩 이메일 인증을 완료해주세요 — 받은 메일의 인증 버튼을 누르면 끝나요.</span>
+  <button type="button" id="vresend">인증 메일 재전송</button>
+</div>
 
 <div class="shell">
   <section>
@@ -392,6 +400,7 @@
         <div class="fld"><label for="p-bio">소개 <span class="hint">· 2줄</span></label><textarea id="p-bio" maxlength="60"></textarea></div>
         <div class="fld"><label for="p-notice">한줄 공지 <span class="opt">· 선택(비우면 숨김)</span></label><input type="text" id="p-notice" maxlength="60" placeholder="이번 주 신상 3종 업데이트"></div>
         <div class="fld"><label for="p-contact">협업·문의 이메일 <span class="opt">· 선택(있으면 '협업 문의' 버튼 표시)</span></label><input type="email" id="p-contact" maxlength="80" placeholder="you@email.com"></div>
+        <div class="fld"><label for="p-disc">제휴 고지 문구 <span class="opt">· 선택(쿠팡·토스 등 제휴 링크 쓸 때만 표시)</span></label><textarea id="p-disc" maxlength="300" placeholder="예: 본 페이지의 일부 링크는 쿠팡 파트너스 활동의 일환으로 수수료를 받습니다."></textarea></div>
         <div class="grid2">
           <div class="fld"><label for="p-youtube">유튜브</label><input type="url" id="p-youtube" placeholder="https://youtube.com/@..." inputmode="url"></div>
           <div class="fld"><label for="p-tiktok">틱톡</label><input type="url" id="p-tiktok" placeholder="https://tiktok.com/@..." inputmode="url"></div>
@@ -444,7 +453,7 @@ let LOGGEDIN=false;               // 세션 로그인 여부
 const uid=()=>"p"+Date.now().toString(36)+Math.floor(Math.random()*1e4).toString(36);
 
 const SEED={
-  profile:{name:"",handle:"",tagline:"",bio:"",avatar:"",accent:"#7C5CFC",layout:"card",showImages:true,theme:"cream",background:"solid",backgroundImage:"",font:"jua",buttonStyle:"round",buttonFill:"solid",notice:"",contactEmail:"",disclosure:"본 페이지의 상품 링크는 쿠팡 파트너스·토스쇼핑 쉐어링크 활동의 일환으로, 구매 시 이에 따른 일정액의 수수료를 제공받습니다.",socials:{youtube:"",tiktok:"",instagram:"",threads:"",naverBlog:"",x:""},stickers:[]},
+  profile:{name:"",handle:"",tagline:"",bio:"",avatar:"",accent:"#7C5CFC",layout:"card",showImages:true,theme:"cream",background:"solid",backgroundImage:"",font:"jua",buttonStyle:"round",buttonFill:"solid",notice:"",contactEmail:"",disclosure:"",socials:{youtube:"",tiktok:"",instagram:"",threads:"",naverBlog:"",x:""},stickers:[]},
   picks:[],
   blocks:[]
 };
@@ -466,7 +475,7 @@ function normalize(d){
       buttonFill:["solid","outline","soft"].includes(pr.buttonFill)?pr.buttonFill:"solid",
       stickers:Array.isArray(pr.stickers)?pr.stickers.slice(0,6):[],
       notice:pr.notice??"", contactEmail:pr.contactEmail??"",
-      disclosure:pr.disclosure||SEED.profile.disclosure,
+      disclosure:pr.disclosure??"",
       socials:{youtube:sc.youtube??"",tiktok:sc.tiktok??"",instagram:sc.instagram??"",threads:sc.threads??"",naverBlog:sc.naverBlog??"",x:sc.x??""}
     },
     picks:(Array.isArray(p.picks)?p.picks:[]).map(x=>({
@@ -622,7 +631,7 @@ document.querySelector(".btnadd").addEventListener("click",e=>{ const b=e.target
 function bindProfile(){
   const p=state.profile;
   $("#p-name").value=p.name; $("#p-handle").value=p.handle; $("#p-tagline").value=p.tagline||""; $("#p-bio").value=p.bio;
-  $("#p-notice").value=p.notice||""; $("#p-contact").value=p.contactEmail||""; $("#p-accent").value=/^#[0-9a-fA-F]{6}$/.test(p.accent||"")?p.accent:"#23A455";
+  $("#p-notice").value=p.notice||""; $("#p-contact").value=p.contactEmail||""; $("#p-disc").value=p.disclosure||""; $("#p-accent").value=/^#[0-9a-fA-F]{6}$/.test(p.accent||"")?p.accent:"#23A455";
   $("#p-youtube").value=p.socials.youtube; $("#p-tiktok").value=p.socials.tiktok; $("#p-instagram").value=p.socials.instagram;
   $("#p-threads").value=p.socials.threads||""; $("#p-naverBlog").value=p.socials.naverBlog||""; $("#p-x").value=p.socials.x||"";
   segActive("d-theme",p.theme); segActive("d-bg",p.background); segActive("d-font",p.font); segActive("d-btn",p.buttonStyle); segActive("d-fill",p.buttonFill); segActive("d-layout",p.layout); segActive("d-images",p.showImages===false?"off":"on");
@@ -636,6 +645,7 @@ $("#p-tagline").addEventListener("input",e=>{state.profile.tagline=e.target.valu
 $("#p-bio").addEventListener("input",e=>{state.profile.bio=e.target.value;markDirty();renderPreview();});
 $("#p-notice").addEventListener("input",e=>{state.profile.notice=e.target.value.trim();markDirty();});
 $("#p-contact").addEventListener("input",e=>{state.profile.contactEmail=e.target.value.trim();markDirty();});
+$("#p-disc").addEventListener("input",e=>{state.profile.disclosure=e.target.value;markDirty();renderPreview();});
 $("#p-accent").addEventListener("input",e=>{state.profile.accent=e.target.value;markDirty();renderPreview();});
 ["youtube","tiktok","instagram","threads","naverBlog","x"].forEach(k=>{
   $("#p-"+k).addEventListener("input",e=>{state.profile.socials[k]=e.target.value.trim();markDirty();});
@@ -756,6 +766,7 @@ function setAuthUI(email){
   $("#logoutBtn").hidden=false; $("#keyBtn").hidden=true;
   $("#logoutBtn").title=(email?email+" · ":"")+"로그아웃";
 }
+function showVerifyBanner(){ const el=$("#vbanner"); if(el) el.hidden=false; }
 // 온보딩: 가입 직후(?welcome=1) 또는 아직 비어 있고 안 닫았을 때 1회 안내
 function maybeOnboard(){
   const url = location.origin + "/" + HANDLE;
@@ -777,7 +788,7 @@ function maybeOnboard(){
 async function initAuth(){
   try{
     const r=await fetch("/api/auth/me",{cache:"no-store"});
-    if(r.ok){ const me=await r.json(); if(me.ok){ LOGGEDIN=true; if(me.handle) HANDLE=me.handle; API="/api/sites/"+encodeURIComponent(HANDLE); KEYK="onshelf_key_"+HANDLE; setAuthUI(me.email); } }
+    if(r.ok){ const me=await r.json(); if(me.ok){ LOGGEDIN=true; if(me.handle) HANDLE=me.handle; API="/api/sites/"+encodeURIComponent(HANDLE); KEYK="onshelf_key_"+HANDLE; setAuthUI(me.email); if(me.verified===false && me.mailReady) showVerifyBanner(); } }
   }catch(e){}
 }
 async function load(){
@@ -793,6 +804,7 @@ async function load(){
   maybeOnboard();
 }
 $("#logoutBtn").addEventListener("click",async()=>{ try{ await fetch("/api/auth/logout",{method:"POST"}); }catch(e){} location.href="/login.html"; });
+$("#vresend").addEventListener("click",async(e)=>{ const btn=e.currentTarget; btn.disabled=true; const old=btn.textContent; btn.textContent="보내는 중…"; try{ const r=await fetch("/api/auth/resend-verify",{method:"POST"}); const d=await r.json().catch(()=>({})); toast(d.message||(d.ok?"인증 메일을 보냈어요.":"실패했어요."), !d.ok); }catch(err){ toast("네트워크 오류예요.",true); } btn.textContent=old; btn.disabled=false; });
 load();
 </script>
 </body>

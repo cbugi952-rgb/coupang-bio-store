@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>이메일 인증 · Onshelf</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='4' y='4' width='92' height='92' rx='22' fill='%2323A455'/><g fill='none' stroke='%23fff' stroke-width='4' stroke-linejoin='round'><path d='M 50 35.5 L 50 20 A 30 30 0 0 1 75.98 35 L 62.56 42.75 Z'/><path d='M 62.56 42.75 L 75.98 35 A 30 30 0 0 1 75.98 65 L 62.56 57.25 Z'/><path d='M 62.56 57.25 L 75.98 65 A 30 30 0 0 1 50 80 L 50 64.5 Z'/><path d='M 50 64.5 L 50 80 A 30 30 0 0 1 24.02 65 L 37.44 57.25 Z'/><path d='M 37.44 57.25 L 24.02 65 A 30 30 0 0 1 24.02 35 L 37.44 42.75 Z'/><path d='M 37.44 42.75 L 24.02 35 A 30 30 0 0 1 50 20 L 50 35.5 Z'/><path d='M 50 35.5 L 62.56 42.75 L 62.56 57.25 L 50 64.5 L 37.44 57.25 L 37.44 42.75 Z'/></g></svg>">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+  :root{--bg:#FAF6EE;--card:#FFFDF8;--field:#FFF;--ink:#17231C;--muted:#5B6B60;--border:#ECE5D7;--border-strong:#DED5C4;--accent:#23A455;--accent-deep:#177E3D;--accent-ink:#FFFFFF;--danger:#D8443F;--ok:#3E9E63}
+  @media (prefers-color-scheme:dark){:root{--bg:#0E1512;--card:#15201A;--field:#18231C;--ink:#EAF2EC;--muted:#9DB2A7;--border:#26332C;--border-strong:#33443A;--accent:#2CB863;--accent-deep:#2CB863;--accent-ink:#08130E;--danger:#F0625D;--ok:#57C083}}
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100dvh;display:grid;place-items:center;background:var(--bg);color:var(--ink);font-family:"Pretendard Variable",Pretendard,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;word-break:keep-all;padding:20px;background-image:radial-gradient(120% 55% at 50% -10%, color-mix(in srgb,var(--accent) 15%,transparent), transparent 60%)}
+  .brand{display:flex;align-items:center;gap:9px;justify-content:center;font-size:22px;font-weight:900;letter-spacing:-.02em;margin-bottom:18px}
+  .brand img{width:26px;height:26px;border-radius:8px}
+  .card{width:100%;max-width:380px;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:26px 24px;box-shadow:0 24px 50px -26px rgba(20,50,30,.45);text-align:center}
+  h1{font-size:18px;font-weight:800;margin:0 0 6px}
+  .lead{font-size:13px;color:var(--muted);margin:0 0 12px;line-height:1.5}
+  .msg{font-size:14px;font-weight:700;margin-top:4px;min-height:20px;line-height:1.5}
+  .msg.err{color:var(--danger)}
+  .msg.ok{color:var(--ok)}
+  .foot{display:flex;gap:14px;justify-content:center;font-size:12.5px;color:var(--muted);margin-top:18px}
+  .foot a{color:var(--accent-deep);font-weight:700;text-decoration:none}
+  .foot a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div>
+  <div class="brand"><img src="/assets/onshelf-shell.svg" alt="">Onshelf</div>
+  <div class="card">
+    <h1>이메일 인증</h1>
+    <p class="lead" id="lead">이메일을 인증하는 중이에요…</p>
+    <div class="msg" id="msg" role="status" aria-live="polite"></div>
+    <div class="foot"><a href="/admin" id="go" hidden>내 페이지 관리로 →</a><a href="/login">로그인</a></div>
+  </div>
+</div>
+<script>
+"use strict";
+const $=s=>document.querySelector(s);
+const token=new URLSearchParams(location.search).get("token")||"";
+const msg=$("#msg"), lead=$("#lead"), go=$("#go");
+(async ()=>{
+  if(!token){ lead.textContent=""; msg.className="msg err"; msg.textContent="잘못된 링크예요. 인증 메일의 버튼을 다시 눌러주세요."; return; }
+  try{
+    const r=await fetch("/api/auth/verify",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({token})});
+    const d=await r.json().catch(()=>({}));
+    if(r.ok && d.ok){ lead.textContent=""; msg.className="msg ok"; msg.textContent=d.message||"이메일 인증이 완료되었어요."; go.hidden=false; }
+    else { lead.textContent=""; msg.className="msg err"; msg.textContent=d.error||"인증에 실패했어요. 다시 시도해주세요."; }
+  }catch(err){ lead.textContent=""; msg.className="msg err"; msg.textContent="네트워크 오류예요. 잠시 후 다시 시도해주세요."; }
+})();
+</script>
+</body>
+</html>
