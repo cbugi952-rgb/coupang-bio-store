@@ -226,6 +226,20 @@
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
   .toast.err .k{background:var(--danger)}
   .note{max-width:1160px;margin:0 auto;padding:0 20px 40px;font-size:11.5px;color:var(--muted);opacity:.8;text-align:center}
+  /* 온보딩 카드 (가입 직후 첫 실행) */
+  .onboard{position:relative;background:linear-gradient(160deg,color-mix(in srgb,var(--accent) 14%,var(--card)),var(--card));border:1px solid color-mix(in srgb,var(--accent) 40%,var(--border));border-radius:16px;padding:18px 20px;margin-bottom:16px;box-shadow:var(--shadow-sm)}
+  .ob-x{position:absolute;top:11px;right:11px;width:26px;height:26px;border:none;background:transparent;color:var(--muted);font-size:13px;cursor:pointer;border-radius:7px}
+  .ob-x:hover{background:var(--card-2);color:var(--ink)}
+  .ob-h{font-size:16px;font-weight:800;margin-bottom:15px}
+  .ob-steps{display:flex;flex-direction:column;gap:15px}
+  .ob-step{display:flex;gap:12px;align-items:flex-start}
+  .ob-n{flex:none;width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-weight:800;font-size:13px;display:grid;place-items:center;margin-top:1px}
+  .ob-step b{font-size:14px;font-weight:800}
+  .ob-step p{font-size:12.5px;color:var(--muted);margin:3px 0 0;line-height:1.5}
+  .ob-url{font-family:ui-monospace,SFMono-Regular,monospace;font-size:12.5px;font-weight:700;color:var(--accent-deep);background:var(--card-2);border:1px solid var(--border);border-radius:8px;padding:6px 10px;margin:6px 0;display:inline-block;word-break:break-all}
+  .ob-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
+  .ob-actions .btn,.ob-step > div > .btn{font-size:12.5px;padding:7px 12px}
+  .ob-foot{font-size:12px;color:var(--muted);margin-top:15px;padding-top:12px;border-top:1px solid var(--border);line-height:1.5}
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -241,6 +255,16 @@
 
 <div class="shell">
   <section>
+    <div class="onboard" id="onboard" hidden>
+      <button class="ob-x" id="ob-x" type="button" aria-label="온보딩 닫기">✕</button>
+      <div class="ob-h">🎉 환영해요! 3단계면 시작이에요</div>
+      <div class="ob-steps">
+        <div class="ob-step"><span class="ob-n">1</span><div><b>내 공개 주소</b><div class="ob-url" id="ob-url">onshelf.vercel.app/…</div><div class="ob-actions"><button type="button" class="btn soft" id="ob-open">주소 열기</button><button type="button" class="btn soft" id="ob-copy">복사</button></div></div></div>
+        <div class="ob-step"><span class="ob-n">2</span><div><b>첫 링크 추가</b><p>쇼핑·유튜브·블로그 뭐든 좋아요. 아래 <b>＋ 새 픽 추가</b>로 시작하세요.</p><button type="button" class="btn primary" id="ob-add" style="margin-top:7px">＋ 첫 링크 추가</button></div></div>
+        <div class="ob-step"><span class="ob-n">3</span><div><b>프로필·디자인 꾸미기</b><p>아래 <b>프로필</b>·<b>디자인</b> 패널에서 이름·색·테마를 바꾸고, 다 되면 우측 상단 <b>변경사항 게시</b>를 누르세요.</p></div></div>
+      </div>
+      <div class="ob-foot">개발자세요? 하단 <b>개발자 · API 연동</b>에서 키를 받아 CLI·MCP·API로도 관리할 수 있어요.</div>
+    </div>
     <div class="col-h"><h2>픽 목록</h2><span class="sub">맨 위 = 최신</span><span class="count" id="count">0개</span></div>
     <div class="statbar" id="statbar" hidden></div>
     <button class="addbar" id="addBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>새 픽 추가</button>
@@ -732,6 +756,24 @@ function setAuthUI(email){
   $("#logoutBtn").hidden=false; $("#keyBtn").hidden=true;
   $("#logoutBtn").title=(email?email+" · ":"")+"로그아웃";
 }
+// 온보딩: 가입 직후(?welcome=1) 또는 아직 비어 있고 안 닫았을 때 1회 안내
+function maybeOnboard(){
+  const url = location.origin + "/" + HANDLE;
+  const urlEl = $("#ob-url"); if(urlEl) urlEl.textContent = url.replace(/^https?:\/\//,"");
+  const sp = new URLSearchParams(location.search);
+  const forced = sp.get("welcome")==="1";
+  const key = "onshelf_onboarded_"+HANDLE;
+  const empty = !state.picks.length && !(state.blocks && state.blocks.length);
+  if(forced){ sp.delete("welcome"); const q=sp.toString(); try{ history.replaceState({}, "", location.pathname+(q?"?"+q:"")); }catch(_){} }
+  if(!forced && (localStorage.getItem(key) || !empty)) return;
+  const box=$("#onboard"); if(!box) return;
+  box.hidden=false;
+  const done=()=>{ box.hidden=true; try{ localStorage.setItem(key,"1"); }catch(_){} };
+  $("#ob-open").onclick=()=>{ window.open(url,"_blank","noopener"); };
+  $("#ob-copy").onclick=()=>{ try{ navigator.clipboard.writeText(url); }catch(_){} toast("주소를 복사했어요"); };
+  $("#ob-add").onclick=()=>{ done(); $("#addBtn").click(); $("#addBtn").scrollIntoView({behavior:"smooth",block:"center"}); };
+  $("#ob-x").onclick=done;
+}
 async function initAuth(){
   try{
     const r=await fetch("/api/auth/me",{cache:"no-store"});
@@ -748,6 +790,7 @@ async function load(){
   await loadStats();
   loading=false; bindProfile(); render();
   const nm=document.getElementById("siteName"); if(nm) nm.textContent=state.profile.name||HANDLE;
+  maybeOnboard();
 }
 $("#logoutBtn").addEventListener("click",async()=>{ try{ await fetch("/api/auth/logout",{method:"POST"}); }catch(e){} location.href="/login.html"; });
 load();

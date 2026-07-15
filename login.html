@@ -107,7 +107,7 @@ $("#form").addEventListener("submit",async e=>{
     if(mode==="forgot"){
       if(r.ok && d.ok){ msg.className="msg ok"; msg.textContent=d.message||"메일을 확인해주세요."; }
       else { msg.className="msg err"; msg.textContent=d.error||"실패했어요. 다시 시도해주세요."; }
-    } else if(r.ok && d.ok){ location.href="/admin.html"; return; }
+    } else if(r.ok && d.ok){ location.href = mode==="signup" ? "/admin.html?welcome=1" : "/admin.html"; return; }
     else { msg.className="msg err"; msg.textContent=d.error||"실패했어요. 다시 시도해주세요."; }
   }catch(err){ msg.className="msg err"; msg.textContent="네트워크 오류예요."; }
   $("#submit").disabled=false; $("#submit").textContent=restore;
