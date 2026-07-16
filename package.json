@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.111.0",
-    "@upstash/redis": "^1.38.0"
+    "@upstash/redis": "^1.38.0",
+    "openai": "^6.47.0"
   }
 }
