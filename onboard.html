@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>시작하기 · Onshelf</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='4' y='4' width='92' height='92' rx='22' fill='%2323A455'/><g fill='none' stroke='%23fff' stroke-width='4' stroke-linejoin='round'><path d='M 50 35.5 L 50 20 A 30 30 0 0 1 75.98 35 L 62.56 42.75 Z'/><path d='M 62.56 42.75 L 75.98 35 A 30 30 0 0 1 75.98 65 L 62.56 57.25 Z'/><path d='M 62.56 57.25 L 75.98 65 A 30 30 0 0 1 50 80 L 50 64.5 Z'/><path d='M 50 64.5 L 50 80 A 30 30 0 0 1 24.02 65 L 37.44 57.25 Z'/><path d='M 37.44 57.25 L 24.02 65 A 30 30 0 0 1 24.02 35 L 37.44 42.75 Z'/><path d='M 37.44 42.75 L 24.02 35 A 30 30 0 0 1 50 20 L 50 35.5 Z'/><path d='M 50 35.5 L 62.56 42.75 L 62.56 57.25 L 50 64.5 L 37.44 57.25 L 37.44 42.75 Z'/></g></svg>">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Gaegu:wght@400;700&family=Nanum+Gothic:wght@400;700&family=Nanum+Myeongjo:wght@400;700&display=swap">
+<style>
+  :root{--bg:#FAF6EE;--card:#FFFDF8;--field:#FFF;--ink:#17231C;--muted:#5B6B60;--border:#ECE5D7;--border-strong:#DED5C4;--accent:#23A455;--accent-deep:#177E3D;--accent-ink:#FFFFFF;--danger:#D8443F}
+  @media (prefers-color-scheme:dark){:root{--bg:#0E1512;--card:#15201A;--field:#18231C;--ink:#EAF2EC;--muted:#9DB2A7;--border:#26332C;--border-strong:#33443A;--accent:#2CB863;--accent-deep:#2CB863;--accent-ink:#08130E;--danger:#F0625D}}
+  *{box-sizing:border-box}
+  [hidden]{display:none!important}
+  body{margin:0;min-height:100dvh;background:var(--bg);color:var(--ink);font-family:"Pretendard Variable",Pretendard,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;word-break:keep-all;padding:28px 20px 48px;background-image:radial-gradient(120% 45% at 50% -10%, color-mix(in srgb,var(--accent) 15%,transparent), transparent 60%)}
+  .wrap{max-width:860px;margin:0 auto}
+  .brand{display:flex;align-items:center;gap:9px;justify-content:center;font-size:21px;font-weight:900;letter-spacing:-.02em}
+  .brand img{width:26px;height:26px;border-radius:8px}
+  h1{font-size:26px;font-weight:900;letter-spacing:-.03em;margin:22px 0 8px;text-align:center}
+  .lead{font-size:14px;color:var(--muted);text-align:center;margin:0 0 6px;line-height:1.6}
+  .myurl{display:block;text-align:center;font-size:13px;font-weight:800;color:var(--accent-deep);margin-bottom:26px;text-decoration:none}
+  .myurl:hover{text-decoration:underline}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+  @media (max-width:720px){.grid{grid-template-columns:1fr}}
+  .panel{min-width:0;background:var(--card);border:1px solid var(--border);border-radius:18px;padding:22px 20px;box-shadow:0 20px 44px -28px rgba(20,50,30,.4)}
+  .panel.lead-opt{border-color:color-mix(in srgb,var(--accent) 45%,var(--border))}
+  .ptop{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+  .ptop h2{font-size:16px;font-weight:800;margin:0}
+  .tag{font-size:10.5px;font-weight:800;padding:3px 7px;border-radius:6px;background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--accent-deep)}
+  .tag.soon{background:color-mix(in srgb,var(--muted) 16%,transparent);color:var(--muted)}
+  .pdesc{font-size:13px;color:var(--muted);line-height:1.6;margin:0 0 16px}
+  .fld input{width:100%;font-family:inherit;font-size:14.5px;color:var(--ink);background:var(--field);border:1px solid var(--border-strong);border-radius:10px;padding:11px 12px}
+  .fld input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 28%,transparent)}
+  .fld input:disabled{opacity:.5}
+  .btn{width:100%;font-family:inherit;font-weight:800;font-size:14.5px;padding:12px;border:none;border-radius:11px;background:var(--accent);color:var(--accent-ink);cursor:pointer;margin-top:10px}
+  .btn:disabled{opacity:.5;cursor:default}
+  .msg{font-size:12.5px;font-weight:700;margin-top:10px;min-height:16px;line-height:1.5;color:var(--muted)}
+  .msg.err{color:var(--danger)}
+  /* 프리셋 스와치 — 테마 배경·브랜드색·폰트·버튼모양을 축소해 보여준다.
+     색값은 app.html THEMES의 표시용 사본(정본은 app.html·서버의 applyPreset). 어긋나도 미리보기만 달라짐. */
+  .swatches{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .sw{min-width:0;border:1px solid var(--border-strong);border-radius:12px;padding:0;background:none;cursor:pointer;overflow:hidden;text-align:left;font-family:inherit;display:block}
+  .sw:hover{border-color:var(--accent)}
+  .sw:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .sw[disabled]{opacity:.5;cursor:default}
+  .sw-vis{height:62px;padding:9px 10px;display:flex;flex-direction:column;gap:5px;justify-content:center}
+  .sw-bar{height:8px;border-radius:99px}
+  .sw-txt{font-size:11px;font-weight:800;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sw-meta{padding:7px 10px 8px;background:var(--card);border-top:1px solid var(--border)}
+  .sw-label{font-size:12px;font-weight:800;color:var(--ink)}
+  .sw-desc{font-size:10.5px;color:var(--muted);margin-top:1px}
+  .skip{text-align:center;margin-top:24px;font-size:13px}
+  .skip button{font-family:inherit;font-size:13px;font-weight:700;color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:underline;padding:6px}
+  .skip button:hover{color:var(--ink)}
+  .load{text-align:center;color:var(--muted);font-size:13.5px;padding:40px 0}
+  /* 생성 중 오버레이 */
+  .over{position:fixed;inset:0;background:color-mix(in srgb,var(--bg) 88%,transparent);display:grid;place-items:center;z-index:9;padding:20px}
+  .over-in{text-align:center;max-width:320px}
+  .spin{width:34px;height:34px;margin:0 auto 14px;border:3px solid color-mix(in srgb,var(--accent) 28%,transparent);border-top-color:var(--accent);border-radius:50%;animation:sp .8s linear infinite}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  .over h3{font-size:16px;font-weight:800;margin:0 0 6px}
+  .over p{font-size:13px;color:var(--muted);margin:0;line-height:1.6}
+  @media (prefers-reduced-motion:reduce){.spin{animation-duration:2.4s}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand"><img src="/assets/onshelf-shell.svg" alt="">Onshelf</div>
+  <h1>페이지를 만들어볼까요?</h1>
+  <p class="lead">둘 중 편한 쪽으로 시작하세요. 만든 다음에도 얼마든지 바꿀 수 있어요.</p>
+  <a class="myurl" id="myurl" href="#" target="_blank" rel="noopener"></a>
+
+  <div class="load" id="load">불러오는 중…</div>
+
+  <div class="grid" id="grid" hidden>
+    <!-- 갈래 1 — 유튜브 자동 생성 -->
+    <section class="panel" id="ytpanel">
+      <div class="ptop"><h2>유튜브 채널로 시작</h2><span class="tag" id="yttag">AI 자동</span></div>
+      <p class="pdesc" id="ytdesc">채널 주소만 붙여넣으면 채널을 읽고 어울리는 색·글꼴·소개·최근 영상 카드까지 한 번에 만들어요.</p>
+      <form id="ytform">
+        <div class="fld"><input type="text" id="yturl" inputmode="url" autocomplete="off" placeholder="youtube.com/@채널이름" aria-label="유튜브 채널 주소"></div>
+        <button type="submit" class="btn" id="ytbtn">AI로 만들기</button>
+        <div class="msg" id="ytmsg" role="status" aria-live="polite"></div>
+      </form>
+    </section>
+
+    <!-- 갈래 2 — 프리셋 (AI 미사용, 항상 동작) -->
+    <section class="panel" id="pspanel">
+      <div class="ptop"><h2>스타일 골라 시작</h2></div>
+      <p class="pdesc">마음에 드는 분위기를 고르면 그 스타일로 시작해요.</p>
+      <div class="swatches" id="swatches"></div>
+      <div class="msg" id="psmsg" role="status" aria-live="polite"></div>
+    </section>
+  </div>
+
+  <div class="skip" id="skipwrap" hidden>
+    <button type="button" id="skip">그냥 빈 페이지로 시작할래요</button>
+  </div>
+</div>
+
+<div class="over" id="over" hidden>
+  <div class="over-in">
+    <div class="spin"></div>
+    <h3 id="overt">채널을 읽는 중…</h3>
+    <p>잠깐만요. 채널 분위기에 맞춰 페이지를 만들고 있어요.</p>
+  </div>
+</div>
+
+<script>
+"use strict";
+const $ = (s) => document.querySelector(s);
+const esc = (v) => String(v == null ? "" : v).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const DONE = "/admin.html?welcome=1";
+
+// 표시용 테마 배경 사본 — 정본은 app.html THEMES / 서버 applyPreset (여긴 스와치 그림만)
+const SW = {
+  cream: { bg: "#F1E9D6", card: "#FFFFFF", ink: "#1B1710" },
+  dark:  { bg: "#101010", card: "#1D1B15", ink: "#F3ECD9" },
+  mint:  { bg: "#E4F3EC", card: "#FFFFFF", ink: "#12241C" },
+  pink:  { bg: "#FBE7EF", card: "#FFFFFF", ink: "#2A1520" },
+  navy:  { bg: "#0F1830", card: "#1D2A49", ink: "#E7ECF7" },
+  mono:  { bg: "#F0F0EE", card: "#FFFFFF", ink: "#161615" },
+};
+const SWFONT = {
+  jua: "'Jua'", gothic: "'Pretendard Variable',Pretendard", nanum: "'Nanum Gothic'",
+  gaegu: "'Gaegu'", myeongjo: "'Nanum Myeongjo'",
+};
+const radius = (s) => (s === "pill" ? "999px" : s === "square" ? "3px" : "7px");
+
+function swatchHtml(p) {
+  const st = p.style || {};
+  const t = SW[st.theme] || SW.cream;
+  const f = SWFONT[st.font] || SWFONT.gothic;
+  const outline = st.buttonFill === "outline";
+  const bar1 = outline
+    ? `border:1.5px solid ${esc(st.accent)};background:transparent`
+    : `background:${esc(st.accent)}`;
+  const bar2 = `background:color-mix(in srgb, ${esc(st.accent)} 26%, ${esc(t.card)})`;
+  return `<button type="button" class="sw" data-id="${esc(p.id)}" aria-label="${esc(p.label)} 스타일로 시작">
+    <div class="sw-vis" style="background:${esc(t.bg)}">
+      <div class="sw-txt" style="color:${esc(t.ink)};font-family:${f},sans-serif">${esc(p.label.split(" · ")[0])}</div>
+      <div class="sw-bar" style="${bar1};border-radius:${radius(st.buttonStyle)}"></div>
+      <div class="sw-bar" style="${bar2};border-radius:${radius(st.buttonStyle)}"></div>
+    </div>
+    <div class="sw-meta"><div class="sw-label">${esc(p.label)}</div><div class="sw-desc">${esc(p.desc)}</div></div>
+  </button>`;
+}
+
+let busy = false;
+function lock(on, title) {
+  busy = on;
+  $("#over").hidden = !on;
+  if (title) $("#overt").textContent = title;
+  document.querySelectorAll(".sw").forEach((b) => { b.disabled = on; });
+  $("#ytbtn").disabled = on || $("#ytbtn").dataset.soon === "1";
+}
+
+async function post(body, msgEl, loadingTitle) {
+  if (busy) return;
+  msgEl.className = "msg"; msgEl.textContent = "";
+  lock(true, loadingTitle);
+  try {
+    const r = await fetch("/api/onboard", {
+      method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body),
+    });
+    const d = await r.json().catch(() => ({}));
+    if (r.ok && d.ok) { location.href = DONE; return; }
+    if (r.status === 401) { location.href = "/login"; return; }
+    lock(false);
+    msgEl.className = "msg err";
+    msgEl.textContent = d.error || "잘 안 됐어요. 다시 시도해주세요.";
+  } catch (e) {
+    lock(false);
+    msgEl.className = "msg err";
+    msgEl.textContent = "네트워크 오류예요. 다시 시도해주세요.";
+  }
+}
+
+$("#ytform").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const url = $("#yturl").value.trim();
+  if (!url) { $("#ytmsg").className = "msg err"; $("#ytmsg").textContent = "채널 주소를 넣어주세요."; return; }
+  post({ mode: "youtube", url }, $("#ytmsg"), "채널을 읽는 중…");
+});
+$("#swatches").addEventListener("click", (e) => {
+  const b = e.target.closest(".sw");
+  if (b && !b.disabled) post({ mode: "preset", preset: b.dataset.id }, $("#psmsg"), "스타일을 입히는 중…");
+});
+$("#skip").addEventListener("click", () => { location.href = DONE; });
+
+// 진입 — 세션 필요. 프리셋·자동생성 가능 여부는 서버가 정본.
+(async () => {
+  let d;
+  try {
+    const r = await fetch("/api/onboard");
+    if (r.status === 401) { location.href = "/login"; return; }
+    d = await r.json();
+  } catch (e) {
+    $("#load").textContent = "불러오지 못했어요. 새로고침 해주세요.";
+    return;
+  }
+  const url = "/" + d.handle;
+  $("#myurl").href = url;
+  $("#myurl").textContent = location.host + url;
+  $("#swatches").innerHTML = (d.presets || []).map(swatchHtml).join("");
+
+  // 키 미설정이면 자동 생성은 정직하게 잠근다 — 되는 척하지 않는다(mailer의 mailReady와 같은 규칙)
+  if (!d.genReady) {
+    $("#yttag").textContent = "준비 중";
+    $("#yttag").className = "tag soon";
+    $("#ytdesc").textContent = "채널을 읽어 페이지를 자동으로 만들어주는 기능은 곧 열려요. 지금은 스타일을 골라 시작해주세요.";
+    $("#yturl").disabled = true;
+    $("#ytbtn").disabled = true;
+    $("#ytbtn").dataset.soon = "1";
+    $("#pspanel").classList.add("lead-opt");
+  } else {
+    $("#ytpanel").classList.add("lead-opt");
+  }
+  $("#load").hidden = true;
+  $("#grid").hidden = false;
+  $("#skipwrap").hidden = false;
+})();
+</script>
+</body>
+</html>
