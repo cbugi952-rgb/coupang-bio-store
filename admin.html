@@ -763,14 +763,30 @@ let devLoaded=false;
 async function loadDev(){
   let key="";
   if(LOGGEDIN){ try{ const r=await fetch("/api/auth/apikey"); const d=await r.json().catch(()=>({})); if(d.ok) key=d.key||""; }catch(e){} }
-  else { key=localStorage.getItem(KEYK)||""; const nb=$("#apikey-new"); if(nb) nb.style.display="none"; }   // 키모드는 재발급 불가
+  else { key=localStorage.getItem(KEYK)||""; const nb=$("#apikey-new"); if(nb) nb.textContent="전용 키 발급"; }
   fillDev(key);
 }
 $("#devpanel").addEventListener("toggle",()=>{ if($("#devpanel").open && !devLoaded){ devLoaded=true; loadDev(); } });
 $("#apikey-copy").addEventListener("click",()=>{ const v=$("#apikey-in").value; if(!v){toast("키가 없어요");return;} try{navigator.clipboard.writeText(v);}catch(e){} toast("키를 복사했어요"); });
 $("#apikey-new").addEventListener("click",async()=>{
-  if(!confirm("새 키를 발급하면 이전 키는 즉시 무효화돼요. 계속할까요?")) return;
-  try{ const r=await fetch("/api/auth/apikey",{method:"POST"}); const d=await r.json().catch(()=>({})); if(d.ok&&d.key){ fillDev(d.key); toast("새 키를 발급했어요"); } else toast(d.error||"실패했어요",true); }catch(e){ toast("네트워크 오류",true); } });
+  if(!confirm(LOGGEDIN?"새 키를 발급하면 이전 키는 즉시 무효화돼요. 계속할까요?":"이 사이트 전용 키를 발급해 관리자 비밀번호 대신 사용할까요?")) return;
+  try{
+    const headers={};
+    let url="/api/auth/apikey";
+    if(!LOGGEDIN){
+      const current=localStorage.getItem(KEYK)||"";
+      if(!current){ toast("먼저 관리자 키를 설정해 주세요",true); return; }
+      headers.authorization="Bearer "+current;
+      url=API+"/apikey";
+    }
+    const r=await fetch(url,{method:"POST",headers});
+    const d=await r.json().catch(()=>({}));
+    if(d.ok&&d.key){
+      if(!LOGGEDIN) localStorage.setItem(KEYK,d.key);
+      fillDev(d.key); toast("사이트 전용 키로 전환했어요");
+    } else toast(d.error||"실패했어요",true);
+  }catch(e){ toast("네트워크 오류",true); }
+});
 document.querySelectorAll(".cpy").forEach(b=>b.addEventListener("click",()=>{ const el=$("#"+b.dataset.cpy); if(el&&el.textContent){ try{navigator.clipboard.writeText(el.textContent);}catch(e){} toast("복사했어요"); } }));
 
 $("#keyBtn").addEventListener("click",()=>{

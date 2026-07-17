@@ -6,7 +6,7 @@
 import { store } from "../lib/store.js";
 import {
   DEFAULT, siteKey, getSite, saveSite, cleanPick, mergeProfile,
-  enforceSingleLatest, newPickId, authorize, sanitizeHandle
+  enforceSingleLatest, newPickId, authorize, sanitizeHandle, rotateSiteKey
 } from "../lib/site.js";
 
 function readBody(req) {
@@ -54,6 +54,15 @@ export default async function handler(req, res) {
     if (!Array.isArray(body.picks)) return fail(res, 422, "picks 배열이 필요합니다.");
     const saved = await saveSite(handle, body);
     return ok(res, { site: saved });
+  }
+
+  // POST /sites/{h}/apikey — rotate a site-scoped key without modifying site data.
+  // The current site key, the owning session, or the legacy default-site admin
+  // password may authorize this one-time migration path.
+  if (method === "POST" && seg1 === "apikey" && !seg2) {
+    const key = await rotateSiteKey(handle);
+    if (!key) return fail(res, 404, "사이트를 찾을 수 없습니다.");
+    return ok(res, { key });
   }
 
   // GET /sites/{h}/picks — 목록
